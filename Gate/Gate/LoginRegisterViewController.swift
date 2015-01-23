@@ -28,7 +28,13 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func terms(sender: AnyObject) {
-    
+        let alertController = UIAlertController(title: "Terms", message: "Robots are hard at work getting these documents in order. They should be finished by the Beta version of Gate!", preferredStyle: .Alert)
+        
+        let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+        
+        alertController.addAction(defaultAction)
+        
+        presentViewController(alertController, animated: true, completion: nil)
     }
     
     @IBAction func toggleForgotPassword(sender: AnyObject) {
