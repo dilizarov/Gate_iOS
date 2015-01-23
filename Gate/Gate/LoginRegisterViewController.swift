@@ -24,7 +24,57 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet var toggle: UIButton!
     
     @IBAction func toggleRegisterLogin(sender: AnyObject) {
-    
+        
+        if viewState == .Login {
+            
+            forgotPassword.alpha = 0.0
+            forgotPassword.enabled = false
+            
+            command.setTitle("Register", forState: UIControlState.Normal)
+            toggle.setTitle("Log In", forState: UIControlState.Normal)
+            
+            viewState = .Register
+            
+            self.name.enabled = true
+            
+            UIView.animateWithDuration(0.25, animations: {
+                self.name.alpha = 1.0
+            })
+            
+        } else {
+            
+            if viewState == .ForgotPassword {
+                
+                command.setTitle("Log In", forState: UIControlState.Normal)
+                toggle.setTitle("Register", forState: UIControlState.Normal)
+                
+                viewState = .Login
+                
+                self.password.enabled = true
+                
+                UIView.animateWithDuration(0.25, animations: {
+                    self.password.alpha = 1.0
+                })
+                
+            } else {
+                
+                command.setTitle("Log In", forState: UIControlState.Normal)
+                toggle.setTitle("Register", forState: UIControlState.Normal)
+                
+                viewState = .Login
+                
+                self.forgotPassword.enabled = true
+                
+                UIView.animateWithDuration(0.25, animations: {
+                    self.name.alpha = 0.0
+                    self.name.enabled = false
+                    self.forgotPassword.alpha = 1.0
+                })
+                
+            }
+            
+        }
+        
     }
     
     @IBAction func terms(sender: AnyObject) {
@@ -39,7 +89,7 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
     
     @IBAction func toggleForgotPassword(sender: AnyObject) {
         
-        if (viewState == .Login) {
+        if viewState == .Login {
             viewState = .ForgotPassword
             
             forgotPassword.setTitle("Remembered your password?", forState: UIControlState.Normal)
@@ -48,6 +98,7 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
             
             UIView.animateWithDuration(0.25, animations: {
                 self.password.alpha = 0.0
+                self.password.enabled = false
             })
         } else if viewState == .ForgotPassword {
             viewState = .Login
@@ -55,6 +106,8 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
             forgotPassword.setTitle("Forgot your password?", forState: UIControlState.Normal)
             toggle.setTitle("Register", forState: UIControlState.Normal)
             command.setTitle("Log In", forState: UIControlState.Normal)
+            
+            password.enabled = true
             
             UIView.animateWithDuration(0.25, animations: {
                 self.password.alpha = 1.0
