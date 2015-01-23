@@ -8,7 +8,7 @@
 
 import UIKit
 
-class LoginRegisterViewController: UIViewController {
+class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
     
     enum ViewState {
         case Login, Register, ForgotPassword
@@ -21,6 +21,7 @@ class LoginRegisterViewController: UIViewController {
     @IBOutlet var name: UITextField!
     @IBOutlet var forgotPassword: UIButton!
     @IBOutlet var command: UIButton!
+    @IBOutlet var toggle: UIButton!
     
     @IBAction func toggleRegisterLogin(sender: AnyObject) {
     
@@ -31,7 +32,29 @@ class LoginRegisterViewController: UIViewController {
     }
     
     @IBAction func toggleForgotPassword(sender: AnyObject) {
-    
+        
+        if (viewState == .Login) {
+            viewState = .ForgotPassword
+            
+            forgotPassword.setTitle("Remembered your password?", forState: UIControlState.Normal)
+            toggle.setTitle("Log In", forState: UIControlState.Normal)
+            command.setTitle("Send Email", forState: UIControlState.Normal)
+            
+            UIView.animateWithDuration(0.25, animations: {
+                self.password.alpha = 0.0
+            })
+        } else if viewState == .ForgotPassword {
+            viewState = .Login
+            
+            forgotPassword.setTitle("Forgot your password?", forState: UIControlState.Normal)
+            toggle.setTitle("Register", forState: UIControlState.Normal)
+            command.setTitle("Log In", forState: UIControlState.Normal)
+            
+            UIView.animateWithDuration(0.25, animations: {
+                self.password.alpha = 1.0
+            })
+        }
+        
     }
     
     @IBAction func processCommand(sender: AnyObject) {
@@ -48,6 +71,10 @@ class LoginRegisterViewController: UIViewController {
         password.addTarget(self, action: Selector("textFieldChanged"), forControlEvents: UIControlEvents.EditingChanged)
         
         name.addTarget(self, action: Selector("textFieldChanged"), forControlEvents: UIControlEvents.EditingChanged)
+    
+        email.delegate = self
+        password.delegate = self
+        name.delegate = self
     }
     
     
@@ -93,6 +120,18 @@ class LoginRegisterViewController: UIViewController {
         super.didReceiveMemoryWarning()
     }
     
+    override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
+        
+        self.view.endEditing(true)
+        
+    }
+    
+    func textFieldShouldReturn(textField: UITextField!) -> Bool {
+        
+        textField.resignFirstResponder()
+        
+        return true
+    }
     
     
 

@@ -60,9 +60,9 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CJh-xj-Zl8">
-                                <rect key="frame" x="111" y="247" width="98" height="15"/>
+                                <rect key="frame" x="74" y="247" width="173" height="15"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="98" id="8La-Np-2qu"/>
+                                    <constraint firstAttribute="width" constant="173" id="8La-Np-2qu"/>
                                     <constraint firstAttribute="height" constant="15" id="DRb-8O-bWr"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="9"/>
@@ -130,6 +130,7 @@
                         <outlet property="forgotPassword" destination="CJh-xj-Zl8" id="QfS-TG-S1s"/>
                         <outlet property="name" destination="iXf-eR-HdX" id="GpI-cl-lJ9"/>
                         <outlet property="password" destination="UFR-ne-TJk" id="d2Q-lq-ntl"/>
+                        <outlet property="toggle" destination="G1M-OA-CbY" id="2dc-zs-LKF"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
