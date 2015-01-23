@@ -60,6 +60,7 @@ class LoginRegisterViewController: UIViewController {
         var nameChars = name.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
         
         if emailChars.isEmpty ||
+           !validateEmail(emailChars) ||
             (viewState != .ForgotPassword && passwordChars.isEmpty) ||
             (viewState == .Register && nameChars.isEmpty) {
                 
@@ -81,6 +82,11 @@ class LoginRegisterViewController: UIViewController {
     func enableCommandButton() {
         command.alpha = 1.0
         command.enabled = true
+    }
+    
+    func validateEmail(candidate: String) -> Bool {
+        let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}"
+        return NSPredicate(format: "SELF MATCHES %@", emailRegex)!.evaluateWithObject(candidate)
     }
 
     override func didReceiveMemoryWarning() {
