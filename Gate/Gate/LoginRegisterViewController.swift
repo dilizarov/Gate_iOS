@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SwiftHTTP
 
 class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
     
@@ -37,6 +38,8 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
             
             self.name.enabled = true
             
+            textFieldChanged()
+            
             UIView.animateWithDuration(0.25, animations: {
                 self.name.alpha = 1.0
             })
@@ -47,10 +50,13 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
                 
                 command.setTitle("Log In", forState: UIControlState.Normal)
                 toggle.setTitle("Register", forState: UIControlState.Normal)
+                forgotPassword.setTitle("Forgot your password?", forState: UIControlState.Normal)
                 
                 viewState = .Login
                 
                 self.password.enabled = true
+                
+                textFieldChanged()
                 
                 UIView.animateWithDuration(0.25, animations: {
                     self.password.alpha = 1.0
@@ -64,6 +70,8 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
                 viewState = .Login
                 
                 self.forgotPassword.enabled = true
+                
+                textFieldChanged()
                 
                 UIView.animateWithDuration(0.25, animations: {
                     self.name.alpha = 0.0
@@ -96,6 +104,8 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
             toggle.setTitle("Log In", forState: UIControlState.Normal)
             command.setTitle("Send Email", forState: UIControlState.Normal)
             
+            textFieldChanged()
+            
             UIView.animateWithDuration(0.25, animations: {
                 self.password.alpha = 0.0
                 self.password.enabled = false
@@ -109,6 +119,8 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
             
             password.enabled = true
             
+            textFieldChanged()
+            
             UIView.animateWithDuration(0.25, animations: {
                 self.password.alpha = 1.0
             })
@@ -117,7 +129,16 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func processCommand(sender: AnyObject) {
-    
+        
+        switch viewState! {
+        case .Login:
+            processLogin()
+        case .Register:
+            processRegistration()
+        case .ForgotPassword:
+            processForgotPassword()
+        }
+        
     }
     
     override func viewDidLoad() {
@@ -131,19 +152,191 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
         
         name.addTarget(self, action: Selector("textFieldChanged"), forControlEvents: UIControlEvents.EditingChanged)
     
+        // For proper keyboard return functionality
         email.delegate = self
         password.delegate = self
         name.delegate = self
     }
     
+    func processLogin() {
+        var request = HTTPTask()
+        
+        var emailText = strippedString(email.text)
+        var passwordText = strippedString(password.text)
+        
+        var params = [String: AnyObject]()
+        
+        var user = [ "email" : emailText, "password" : passwordText ]
+        
+        params["user"] = user
+        params["api_key"] = "09b19f4a-6e4d-475a-b7c8-a369c60e9f83"
+        
+        request.responseSerializer = JSONResponseSerializer()
+        
+        request.POST("https://infinite-river-7560.herokuapp.com/api/v1/sessions.json", parameters: params,
+            success: {(response: HTTPResponse) in
+            
+                
+                println(response)
+            
+            
+            },
+            failure: {(error: NSError, response: HTTPResponse?) in
+                
+                var message = ""
+                
+                if response != nil {
+                    
+                    let unwrappedResponse = response!
+                    
+                    if unwrappedResponse.statusCode! == 422 {
+                        let errorsDict = unwrappedResponse.responseObject! as Dictionary<String, Array<String>>
+                        var errors = errorsDict["errors"]
+                        message = errors![0]
+                    } else {
+                        message = "We made a mistake somewhere. Robots are investigating."
+                    }
+                    
+                } else {
+                    message = "We couldn't connect to the internet"
+                }
+                
+                let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .Alert)
+                
+                let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                
+                alertController.addAction(defaultAction)
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.presentViewController(alertController, animated: true, completion: nil)
+                })
+        })
+    }
+    
+    func processRegistration() {
+        var request = HTTPTask()
+        
+        var emailText = strippedString(email.text)
+        var passwordText = strippedString(password.text)
+        var nameText = strippedString(name.text)
+        
+        var params = [String: AnyObject]()
+        
+        var user = [ "email" : emailText, "password" : passwordText, "name" : nameText ]
+        
+        params["user"] = user
+        params["api_key"] = "09b19f4a-6e4d-475a-b7c8-a369c60e9f83"
+        
+        request.responseSerializer = JSONResponseSerializer()
+        
+        request.POST("https://infinite-river-7560.herokuapp.com/api/v1/registrations.json", parameters: params,
+            success: {(response: HTTPResponse) in
+                
+                println(response)
+                
+            },
+            failure: {(error: NSError, response: HTTPResponse?) in
+                
+                var message = ""
+                
+                if response != nil {
+                    
+                    let unwrappedResponse = response!
+                    
+                    if unwrappedResponse.statusCode! == 422 {
+                        let errorsDict = unwrappedResponse.responseObject as Dictionary<String, Array<String>>
+                        
+                        var errors = errorsDict["errors"]!
+                        
+                        for var i = 0; i < errors.count; i++ {
+                            if i != 0 {
+                                message += "\n"
+                            }
+                            
+                            message += errors[i]
+                        }
+                    } else {
+                        message = "We made a mistake somewhere. Robots are investigating."
+                    }
+                } else {
+                    message = "We couldn't connect to the internet"
+                }
+                
+                let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .Alert)
+                
+                let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                
+                alertController.addAction(defaultAction)
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.presentViewController(alertController, animated: true, completion: nil)
+                })
+        })
+        
+    }
+    
+    func processForgotPassword() {
+        var request = HTTPTask()
+        
+        var emailText = strippedString(email.text)
+        
+        var params = [ "email" : emailText ]
+        
+        request.GET("https://infinite-river-7560.herokuapp.com/forgot_password", parameters: params,
+            success: {(response: HTTPResponse) in
+                
+                let alertController = UIAlertController(title: "Email Sent", message: nil, preferredStyle: .Alert)
+                
+                let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                
+                alertController.addAction(defaultAction)
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.presentViewController(alertController, animated: true, completion: nil)
+                })
+                
+            },
+            failure: {(error: NSError, response: HTTPResponse?) in
+                
+                var message = ""
+                
+                if response != nil {
+                
+                    let unwrappedResponse = response!
+                    
+                    if unwrappedResponse.statusCode == 404 {
+                        message = "Email not registered"
+                    } else {
+                        message = "We made a mistake somewhere. Robots are investigating."
+                    }
+                 
+                } else {
+                    message = "We couldn't connect to the internet"
+                }
+                
+
+                let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .Alert)
+                
+                let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                
+                alertController.addAction(defaultAction)
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.presentViewController(alertController, animated: true, completion: nil)
+                })
+                
+            })
+        
+    
+    }
     
     func textFieldChanged() {
         
-        var emailChars = email.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        var emailChars = strippedString(email.text)
         
-        var passwordChars = password.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        var passwordChars = strippedString(password.text)
         
-        var nameChars = name.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        var nameChars = strippedString(name.text)
         
         if emailChars.isEmpty ||
            !validateEmail(emailChars) ||
@@ -170,6 +363,10 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
         command.enabled = true
     }
     
+    func strippedString(text: String) -> String {
+        return text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+    }
+        
     func validateEmail(candidate: String) -> Bool {
         let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}"
         return NSPredicate(format: "SELF MATCHES %@", emailRegex)!.evaluateWithObject(candidate)
@@ -183,6 +380,14 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
         
         self.view.endEditing(true)
         
+    }
+    
+    override func shouldAutorotate() -> Bool {
+        return true
+    }
+    
+    override func supportedInterfaceOrientations() -> Int {
+        return Int(UIInterfaceOrientationMask.Portrait.rawValue)
     }
     
     func textFieldShouldReturn(textField: UITextField!) -> Bool {
