@@ -7,15 +7,28 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9A6E17EB1A73111A0037F9F2 /* SwiftHTTP.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A94B0801A7297FB003117B8 /* SwiftHTTP.framework */; };
+		9A6E17EC1A73111A0037F9F2 /* SwiftHTTP.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9A94B0801A7297FB003117B8 /* SwiftHTTP.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9A6E17F61A7321FB0037F9F2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9A94B05D1A72476F003117B8 /* Images.xcassets */; };
+		9A6E17F81A73534B0037F9F2 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A6E17F71A73534B0037F9F2 /* MainViewController.swift */; };
+		9A6E17FA1A7479FA0037F9F2 /* GatesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A6E17F91A7479FA0037F9F2 /* GatesViewController.swift */; };
+		9A6E17FC1A747A080037F9F2 /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A6E17FB1A747A080037F9F2 /* FeedViewController.swift */; };
 		9A94B0571A72476F003117B8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A94B0561A72476F003117B8 /* AppDelegate.swift */; };
 		9A94B05C1A72476F003117B8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9A94B05A1A72476F003117B8 /* Main.storyboard */; };
-		9A94B05E1A72476F003117B8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9A94B05D1A72476F003117B8 /* Images.xcassets */; };
 		9A94B0611A72476F003117B8 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9A94B05F1A72476F003117B8 /* LaunchScreen.xib */; };
 		9A94B06D1A72476F003117B8 /* GateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A94B06C1A72476F003117B8 /* GateTests.swift */; };
 		9A94B0771A725A90003117B8 /* LoginRegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A94B0761A725A90003117B8 /* LoginRegisterViewController.swift */; };
+		9A94B0871A72986E003117B8 /* SwiftHTTP.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A94B0801A7297FB003117B8 /* SwiftHTTP.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		9A6E17ED1A73111A0037F9F2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9A94B0781A7297FB003117B8 /* SwiftHTTP.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 6BFD901519C8D8B500DD99B6;
+			remoteInfo = SwiftHTTP;
+		};
 		9A94B0671A72476F003117B8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 9A94B0491A72476F003117B8 /* Project object */;
@@ -23,9 +36,55 @@
 			remoteGlobalIDString = 9A94B0501A72476F003117B8;
 			remoteInfo = Gate;
 		};
+		9A94B07F1A7297FB003117B8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9A94B0781A7297FB003117B8 /* SwiftHTTP.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6BFD901619C8D8B500DD99B6;
+			remoteInfo = SwiftHTTP;
+		};
+		9A94B0811A7297FB003117B8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9A94B0781A7297FB003117B8 /* SwiftHTTP.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6BFD902119C8D8B500DD99B6;
+			remoteInfo = SwiftHTTPTests;
+		};
+		9A94B0831A7297FB003117B8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9A94B0781A7297FB003117B8 /* SwiftHTTP.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D958025919E6EEEB003C8218;
+			remoteInfo = SwiftHTTPOSX;
+		};
+		9A94B0851A7297FB003117B8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9A94B0781A7297FB003117B8 /* SwiftHTTP.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D958026319E6EEEB003C8218;
+			remoteInfo = SwiftHTTPOSXTests;
+		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		9A6E17EF1A73111A0037F9F2 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				9A6E17EC1A73111A0037F9F2 /* SwiftHTTP.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		9A2BE2BF1A75189E0012E2BA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		9A6E17F71A73534B0037F9F2 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
+		9A6E17F91A7479FA0037F9F2 /* GatesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GatesViewController.swift; sourceTree = "<group>"; };
+		9A6E17FB1A747A080037F9F2 /* FeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
 		9A94B0511A72476F003117B8 /* Gate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A94B0551A72476F003117B8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9A94B0561A72476F003117B8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -36,6 +95,7 @@
 		9A94B06B1A72476F003117B8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9A94B06C1A72476F003117B8 /* GateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GateTests.swift; sourceTree = "<group>"; };
 		9A94B0761A725A90003117B8 /* LoginRegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginRegisterViewController.swift; sourceTree = "<group>"; };
+		9A94B0781A7297FB003117B8 /* SwiftHTTP.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SwiftHTTP.xcodeproj; path = "../../../../Downloads/SwiftHTTP-master/SwiftHTTP.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +103,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9A6E17EB1A73111A0037F9F2 /* SwiftHTTP.framework in Frameworks */,
+				9A94B0871A72986E003117B8 /* SwiftHTTP.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -59,9 +121,11 @@
 		9A94B0481A72476F003117B8 = {
 			isa = PBXGroup;
 			children = (
+				9A2BE2BF1A75189E0012E2BA /* UIKit.framework */,
 				9A94B0531A72476F003117B8 /* Gate */,
 				9A94B0691A72476F003117B8 /* GateTests */,
 				9A94B0521A72476F003117B8 /* Products */,
+				9A94B0781A7297FB003117B8 /* SwiftHTTP.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
@@ -80,6 +144,9 @@
 				9A94B0561A72476F003117B8 /* AppDelegate.swift */,
 				9A94B0761A725A90003117B8 /* LoginRegisterViewController.swift */,
 				9A94B05A1A72476F003117B8 /* Main.storyboard */,
+				9A6E17F71A73534B0037F9F2 /* MainViewController.swift */,
+				9A6E17F91A7479FA0037F9F2 /* GatesViewController.swift */,
+				9A6E17FB1A747A080037F9F2 /* FeedViewController.swift */,
 				9A94B05D1A72476F003117B8 /* Images.xcassets */,
 				9A94B05F1A72476F003117B8 /* LaunchScreen.xib */,
 				9A94B0541A72476F003117B8 /* Supporting Files */,
@@ -112,6 +179,17 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		9A94B0791A7297FB003117B8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				9A94B0801A7297FB003117B8 /* SwiftHTTP.framework */,
+				9A94B0821A7297FB003117B8 /* SwiftHTTPTests.xctest */,
+				9A94B0841A7297FB003117B8 /* SwiftHTTPOSX.framework */,
+				9A94B0861A7297FB003117B8 /* SwiftHTTPOSXTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -122,10 +200,12 @@
 				9A94B04D1A72476F003117B8 /* Sources */,
 				9A94B04E1A72476F003117B8 /* Frameworks */,
 				9A94B04F1A72476F003117B8 /* Resources */,
+				9A6E17EF1A73111A0037F9F2 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				9A6E17EE1A73111A0037F9F2 /* PBXTargetDependency */,
 			);
 			name = Gate;
 			productName = Gate;
@@ -161,6 +241,7 @@
 				TargetAttributes = {
 					9A94B0501A72476F003117B8 = {
 						CreatedOnToolsVersion = 6.1.1;
+						DevelopmentTeam = ULTD2T59T4;
 					};
 					9A94B0651A72476F003117B8 = {
 						CreatedOnToolsVersion = 6.1.1;
@@ -179,6 +260,12 @@
 			mainGroup = 9A94B0481A72476F003117B8;
 			productRefGroup = 9A94B0521A72476F003117B8 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 9A94B0791A7297FB003117B8 /* Products */;
+					ProjectRef = 9A94B0781A7297FB003117B8 /* SwiftHTTP.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				9A94B0501A72476F003117B8 /* Gate */,
@@ -187,14 +274,45 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXReferenceProxy section */
+		9A94B0801A7297FB003117B8 /* SwiftHTTP.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SwiftHTTP.framework;
+			remoteRef = 9A94B07F1A7297FB003117B8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		9A94B0821A7297FB003117B8 /* SwiftHTTPTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = SwiftHTTPTests.xctest;
+			remoteRef = 9A94B0811A7297FB003117B8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		9A94B0841A7297FB003117B8 /* SwiftHTTPOSX.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SwiftHTTPOSX.framework;
+			remoteRef = 9A94B0831A7297FB003117B8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		9A94B0861A7297FB003117B8 /* SwiftHTTPOSXTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = SwiftHTTPOSXTests.xctest;
+			remoteRef = 9A94B0851A7297FB003117B8 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
 /* Begin PBXResourcesBuildPhase section */
 		9A94B04F1A72476F003117B8 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9A6E17F61A7321FB0037F9F2 /* Images.xcassets in Resources */,
 				9A94B05C1A72476F003117B8 /* Main.storyboard in Resources */,
 				9A94B0611A72476F003117B8 /* LaunchScreen.xib in Resources */,
-				9A94B05E1A72476F003117B8 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -212,8 +330,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9A6E17F81A73534B0037F9F2 /* MainViewController.swift in Sources */,
 				9A94B0771A725A90003117B8 /* LoginRegisterViewController.swift in Sources */,
+				9A6E17FC1A747A080037F9F2 /* FeedViewController.swift in Sources */,
 				9A94B0571A72476F003117B8 /* AppDelegate.swift in Sources */,
+				9A6E17FA1A7479FA0037F9F2 /* GatesViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,6 +349,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		9A6E17EE1A73111A0037F9F2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SwiftHTTP;
+			targetProxy = 9A6E17ED1A73111A0037F9F2 /* PBXContainerItemProxy */;
+		};
 		9A94B0681A72476F003117B8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 9A94B0501A72476F003117B8 /* Gate */;
@@ -336,8 +462,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = Gate/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -346,6 +474,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = Gate/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -405,6 +534,7 @@
 				9A94B0721A72476F003117B8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		9A94B0731A72476F003117B8 /* Build configuration list for PBXNativeTarget "GateTests" */ = {
 			isa = XCConfigurationList;
@@ -413,6 +543,7 @@
 				9A94B0751A72476F003117B8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

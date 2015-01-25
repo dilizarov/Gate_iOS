@@ -1,0 +1,10 @@
+PODS:
+  - XHTwitterPaggingViewer (0.5)
+
+DEPENDENCIES:
+  - XHTwitterPaggingViewer
+
+SPEC CHECKSUMS:
+  XHTwitterPaggingViewer: 5fd6b5cd85e460de8d00934fd4b774c0ca606722
+
+COCOAPODS: 0.36.0.beta.1

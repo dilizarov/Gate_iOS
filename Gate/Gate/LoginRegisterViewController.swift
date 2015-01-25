@@ -143,7 +143,7 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+                
         viewState = .Login
         
         email.addTarget(self, action: Selector("textFieldChanged"), forControlEvents: UIControlEvents.EditingChanged)
@@ -156,9 +156,15 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
         email.delegate = self
         password.delegate = self
         name.delegate = self
+        
+        var last_email_used = NSUserDefaults.standardUserDefaults().objectForKey("last_used_email") as? String
+        if last_email_used != nil {
+            email.text = last_email_used
+        }
     }
     
     func processLogin() {
+        
         var request = HTTPTask()
         
         var emailText = strippedString(email.text)
@@ -175,11 +181,12 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
         
         request.POST("https://infinite-river-7560.herokuapp.com/api/v1/sessions.json", parameters: params,
             success: {(response: HTTPResponse) in
-            
+
+                self.storeSessionData(response.responseObject! as Dictionary<String, Dictionary<String, AnyObject>>)
                 
-                println(response)
-            
-            
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.performSegueWithIdentifier("loginUser", sender: self)
+                })
             },
             failure: {(error: NSError, response: HTTPResponse?) in
                 
@@ -232,7 +239,11 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
         request.POST("https://infinite-river-7560.herokuapp.com/api/v1/registrations.json", parameters: params,
             success: {(response: HTTPResponse) in
                 
-                println(response)
+                self.storeSessionData(response.responseObject! as Dictionary<String, Dictionary<String, AnyObject>>)
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.performSegueWithIdentifier("loginUser", sender: self)
+                })
                 
             },
             failure: {(error: NSError, response: HTTPResponse?) in
@@ -370,6 +381,22 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
     func validateEmail(candidate: String) -> Bool {
         let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}"
         return NSPredicate(format: "SELF MATCHES %@", emailRegex)!.evaluateWithObject(candidate)
+    }
+    
+    func storeSessionData(response: Dictionary<String, Dictionary<String, AnyObject>>) {
+        
+        var defaults = NSUserDefaults.standardUserDefaults()
+        
+        var user: Dictionary<String, AnyObject> = response["user"]!
+        
+        defaults.setObject(user["auth_token"], forKey: "auth_token")
+        defaults.setObject(user["created_at"], forKey: "created_at")
+        defaults.setObject(user["email"], forKey: "email")
+        defaults.setObject(user["external_id"], forKey: "external_id")
+        defaults.setObject(user["name"], forKey: "name")
+        defaults.setObject(user["email"], forKey: "last_used_email")
+        
+        defaults.synchronize()
     }
 
     override func didReceiveMemoryWarning() {

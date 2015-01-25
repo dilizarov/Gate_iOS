@@ -8,7 +8,7 @@
         <!--Login Register View Controller-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
-                <viewController id="vXZ-lx-hvc" customClass="LoginRegisterViewController" customModule="Gate" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginRegisterViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="vXZ-lx-hvc" customClass="LoginRegisterViewController" customModule="Gate" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="jyV-Pf-zRb"/>
                         <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
@@ -166,12 +166,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1584" y="-162"/>
+            <point key="canvasLocation" x="-1494" y="-352"/>
         </scene>
-        <!--View Controller-->
+        <!--Main View Controller-->
         <scene sceneID="Y8T-bF-hd0">
             <objects>
-                <viewController storyboardIdentifier="MainViewController" id="Pu3-6C-vKL" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MainViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Pu3-6C-vKL" customClass="MainViewController" customModule="Gate" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Ak8-M0-3kh"/>
                         <viewControllerLayoutGuide type="bottom" id="9z0-A4-TxR"/>
@@ -179,47 +179,18 @@
                     <view key="view" contentMode="scaleToFill" id="oiG-9H-13P">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lkY-LR-FCp">
-                                <rect key="frame" x="0.0" y="20" width="320" height="44"/>
-                                <color key="barTintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                <textAttributes key="titleTextAttributes">
-                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </textAttributes>
-                                <items>
-                                    <navigationItem title="Aggregate" id="ZVD-Tb-uDy">
-                                        <barButtonItem key="leftBarButtonItem" systemItem="organize" id="31e-JW-6Sh">
-                                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        </barButtonItem>
-                                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="CdY-8x-jKc">
-                                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        </barButtonItem>
-                                    </navigationItem>
-                                </items>
-                            </navigationBar>
-                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="X4J-df-fI2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1062" y="-162"/>
+            <point key="canvasLocation" x="-727" y="-352"/>
         </scene>
-        <!--Page View Controller-->
-        <scene sceneID="VXx-xO-fS0">
-            <objects>
-                <pageViewController storyboardIdentifier="PageHolder" autoresizesArchivedViewToFullSize="NO" transitionStyle="scroll" navigationOrientation="horizontal" spineLocation="none" id="HcM-s9-gtE" sceneMemberID="viewController">
-                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
-                </pageViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="CIB-dn-0eC" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-394" y="-162"/>
-        </scene>
-        <!--View Controller-->
+        <!--Feed View Controller-->
         <scene sceneID="8S8-nG-p5p">
             <objects>
-                <viewController storyboardIdentifier="Feed" id="dKW-81-bag" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="FeedController" title="Feed View Controller" useStoryboardIdentifierAsRestorationIdentifier="YES" id="dKW-81-bag" customClass="FeedViewController" customModule="Gate" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Wxb-vx-QeD"/>
                         <viewControllerLayoutGuide type="bottom" id="wCi-yk-VKs"/>
@@ -227,13 +198,67 @@
                     <view key="view" contentMode="scaleToFill" id="N3B-3u-l9o">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="FEED" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="K3R-DJ-Tuu">
+                                <rect key="frame" x="139" y="273" width="43" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="go2-w2-mH0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-794" y="562"/>
+            <point key="canvasLocation" x="-976" y="359"/>
+        </scene>
+        <!--Gates View Controller-->
+        <scene sceneID="i0n-7G-KS5">
+            <objects>
+                <viewController storyboardIdentifier="GatesController" title="Gates View Controller" useStoryboardIdentifierAsRestorationIdentifier="YES" id="nYR-fA-YAL" customClass="GatesViewController" customModule="Gate" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="BYG-Np-9tC"/>
+                        <viewControllerLayoutGuide type="bottom" id="gLb-kn-e9y"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Ed7-AX-tDr">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="nUP-NO-8vI">
+                                <rect key="frame" x="0.0" y="70" width="320" height="504"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" id="aHS-zh-BDG">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="cell" tableViewCell="aHS-zh-BDG" id="Q0e-cV-qcq">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="nYR-fA-YAL" id="1TK-C5-yOF"/>
+                                    <outlet property="delegate" destination="nYR-fA-YAL" id="XAJ-F1-aka"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="nUP-NO-8vI" secondAttribute="trailing" constant="-16" id="6GE-rJ-a8l"/>
+                            <constraint firstItem="nUP-NO-8vI" firstAttribute="leading" secondItem="Ed7-AX-tDr" secondAttribute="leadingMargin" constant="-16" id="AeM-Tz-FvX"/>
+                            <constraint firstItem="nUP-NO-8vI" firstAttribute="top" secondItem="BYG-Np-9tC" secondAttribute="bottom" constant="50" id="aK2-NC-XFA"/>
+                            <constraint firstItem="gLb-kn-e9y" firstAttribute="top" secondItem="nUP-NO-8vI" secondAttribute="bottom" id="r8G-vo-Dz4"/>
+                        </constraints>
+                    </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <outlet property="gatesTable" destination="nUP-NO-8vI" id="vGE-Yt-hJd"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="82Q-oY-GP3" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-485" y="359"/>
         </scene>
     </scenes>
     <resources>

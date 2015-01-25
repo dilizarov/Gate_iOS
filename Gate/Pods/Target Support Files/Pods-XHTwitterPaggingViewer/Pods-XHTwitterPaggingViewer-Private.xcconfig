@@ -1,0 +1,5 @@
+#include "Pods-XHTwitterPaggingViewer.xcconfig"
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
+HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers/Private" "${PODS_ROOT}/Headers/Private/XHTwitterPaggingViewer" "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/XHTwitterPaggingViewer"
+OTHER_LDFLAGS = ${PODS_XHTWITTERPAGGINGVIEWER_OTHER_LDFLAGS} -ObjC
+PODS_ROOT = ${SRCROOT}

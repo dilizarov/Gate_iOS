@@ -13,16 +13,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
         
-//        var pushSettings: UIUserNotificationSettings = UIUserNotificationSettings(forTypes: .Alert, categories: nil)
-//        
-//        application.registerUserNotificationSettings(pushSettings)
-//        application.registerForRemoteNotifications()
+        if NSUserDefaults.standardUserDefaults().objectForKey("auth_token") != nil {
+            
+            var storyboard = UIStoryboard(name: "Main", bundle: nil)
+            
+            self.window!.rootViewController = storyboard.instantiateViewControllerWithIdentifier("MainViewController") as? UIViewController
+            self.window!.makeKeyAndVisible()
+        }
         
         return true
+        
     }
 
     func applicationWillResignActive(application: UIApplication) {
