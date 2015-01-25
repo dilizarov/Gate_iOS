@@ -199,14 +199,24 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="FEED" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="K3R-DJ-Tuu">
-                                <rect key="frame" x="139" y="273" width="43" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sVo-g2-iFI">
+                                <rect key="frame" x="0.0" y="514" width="320" height="54"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="54" id="bEJ-g9-xTb"/>
+                                </constraints>
+                                <state key="normal" title="Create a Post">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="sVo-g2-iFI" secondAttribute="trailing" constant="-16" id="FXV-d6-1Pa"/>
+                            <constraint firstItem="sVo-g2-iFI" firstAttribute="leading" secondItem="N3B-3u-l9o" secondAttribute="leadingMargin" constant="-16" id="by9-iM-H7B"/>
+                            <constraint firstItem="wCi-yk-VKs" firstAttribute="top" secondItem="sVo-g2-iFI" secondAttribute="bottom" id="mZo-Hy-pOC"/>
+                        </constraints>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                 </viewController>
@@ -217,6 +227,7 @@
         <!--Gates View Controller-->
         <scene sceneID="i0n-7G-KS5">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="82Q-oY-GP3" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController storyboardIdentifier="GatesController" title="Gates View Controller" useStoryboardIdentifierAsRestorationIdentifier="YES" id="nYR-fA-YAL" customClass="GatesViewController" customModule="Gate" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="BYG-Np-9tC"/>
@@ -226,29 +237,81 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="nUP-NO-8vI">
-                                <rect key="frame" x="0.0" y="70" width="320" height="504"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="64" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="nUP-NO-8vI">
+                                <rect key="frame" x="0.0" y="80" width="320" height="463"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" id="aHS-zh-BDG">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="gateCell" rowHeight="64" id="tjd-W4-gUr">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="cell" tableViewCell="aHS-zh-BDG" id="Q0e-cV-qcq">
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="tjd-W4-gUr" id="gig-Yl-oca">
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" tag="2" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0JH-PW-raJ">
+                                                    <rect key="frame" x="16" y="33" width="129" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gth-wZ-8AB">
+                                                    <rect key="frame" x="16" y="8" width="288" height="21"/>
+                                                    <color key="tintColor" red="0.086274509799999996" green="0.25882352939999997" blue="0.45882352939999999" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <attributedString key="attributedText">
+                                                        <fragment content="Label">
+                                                            <attributes>
+                                                                <color key="NSColor" red="0.086274509803921567" green="0.25882352941176473" blue="0.45882352941176469" alpha="1" colorSpace="calibratedRGB"/>
+                                                                <font key="NSFont" size="17" name="HelveticaNeue"/>
+                                                                <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="truncatingTail" baseWritingDirection="natural"/>
+                                                            </attributes>
+                                                        </fragment>
+                                                    </attributedString>
+                                                    <color key="highlightedColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
+                                                </label>
+                                            </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </prototypes>
+                                <sections/>
                                 <connections>
                                     <outlet property="dataSource" destination="nYR-fA-YAL" id="1TK-C5-yOF"/>
                                     <outlet property="delegate" destination="nYR-fA-YAL" id="XAJ-F1-aka"/>
                                 </connections>
                             </tableView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VRD-oZ-eCz">
+                                <rect key="frame" x="0.0" y="514" width="160" height="54"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="54" id="mmb-ka-6zR"/>
+                                </constraints>
+                                <state key="normal" title="Aggregate">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oVq-SB-0MV">
+                                <rect key="frame" x="160" y="514" width="160" height="54"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="54" id="6rj-f8-oiN"/>
+                                </constraints>
+                                <state key="normal" title="Create a Gate">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="nUP-NO-8vI" secondAttribute="trailing" constant="-16" id="6GE-rJ-a8l"/>
                             <constraint firstItem="nUP-NO-8vI" firstAttribute="leading" secondItem="Ed7-AX-tDr" secondAttribute="leadingMargin" constant="-16" id="AeM-Tz-FvX"/>
-                            <constraint firstItem="nUP-NO-8vI" firstAttribute="top" secondItem="BYG-Np-9tC" secondAttribute="bottom" constant="50" id="aK2-NC-XFA"/>
-                            <constraint firstItem="gLb-kn-e9y" firstAttribute="top" secondItem="nUP-NO-8vI" secondAttribute="bottom" id="r8G-vo-Dz4"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="oVq-SB-0MV" secondAttribute="trailing" constant="-16" id="IlX-Kx-sdS"/>
+                            <constraint firstItem="oVq-SB-0MV" firstAttribute="leading" secondItem="VRD-oZ-eCz" secondAttribute="trailing" id="J71-Rp-ohi"/>
+                            <constraint firstItem="gLb-kn-e9y" firstAttribute="top" secondItem="VRD-oZ-eCz" secondAttribute="bottom" id="MEl-BU-hlk"/>
+                            <constraint firstItem="nUP-NO-8vI" firstAttribute="top" secondItem="BYG-Np-9tC" secondAttribute="bottom" constant="60" id="aBY-9h-Rgs"/>
+                            <constraint firstItem="gLb-kn-e9y" firstAttribute="top" secondItem="oVq-SB-0MV" secondAttribute="bottom" id="aFW-Yg-hFE"/>
+                            <constraint firstItem="oVq-SB-0MV" firstAttribute="width" secondItem="VRD-oZ-eCz" secondAttribute="width" id="dbh-6N-o4O"/>
+                            <constraint firstItem="VRD-oZ-eCz" firstAttribute="leading" secondItem="Ed7-AX-tDr" secondAttribute="leadingMargin" constant="-16" id="euy-2f-ItI"/>
+                            <constraint firstItem="oVq-SB-0MV" firstAttribute="leading" secondItem="VRD-oZ-eCz" secondAttribute="trailing" id="hCy-Yt-a5p"/>
                         </constraints>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
@@ -256,9 +319,8 @@
                         <outlet property="gatesTable" destination="nUP-NO-8vI" id="vGE-Yt-hJd"/>
                     </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="82Q-oY-GP3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-485" y="359"/>
+            <point key="canvasLocation" x="-485" y="356"/>
         </scene>
     </scenes>
     <resources>

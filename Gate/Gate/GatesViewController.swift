@@ -18,8 +18,6 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        self.gatesTable.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
         
         refresher = UIRefreshControl()
         refresher.attributedTitle = NSAttributedString(string: "Pull to refresh")
@@ -41,9 +39,20 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell: UITableViewCell = self.gatesTable.dequeueReusableCellWithIdentifier("cell") as UITableViewCell
+        var cell: UITableViewCell = self.gatesTable.dequeueReusableCellWithIdentifier("gateCell") as UITableViewCell
         
-        cell.textLabel?.text = self.gates[indexPath.row].name
+        var gateName = cell.viewWithTag(1)! as UILabel
+        var gatekeepersCount = cell.viewWithTag(2)! as UILabel
+        
+        var gate = self.gates[indexPath.row]
+        
+        gateName.text = gate.name
+        
+        if gate.usersCount.toInt() == 1 {
+            gatekeepersCount.text = "1 Gatekeeper"
+        } else {
+            gatekeepersCount.text = gate.usersCount + " Gatekeepers"
+        }
         
         return cell
     }
@@ -70,6 +79,10 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
             success: {(response: HTTPResponse) in
                 println(response.responseObject!)
 
+                if refreshing {
+                    self.refresher.endRefreshing()
+                }
+                
                 self.gates = []
                 
                 var jsonGates = response.responseObject!["gates"]
@@ -84,12 +97,11 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                         creator: (jsonGate["creator"] as Dictionary<String, String>)["name"]!)
                     
                     self.gates.append(gate)
-                    
-                    self.refresher.endRefreshing()
                 }
                 
-                self.gatesTable.reloadData()
-                
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.gatesTable.reloadData()
+                })
             },
             failure: {(error: NSError, response: HTTPResponse?) in
                 
