@@ -8,9 +8,17 @@
 import UIKit
 import SwiftHTTP
 
-class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate {
 
     @IBOutlet var gatesTable: UITableView!
+    @IBAction func viewAggregate(sender: AnyObject) {
+        println("Aggregate")
+    }
+    
+    @IBAction func createGate(sender: AnyObject) {
+        println("CreateGate")
+    }
+    
     
     var gates = [Gate]()
     
@@ -24,8 +32,12 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         refresher.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
         self.gatesTable.addSubview(refresher)
         
+        var longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: Selector("handleLongPress:"))
+        longPressGestureRecognizer.minimumPressDuration = 2.0
+        longPressGestureRecognizer.delegate = self
+        gatesTable.addGestureRecognizer(longPressGestureRecognizer)
+        
         requestGatesAndPopulateList(false)
-        // Do any additional setup after loading the view.
     }
     
     func refresh() {
@@ -33,6 +45,38 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         requestGatesAndPopulateList(true)
         
     }
+    
+    func handleLongPress(gestureRecognizer: UILongPressGestureRecognizer) {
+        
+        if (gestureRecognizer.state == UIGestureRecognizerState.Began) {
+            
+            var point = gestureRecognizer.locationInView(gatesTable)
+            var indexPath = gatesTable.indexPathForRowAtPoint(point)
+            
+            if (indexPath != nil) {
+                var unwrappedIndexPath = indexPath!
+                
+                var gate = gates[unwrappedIndexPath.row]
+                
+                let alertController = UIAlertController(title: "Leave \(gate.name)", message: "Are you sure you want to leave \(gate.name)?", preferredStyle: .ActionSheet)
+                
+                let deleteAction = UIAlertAction(title: "Leave", style: .Destructive, handler: {
+                    (alert: UIAlertAction!) -> Void in
+                    
+                    self.leaveGate(gate, index: unwrappedIndexPath.row)
+                    
+                })
+                
+                let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+                
+                alertController.addAction(deleteAction)
+                alertController.addAction(cancelAction)
+                
+                self.presentViewController(alertController, animated: true, completion: nil)
+            }
+        }
+    }
+    
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.gates.count
@@ -109,6 +153,73 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         )
         
         
+    }
+    
+    func leaveGate(gate: Gate, index: Int) {
+        gates.removeAtIndex(index)
+        gatesTable.reloadData()
+        
+        var request = HTTPTask()
+        
+        var userInfo = NSUserDefaults.standardUserDefaults()
+        
+        var params = [ "user_id" : userInfo.objectForKey("user_id") as String, "auth_token" : userInfo.objectForKey("auth_token") as String, "api_key" : "09b19f4a-6e4d-475a-b7c8-a369c60e9f83" ]
+        
+        request.responseSerializer = JSONResponseSerializer()
+        
+        request.DELETE("https://infinite-river-7560.herokuapp.com/api/v1/gates/\(gate.id)/leave.json", parameters: params,
+            success: {(response: HTTPResponse) in
+                    // Don't do anything, preprocessed.
+            },
+            failure: {(error: NSError, response: HTTPResponse?) in
+
+                // Add removed Gate back into list.
+                self.addGatesToArray([gate])
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.gatesTable.reloadData()
+                    let alertController = UIAlertController(title: "Failed to leave Gate", message: "We couldn't connect to the internet", preferredStyle: .Alert)
+                    
+                    let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                    
+                    alertController.addAction(defaultAction)
+                    
+                    self.presentViewController(alertController, animated: true, completion: nil)
+                })
+                
+            }
+        )
+        
+    }
+    
+    func addGatesToArray(newGates: [Gate]) {
+        
+        var len = newGates.count
+        var startingPoint = 0
+        var reachedEnd = false
+        for var i = 0; i < len; i++ {
+            var gate = newGates[i]
+            
+            var length = gates.count
+            
+            if length == 0 {
+                gates.append(gate)
+                continue
+            }
+            
+            for var j = startingPoint; j < length; j++ {
+                var name = gates[j].name
+                if name.caseInsensitiveCompare(gate.name) == NSComparisonResult.OrderedDescending {
+                    gates.insert(gate, atIndex: j)
+                    startingPoint = j + 1
+                    break;
+                } else if reachedEnd || j == length - 1 {
+                    gates.append(gate)
+                    reachedEnd = true
+                    break
+                }
+            }
+        }
     }
     
     override func didReceiveMemoryWarning() {
