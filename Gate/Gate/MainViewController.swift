@@ -14,6 +14,9 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
     var pageControl:UIPageControl!
     var navbarView:UIView!
     
+    var buttonLeft:UIBarButtonItem!
+    var buttonRight:UIBarButtonItem!
+    
     var navTitleLabel1:UILabel!
     var navTitleLabel2:UILabel!
     
@@ -30,8 +33,6 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         
         navBar.barTintColor = UIColor.blackColor()
         navBar.translucent = false
-        
-        self.view.backgroundColor = UIColor.lightGrayColor()
         
         //Creating some shorthand for these values
         var wBounds = self.view.bounds.width
@@ -64,7 +65,6 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         
         //Titles for the nav controller (also added to a subview in the uinavigationcontroller)
         //Setting size for the titles. FYI changing width will break the paging fades/movement
-        
         navTitleLabel1 = UILabel()
         navTitleLabel1.frame = CGRect(x: 0, y: 8, width: wBounds, height: 20)
         navTitleLabel1.textColor = UIColor.whiteColor()
@@ -109,6 +109,30 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         
         navBar.addSubview(navbarView)
         self.view.addSubview(navBar)
+        
+        buttonLeft = UIBarButtonItem(title: "K", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("showKeys"))
+        buttonRight = UIBarButtonItem(title: "B", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("enterKey"))
+        
+        var navigationItem = UINavigationItem()
+        navigationItem.leftBarButtonItems = NSArray(array: [buttonLeft, buttonRight])
+
+        navBar.pushNavigationItem(navigationItem, animated: false)
+    }
+    
+    func showKeys() {
+        performSegueWithIdentifier("createKey", sender: self)
+    }
+    
+    func enterKey() {
+        println("B")
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "createKey" {
+            var destination = segue.destinationViewController as CreateKeyViewController
+            
+            destination.gates = gatesViewController.gates
+        }
     }
     
     override func viewDidLayoutSubviews() {

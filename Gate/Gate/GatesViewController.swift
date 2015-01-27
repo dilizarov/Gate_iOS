@@ -8,15 +8,45 @@
 import UIKit
 import SwiftHTTP
 
-class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate {
+class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate, UIPopoverPresentationControllerDelegate {
 
+    var gateName: UITextField!
+    
     @IBOutlet var gatesTable: UITableView!
     @IBAction func viewAggregate(sender: AnyObject) {
         println("Aggregate")
     }
     
     @IBAction func createGate(sender: AnyObject) {
-        println("CreateGate")
+        let alert = UIAlertController(title: "Create Gate", message: nil, preferredStyle: .Alert)
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: {
+            (action: UIAlertAction!) in
+            self.dismissViewControllerAnimated(true, completion: nil)
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Create", style: .Default, handler: {
+            (action: UIAlertAction!) in
+            
+            var potentialName = self.gateName.text
+            
+            potentialName.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+            
+            self.createGate(potentialName)
+            
+        }))
+        
+        alert.addTextFieldWithConfigurationHandler({
+            (textField: UITextField!) in
+            textField.placeholder = "Gate name"
+            textField.clearButtonMode = UITextFieldViewMode.WhileEditing
+            textField.spellCheckingType = UITextSpellCheckingType.Default
+            textField.autocapitalizationType = UITextAutocapitalizationType.Words
+            
+            self.gateName = textField
+        })
+        
+        presentViewController(alert, animated: true, completion: nil)
     }
     
     
@@ -101,7 +131,7 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         return cell
     }
     
-    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         println("You have selected cell \(indexPath.row)")
     }
     
@@ -165,9 +195,7 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         var params = [ "user_id" : userInfo.objectForKey("user_id") as String, "auth_token" : userInfo.objectForKey("auth_token") as String, "api_key" : "09b19f4a-6e4d-475a-b7c8-a369c60e9f83" ]
         
-        request.responseSerializer = JSONResponseSerializer()
-        
-        request.DELETE("https://infinite-river-7560.herokuapp.com/api/v1/gates/\(gate.id)/leave.json", parameters: params,
+        request.DELETE("https://infinite-river-7560.herokuapp.com/api/v1/gates/" + gate.id + "/leave.json", parameters: params,
             success: {(response: HTTPResponse) in
                     // Don't do anything, preprocessed.
             },
@@ -187,6 +215,46 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                     self.presentViewController(alertController, animated: true, completion: nil)
                 })
                 
+            }
+        )
+        
+    }
+    
+    func createGate(name: String) {
+        var request = HTTPTask()
+        
+        var userInfo = NSUserDefaults.standardUserDefaults()
+        
+        var params: Dictionary<String, AnyObject> = [ "user_id" : userInfo.objectForKey("user_id") as String, "auth_token" : userInfo.objectForKey("auth_token") as String, "api_key" : "09b19f4a-6e4d-475a-b7c8-a369c60e9f83" ]
+        
+        var gate = [ "name" : name ]
+        
+        params["gate"] = gate
+        
+        request.responseSerializer = JSONResponseSerializer()
+        
+        request.POST("https://infinite-river-7560.herokuapp.com/api/v1/gates.json", parameters: params,
+            success: { (response: HTTPResponse) in
+                
+                var jsonGate = response.responseObject!["gate"] as Dictionary<String, AnyObject>
+                
+                var gate = Gate(id: jsonGate["external_id"] as String,
+                    name: jsonGate["name"] as String,
+                    usersCount: 1,
+                    creator: (jsonGate["creator"] as Dictionary<String, String>)["name"]!)
+                    
+                self.addGatesToArray([gate])
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.gatesTable.reloadData()
+                })
+
+                
+            },
+            failure: { (error: NSError, response: HTTPResponse?) in
+                
+                
+            
             }
         )
         

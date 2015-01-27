@@ -161,12 +161,12 @@
                         <outlet property="name" destination="iXf-eR-HdX" id="GpI-cl-lJ9"/>
                         <outlet property="password" destination="UFR-ne-TJk" id="d2Q-lq-ntl"/>
                         <outlet property="toggle" destination="G1M-OA-CbY" id="2dc-zs-LKF"/>
-                        <segue destination="Pu3-6C-vKL" kind="show" identifier="loginUser" id="t0s-dr-n7U"/>
+                        <segue destination="Pu3-6C-vKL" kind="show" identifier="loginUser" id="FaD-hg-x40"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1494" y="-352"/>
+            <point key="canvasLocation" x="-1382" y="-352"/>
         </scene>
         <!--Main View Controller-->
         <scene sceneID="Y8T-bF-hd0">
@@ -181,11 +181,85 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <navigationItem key="navigationItem" id="pIB-OW-rGz"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <segue destination="a1A-J0-gxA" kind="show" identifier="createKey" id="ZnG-x9-oit"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="X4J-df-fI2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-727" y="-352"/>
+            <point key="canvasLocation" x="-692" y="-352"/>
+        </scene>
+        <!--Create Key View Controller-->
+        <scene sceneID="MSp-Ch-Mj9">
+            <objects>
+                <viewController id="a1A-J0-gxA" customClass="CreateKeyViewController" customModule="Gate" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="ANc-rJ-URR"/>
+                        <viewControllerLayoutGuide type="bottom" id="ZzQ-Gc-one"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="dY4-iL-Mch">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" allowsMultipleSelection="YES" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="4cz-Br-Aht">
+                                <rect key="frame" x="0.0" y="80" width="320" height="475"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" id="oO1-oe-tjE">
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="oO1-oe-tjE" id="Dgb-MG-MNe">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" tag="10" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xws-uI-NwT">
+                                                    <rect key="frame" x="16" y="11" width="236" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="a1A-J0-gxA" id="dXY-RR-Nf0"/>
+                                    <outlet property="delegate" destination="a1A-J0-gxA" id="03Z-dt-fYU"/>
+                                </connections>
+                            </tableView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gbM-f4-aMr">
+                                <rect key="frame" x="0.0" y="514" width="320" height="54"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="54" id="9T7-cg-PIr"/>
+                                </constraints>
+                                <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <state key="normal" title="Tap for a key">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="tapForKey:" destination="a1A-J0-gxA" eventType="touchUpInside" id="rZv-D2-Szi"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="gbM-f4-aMr" secondAttribute="trailing" constant="-16" id="29W-lJ-mLy"/>
+                            <constraint firstItem="4cz-Br-Aht" firstAttribute="leading" secondItem="dY4-iL-Mch" secondAttribute="leadingMargin" constant="-16" id="4FZ-h5-SKP"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="4cz-Br-Aht" secondAttribute="trailing" constant="-16" id="Lmw-KM-M7k"/>
+                            <constraint firstItem="ZzQ-Gc-one" firstAttribute="top" secondItem="gbM-f4-aMr" secondAttribute="bottom" id="gLd-G4-RH7"/>
+                            <constraint firstItem="gbM-f4-aMr" firstAttribute="leading" secondItem="dY4-iL-Mch" secondAttribute="leadingMargin" constant="-16" id="xfs-x9-CVb"/>
+                        </constraints>
+                    </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <outlet property="gatesTable" destination="4cz-Br-Aht" id="cdG-xq-Oj3"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="HDO-H5-qU1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-151" y="-396"/>
         </scene>
         <!--Feed View Controller-->
         <scene sceneID="8S8-nG-p5p">
@@ -205,6 +279,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="54" id="bEJ-g9-xTb"/>
                                 </constraints>
+                                <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 <state key="normal" title="Create a Post">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -222,12 +297,11 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="go2-w2-mH0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-976" y="359"/>
+            <point key="canvasLocation" x="-926" y="273"/>
         </scene>
         <!--Gates View Controller-->
         <scene sceneID="i0n-7G-KS5">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="82Q-oY-GP3" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <viewController storyboardIdentifier="GatesController" title="Gates View Controller" useStoryboardIdentifierAsRestorationIdentifier="YES" id="nYR-fA-YAL" customClass="GatesViewController" customModule="Gate" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="BYG-Np-9tC"/>
@@ -237,8 +311,36 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VRD-oZ-eCz">
+                                <rect key="frame" x="0.0" y="514" width="160" height="54"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="54" id="mmb-ka-6zR"/>
+                                </constraints>
+                                <state key="normal" title="Aggregate">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="viewAggregate:" destination="nYR-fA-YAL" eventType="touchUpInside" id="db7-Xj-qBb"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oVq-SB-0MV">
+                                <rect key="frame" x="160" y="514" width="160" height="54"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="54" id="6rj-f8-oiN"/>
+                                </constraints>
+                                <state key="normal" title="Create a Gate">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="createGate:" destination="nYR-fA-YAL" eventType="touchUpInside" id="bj7-GH-Sbx"/>
+                                </connections>
+                            </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="64" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="nUP-NO-8vI">
-                                <rect key="frame" x="0.0" y="80" width="320" height="463"/>
+                                <rect key="frame" x="0.0" y="80" width="320" height="468"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="gateCell" rowHeight="64" id="tjd-W4-gUr">
@@ -277,34 +379,6 @@
                                     <outlet property="delegate" destination="nYR-fA-YAL" id="XAJ-F1-aka"/>
                                 </connections>
                             </tableView>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VRD-oZ-eCz">
-                                <rect key="frame" x="0.0" y="515" width="160" height="54"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="54" id="mmb-ka-6zR"/>
-                                </constraints>
-                                <state key="normal" title="Aggregate">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    <color key="titleShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="viewAggregate:" destination="nYR-fA-YAL" eventType="touchUpInside" id="db7-Xj-qBb"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oVq-SB-0MV">
-                                <rect key="frame" x="160" y="514" width="160" height="54"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="54" id="6rj-f8-oiN"/>
-                                </constraints>
-                                <state key="normal" title="Create a Gate">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    <color key="titleShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="createGate:" destination="nYR-fA-YAL" eventType="touchUpInside" id="bj7-GH-Sbx"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -313,7 +387,7 @@
                             <constraint firstAttribute="trailingMargin" secondItem="oVq-SB-0MV" secondAttribute="trailing" constant="-16" id="IlX-Kx-sdS"/>
                             <constraint firstItem="oVq-SB-0MV" firstAttribute="leading" secondItem="VRD-oZ-eCz" secondAttribute="trailing" id="J71-Rp-ohi"/>
                             <constraint firstItem="gLb-kn-e9y" firstAttribute="top" secondItem="VRD-oZ-eCz" secondAttribute="bottom" id="MEl-BU-hlk"/>
-                            <constraint firstItem="nUP-NO-8vI" firstAttribute="top" secondItem="BYG-Np-9tC" secondAttribute="bottom" constant="60" id="aBY-9h-Rgs"/>
+                            <constraint firstItem="nUP-NO-8vI" firstAttribute="top" secondItem="BYG-Np-9tC" secondAttribute="bottom" constant="70" id="aBY-9h-Rgs"/>
                             <constraint firstItem="gLb-kn-e9y" firstAttribute="top" secondItem="oVq-SB-0MV" secondAttribute="bottom" id="aFW-Yg-hFE"/>
                             <constraint firstItem="oVq-SB-0MV" firstAttribute="width" secondItem="VRD-oZ-eCz" secondAttribute="width" id="dbh-6N-o4O"/>
                             <constraint firstItem="VRD-oZ-eCz" firstAttribute="leading" secondItem="Ed7-AX-tDr" secondAttribute="leadingMargin" constant="-16" id="euy-2f-ItI"/>
@@ -325,8 +399,9 @@
                         <outlet property="gatesTable" destination="nUP-NO-8vI" id="vGE-Yt-hJd"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="82Q-oY-GP3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-485" y="356"/>
+            <point key="canvasLocation" x="-497" y="273"/>
         </scene>
     </scenes>
     <resources>

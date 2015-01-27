@@ -20,6 +20,7 @@
 		9A94B06D1A72476F003117B8 /* GateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A94B06C1A72476F003117B8 /* GateTests.swift */; };
 		9A94B0771A725A90003117B8 /* LoginRegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A94B0761A725A90003117B8 /* LoginRegisterViewController.swift */; };
 		9A94B0871A72986E003117B8 /* SwiftHTTP.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A94B0801A7297FB003117B8 /* SwiftHTTP.framework */; };
+		9AF860451A76DBF8002951C5 /* CreateKeyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF860441A76DBF8002951C5 /* CreateKeyViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -98,6 +99,7 @@
 		9A94B06C1A72476F003117B8 /* GateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GateTests.swift; sourceTree = "<group>"; };
 		9A94B0761A725A90003117B8 /* LoginRegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginRegisterViewController.swift; sourceTree = "<group>"; };
 		9A94B0781A7297FB003117B8 /* SwiftHTTP.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SwiftHTTP.xcodeproj; path = "../../../../Downloads/SwiftHTTP-master/SwiftHTTP.xcodeproj"; sourceTree = "<group>"; };
+		9AF860441A76DBF8002951C5 /* CreateKeyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateKeyViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -153,6 +155,7 @@
 				9A94B05F1A72476F003117B8 /* LaunchScreen.xib */,
 				9A94B0541A72476F003117B8 /* Supporting Files */,
 				9A2BE2C21A75276A0012E2BA /* Gate.swift */,
+				9AF860441A76DBF8002951C5 /* CreateKeyViewController.swift */,
 			);
 			path = Gate;
 			sourceTree = "<group>";
@@ -335,6 +338,7 @@
 			files = (
 				9A6E17F81A73534B0037F9F2 /* MainViewController.swift in Sources */,
 				9A94B0771A725A90003117B8 /* LoginRegisterViewController.swift in Sources */,
+				9AF860451A76DBF8002951C5 /* CreateKeyViewController.swift in Sources */,
 				9A6E17FC1A747A080037F9F2 /* FeedViewController.swift in Sources */,
 				9A94B0571A72476F003117B8 /* AppDelegate.swift in Sources */,
 				9A2BE2C31A75276A0012E2BA /* Gate.swift in Sources */,
