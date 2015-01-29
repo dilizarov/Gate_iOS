@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SwiftHTTP
 
 class MainViewController: UIViewController, UIScrollViewDelegate {
     
@@ -25,6 +26,12 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
     
     var view1:UIView!
     var view2:UIView!
+    
+    var enterKeyAlert: UIAlertController!
+    var enteredKey: UITextField!
+    // Used to keep track of length before editing
+    // To take care of deleting -'s
+    var beforeEditKeyString = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -119,12 +126,157 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         navBar.pushNavigationItem(navigationItem, animated: false)
     }
     
+    func showFeed(gate: Gate?) {
+        scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+        pageControl.currentPage = 0
+    }
+    
     func showKeys() {
         performSegueWithIdentifier("createKey", sender: self)
     }
     
     func enterKey() {
-        println("B")
+        enterKeyAlert = UIAlertController(title: "Enter key", message: nil, preferredStyle: .Alert)
+        
+        enterKeyAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        
+        enterKeyAlert.addTextFieldWithConfigurationHandler({
+            (textField: UITextField!) in
+            
+            textField.placeholder = "Key"
+            textField.clearButtonMode = .WhileEditing
+            textField.spellCheckingType = .No
+            textField.keyboardType = .NumberPad
+            
+            textField.addTarget(self, action: "keyTextChanged:", forControlEvents: .EditingChanged)
+            
+            self.enteredKey = textField
+        })
+        
+        presentViewController(enterKeyAlert, animated: true, completion: nil)
+    }
+
+    func keyTextChanged(sender: AnyObject) {
+        let textField = sender as UITextField
+        
+        var plausableKey = textField.text.stringByReplacingOccurrencesOfString("-", withString: "", options: nil, range: nil)
+
+        var stringLength = NSString(string: textField.text).length
+        
+        if NSString(string: plausableKey).length == 16 {
+            enterKeyAlert.dismissViewControllerAnimated(true, completion: nil)
+            
+            processKey(plausableKey)
+            
+        } else if stringLength >= NSString(string: beforeEditKeyString).length && (stringLength == 4 || stringLength == 9 || stringLength == 14) {
+            
+            textField.text = textField.text + "-"
+        } else if stringLength < NSString(string: beforeEditKeyString).length && (stringLength == 4 || stringLength == 9 || stringLength == 14) {
+            
+            textField.text = textField.text.substringWithRange(Range<String.Index>(start: textField.text.startIndex, end: advance(textField.text.endIndex, -1)))
+        }
+        
+        beforeEditKeyString = textField.text
+    }
+    
+    func processKey(key: String) {
+        
+        var request = HTTPTask()
+        
+        var userInfo = NSUserDefaults.standardUserDefaults()
+        
+        var params = [ "user_id" : userInfo.objectForKey("user_id") as String, "auth_token" : userInfo.objectForKey("auth_token") as String, "api_key" : "09b19f4a-6e4d-475a-b7c8-a369c60e9f83" ]
+        
+        request.responseSerializer = JSONResponseSerializer()
+        
+        request.POST("https://infinite-river-7560.herokuapp.com/api/v1/keys/" + key + "/process.json", parameters: params,
+            success: {(response: HTTPResponse) in
+                                
+                var jsonGates = response.responseObject!["gates"]
+                
+                let unwrappedGates = jsonGates as [Dictionary<String, AnyObject>]
+                
+                var newGates = [Gate]()
+                
+                for var i = 0; i < unwrappedGates.count; i++ {
+                    var jsonGate = unwrappedGates[i]
+                    var gate = Gate(id: jsonGate["external_id"] as String,
+                        name: jsonGate["name"] as String,
+                        usersCount: jsonGate["users_count"] as Int,
+                        creator: (jsonGate["creator"] as Dictionary<String, String>)["name"]!)
+                    
+                    newGates.append(gate)
+                }
+                
+                newGates.sort({
+                    $0.name.caseInsensitiveCompare($1.name) == NSComparisonResult.OrderedAscending
+                })
+                
+                if !unwrappedGates.isEmpty {
+                    self.gatesViewController.addGatesToArray(newGates)
+                }
+                
+                //Prepare message for UIAlertController
+                var alertTitle = ""
+                var alertMessage = ""
+                
+                if unwrappedGates.isEmpty {
+                    alertTitle += "You already have all those gates unlocked"
+                } else {
+                    var meta = response.responseObject!["meta"] as Dictionary<String, AnyObject>
+                    var data = meta["data"] as Dictionary<String, AnyObject>
+                    var gatekeeper = data["gatekeeper"] as String
+                    
+                    var gatesString = ""
+                    
+                    if newGates.count == 1 {
+                        gatesString += newGates[0].name as String
+                    } else if newGates.count == 2 {
+                        gatesString += (newGates[0].name as String) + " and " + (newGates[1].name as String)
+                    } else if newGates.count > 2 {
+                        for var i = 0; i < newGates.count; i++ {
+                            if i != 0 {
+                                gatesString += ", "
+                            }
+                            
+                            if i == newGates.count - 1 {
+                                gatesString += "and "
+                            }
+                            
+                            gatesString += newGates[i].name as String
+                        }
+                    }
+
+                    
+                    alertTitle += "You've unlocked Gates"
+                    alertMessage += gatekeeper + " granted you access to " + gatesString
+                }
+                
+                
+                var meta = response.responseObject!["meta"] as Dictionary<String, AnyObject>
+                var data = meta["data"] as Dictionary<String, AnyObject>
+                var gatekeeper = data["gatekeeper"] as String
+                
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    if !unwrappedGates.isEmpty {
+                        self.gatesViewController.gatesTable.reloadData()
+                    }
+                    
+                    let unlockedGatesAlert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .Alert)
+                    
+                    let alertAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                    
+                    unlockedGatesAlert.addAction(alertAction)
+                    
+                    self.presentViewController(unlockedGatesAlert, animated: true, completion: nil)
+                })
+                
+            },
+            failure: {(error: NSError, response: HTTPResponse?) in
+            
+            }
+        )
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {

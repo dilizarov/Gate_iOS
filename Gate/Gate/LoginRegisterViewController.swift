@@ -392,7 +392,7 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
         defaults.setObject(user["auth_token"], forKey: "auth_token")
         defaults.setObject(user["created_at"], forKey: "created_at")
         defaults.setObject(user["email"], forKey: "email")
-        defaults.setObject(user["user_id"], forKey: "user_id")
+        defaults.setObject(user["external_id"], forKey: "user_id")
         defaults.setObject(user["name"], forKey: "name")
         defaults.setObject(user["email"], forKey: "last_used_email")
         

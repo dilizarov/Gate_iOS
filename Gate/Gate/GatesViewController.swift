@@ -8,24 +8,30 @@
 import UIKit
 import SwiftHTTP
 
-class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate, UIPopoverPresentationControllerDelegate {
+class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate {
 
     var gateName: UITextField!
+    var createGateAlert: UIAlertController!
+    var gates = [Gate]()
+    var refresher: UIRefreshControl!
+
     
     @IBOutlet var gatesTable: UITableView!
     @IBAction func viewAggregate(sender: AnyObject) {
-        println("Aggregate")
+        let wow = parentViewController as MainViewController
+        
+        wow.showFeed(nil)
     }
     
     @IBAction func createGate(sender: AnyObject) {
-        let alert = UIAlertController(title: "Create Gate", message: nil, preferredStyle: .Alert)
+        createGateAlert = UIAlertController(title: "Create Gate", message: nil, preferredStyle: .Alert)
         
-        alert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: {
+        createGateAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: {
             (action: UIAlertAction!) in
             self.dismissViewControllerAnimated(true, completion: nil)
         }))
         
-        alert.addAction(UIAlertAction(title: "Create", style: .Default, handler: {
+        createGateAlert.addAction(UIAlertAction(title: "Create", style: .Default, handler: {
             (action: UIAlertAction!) in
             
             var potentialName = self.gateName.text
@@ -36,23 +42,22 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
             
         }))
         
-        alert.addTextFieldWithConfigurationHandler({
+        createGateAlert.addTextFieldWithConfigurationHandler({
             (textField: UITextField!) in
+            
             textField.placeholder = "Gate name"
             textField.clearButtonMode = UITextFieldViewMode.WhileEditing
             textField.spellCheckingType = UITextSpellCheckingType.Default
             textField.autocapitalizationType = UITextAutocapitalizationType.Words
             
+            textField.addTarget(self, action: "createGateTextChanged:", forControlEvents: .EditingChanged)
             self.gateName = textField
         })
         
-        presentViewController(alert, animated: true, completion: nil)
+        (createGateAlert.actions[1] as UIAlertAction).enabled = false
+        
+        presentViewController(createGateAlert, animated: true, completion: nil)
     }
-    
-    
-    var gates = [Gate]()
-    
-    var refresher: UIRefreshControl!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,6 +79,14 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         requestGatesAndPopulateList(true)
         
+    }
+    
+    func createGateTextChanged(sender: AnyObject) {
+        let textField = sender as UITextField
+        
+        var flag = textField.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()) != ""
+        
+        (createGateAlert.actions[1] as UIAlertAction).enabled = flag
     }
     
     func handleLongPress(gestureRecognizer: UILongPressGestureRecognizer) {
@@ -133,6 +146,10 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         println("You have selected cell \(indexPath.row)")
+        
+        let wow = parentViewController as MainViewController
+        
+        wow.showFeed(gates[indexPath.row])
     }
     
     func requestGatesAndPopulateList(refreshing: Bool) {
@@ -178,8 +195,12 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 })
             },
             failure: {(error: NSError, response: HTTPResponse?) in
+            
+                if refreshing {
+                    self.refresher.endRefreshing()
+                }
                 
-             }
+            }
         )
         
         
@@ -235,6 +256,8 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         request.POST("https://infinite-river-7560.herokuapp.com/api/v1/gates.json", parameters: params,
             success: { (response: HTTPResponse) in
+                
+                self.gateName.text = ""
                 
                 var jsonGate = response.responseObject!["gate"] as Dictionary<String, AnyObject>
                 
