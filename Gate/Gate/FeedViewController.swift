@@ -24,6 +24,14 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        refresher = UIRefreshControl()
+        refresher.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refresher.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
+        
+        self.feed.addSubview(refresher)
+        
+        feed.rowHeight = UITableViewAutomaticDimension
+        feed.estimatedRowHeight = 128
         
         requestPostsAndPopulateList(false)
         // Do any additional setup after loading the view.
@@ -52,6 +60,20 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         println("You have selected cell \(indexPath.row)")
     }
+
+//    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+//        return 200
+//    }
+    
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        println("Scrolled")
+    }
+    
+    func refresh() {
+        
+        requestPostsAndPopulateList(true)
+        
+    }
     
     func requestPostsAndPopulateList(refreshing: Bool) {
         
@@ -69,6 +91,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             success: {(response: HTTPResponse) in
                 if (refreshing) {
                     self.posts = []
+                    self.refresher.endRefreshing()
                 }
                 
                 var jsonPosts = response.responseObject!["posts"] as [Dictionary<String, AnyObject>]
@@ -94,9 +117,14 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                 dispatch_async(dispatch_get_main_queue(), {
                     self.feed.reloadData()
                     println(self.posts.count)
+                    
+                    if refreshing {
+                        self.refresher.endRefreshing()
+                    }
                 })
             },
             failure: {(error: NSError, response: HTTPResponse?) in
+                println("\(error)")
             }
         )
         

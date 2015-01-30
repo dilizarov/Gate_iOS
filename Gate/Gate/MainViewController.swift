@@ -55,7 +55,7 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         scrollView.bounces = false
         self.view.addSubview(scrollView)
         
-        self.scrollView.contentSize = CGSize(width: self.view.bounds.size.width * 2, height: hBounds/2)
+        self.scrollView.contentSize = CGSize(width: self.view.bounds.size.width * 2, height: hBounds)
         
         //Putting a subview in the navigationbar to hold the titles and page dots
         navbarView = UIView()
