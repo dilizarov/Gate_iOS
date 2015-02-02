@@ -25,9 +25,7 @@ class PostCell: UITableViewCell {
     @IBOutlet var commentButton: UIButton!
     
     @IBAction func likePost(sender: AnyObject) {
-    
-        println("liked \(post.id)")
-    
+        
     }
     
     @IBAction func commentOnPost(sender: AnyObject) {
@@ -54,19 +52,31 @@ class PostCell: UITableViewCell {
         }
         
         if post.likeCount > 0 {
-            self.likesCount.text = "\(post.likeCount) likes"
+            var text = "\(post.likeCount) like"
             
+            if post.likeCount != 1 { text += "s" }
+            
+            self.likesCount.text = text
+
             self.likesCount.alpha = 1.0
-            self.contentView.removeConstraint(constraints["likesCountGone"]!)
         } else {
             self.likesCount.alpha = 0.0
-            self.contentView.addConstraint(constraints["likesCountGone"]!)
         }
         
         if post.commentCount > 0 {
-            self.commentsCount.text = "\("
-        } else {
+            var text = "\(post.commentCount) comment"
             
+            if post.commentCount != 1 { text += "s" }
+            
+            if post.name == "Devan Huapaya" {
+                println(self.commentsCount.constraints())
+            }
+            
+            self.commentsCount.text = text
+            
+            self.commentsCount.alpha = 1.0
+        } else {
+            self.commentsCount.alpha = 0.0
         }
 
     }
@@ -76,7 +86,6 @@ class PostCell: UITableViewCell {
         // Initialization code
         
         constraints["gateNameGone"] = NSLayoutConstraint(item: gateName, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: 0)
-        
     }
 
     override func setSelected(selected: Bool, animated: Bool) {

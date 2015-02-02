@@ -344,7 +344,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="comments" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uRv-Ov-mhP">
-                                                    <rect key="frame" x="56" y="78" width="81" height="21"/>
+                                                    <rect key="frame" x="72" y="78" width="81" height="21"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" relation="lessThanOrEqual" constant="180" id="aMb-kz-0az"/>
                                                     </constraints>
@@ -394,7 +394,7 @@
                                                 <constraint firstItem="JfU-zN-Tgm" firstAttribute="top" secondItem="5KL-GU-b0u" secondAttribute="bottom" constant="3" id="LBa-eE-IFR"/>
                                                 <constraint firstItem="lZZ-Nc-rvW" firstAttribute="leading" secondItem="X1J-vG-J7A" secondAttribute="leadingMargin" id="LWu-01-5JE"/>
                                                 <constraint firstItem="HgE-u4-qI3" firstAttribute="leading" secondItem="X1J-vG-J7A" secondAttribute="leadingMargin" id="MQ0-3J-goo"/>
-                                                <constraint firstItem="uRv-Ov-mhP" firstAttribute="leading" secondItem="5KL-GU-b0u" secondAttribute="trailing" constant="8" id="OMB-ev-iU5"/>
+                                                <constraint firstItem="uRv-Ov-mhP" firstAttribute="leading" secondItem="5KL-GU-b0u" secondAttribute="trailing" constant="24" id="OMB-ev-iU5"/>
                                                 <constraint firstItem="QfU-FI-ddA" firstAttribute="top" secondItem="X1J-vG-J7A" secondAttribute="topMargin" id="anT-Q3-JJK"/>
                                                 <constraint firstItem="lZZ-Nc-rvW" firstAttribute="top" secondItem="X1J-vG-J7A" secondAttribute="topMargin" id="dVJ-Z2-j7e"/>
                                                 <constraint firstItem="uRv-Ov-mhP" firstAttribute="centerY" secondItem="5KL-GU-b0u" secondAttribute="centerY" id="dgH-6j-TYv"/>
