@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SwiftHTTP
 
 class PostCell: UITableViewCell {
     
@@ -25,7 +26,26 @@ class PostCell: UITableViewCell {
     @IBOutlet var commentButton: UIButton!
     
     @IBAction func likePost(sender: AnyObject) {
+        toggleLikePost()
         
+        var request = HTTPTask()
+        
+        var userInfo = NSUserDefaults.standardUserDefaults()
+        
+        var params : Dictionary<String, AnyObject> = [ "user_id" : userInfo.objectForKey("user_id") as String, "auth_token" : userInfo.objectForKey("auth_token") as String, "api_key" : "09b19f4a-6e4d-475a-b7c8-a369c60e9f83" ]
+        
+        if !post.liked { params["revert"] = true }
+                
+        request.GET("https://infinite-river-7560.herokuapp.com/api/v1/posts/\(post.id)/up.json", parameters: params,
+            success: {(response: HTTPResponse) in
+                // Don't do anything, because we preprocessed what happens.
+            },
+            failure: {(error: NSError, response: HTTPResponse?) in
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.toggleLikePost()
+                })
+            }
+        )
     }
     
     @IBAction func commentOnPost(sender: AnyObject) {
@@ -63,20 +83,65 @@ class PostCell: UITableViewCell {
             self.likesCount.alpha = 0.0
         }
         
+        UIView.setAnimationsEnabled(false)
+        if post.liked {
+            self.likeButton.setTitle("Unlike", forState: .Normal)
+        } else {
+            self.likeButton.setTitle("Like", forState: .Normal)
+        }
+        UIView.setAnimationsEnabled(true)
+        
         if post.commentCount > 0 {
             var text = "\(post.commentCount) comment"
             
             if post.commentCount != 1 { text += "s" }
-            
-            if post.name == "Devan Huapaya" {
-                println(self.commentsCount.constraints())
-            }
             
             self.commentsCount.text = text
             
             self.commentsCount.alpha = 1.0
         } else {
             self.commentsCount.alpha = 0.0
+        }
+
+    }
+    
+    func toggleLikePost() {
+        if post.liked {
+            post.liked = false
+            
+            post.likeCount -= 1
+            
+            self.likeButton.setTitle("Like", forState: .Normal)
+            
+            if post.likeCount == 0 {
+                UIView.animateWithDuration(0.25, animations: {
+                    self.likesCount.alpha = 0.0
+                })
+            } else {
+                var text = "\(post.likeCount) like"
+                
+                if post.likeCount != 1 { text += "s" }
+                
+                self.likesCount.text = text
+            }
+            
+        } else {
+            post.liked = true
+            
+            post.likeCount += 1
+            
+            self.likeButton.setTitle("Unlike", forState: .Normal)
+            
+            if post.likeCount == 1 {
+                self.likesCount.text = "1 like"
+                
+                UIView.animateWithDuration(0.25, animations: {
+                    self.likesCount.alpha = 1.0
+                })
+                
+            } else {
+                self.likesCount.text = "\(post.likeCount) likes"
+            }
         }
 
     }

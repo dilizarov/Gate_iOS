@@ -290,7 +290,7 @@
                                     <action selector="createPost:" destination="dKW-81-bag" eventType="touchUpInside" id="eLq-ZY-r09"/>
                                 </connections>
                             </button>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="dLG-Al-MTG">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="155" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="dLG-Al-MTG">
                                 <rect key="frame" x="0.0" y="80" width="320" height="434"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
@@ -334,7 +334,7 @@
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="likes" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5KL-GU-b0u">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="1 like" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5KL-GU-b0u">
                                                     <rect key="frame" x="8" y="78" width="40" height="21"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" relation="lessThanOrEqual" constant="120" id="3rM-yg-r1w"/>
@@ -344,7 +344,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="comments" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uRv-Ov-mhP">
-                                                    <rect key="frame" x="72" y="78" width="81" height="21"/>
+                                                    <rect key="frame" x="78" y="78" width="81" height="21"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" relation="lessThanOrEqual" constant="180" id="aMb-kz-0az"/>
                                                     </constraints>
@@ -352,10 +352,10 @@
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JfU-zN-Tgm">
-                                                    <rect key="frame" x="8" y="90" width="30" height="30"/>
+                                                <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JfU-zN-Tgm">
+                                                    <rect key="frame" x="8" y="90" width="46" height="30"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="30" id="w1q-wp-3EE"/>
+                                                        <constraint firstAttribute="width" constant="46" id="w1q-wp-3EE"/>
                                                     </constraints>
                                                     <state key="normal" title="Like">
                                                         <color key="titleColor" red="0.086274509799999996" green="0.25882352939999997" blue="0.45882352939999999" alpha="1" colorSpace="calibratedRGB"/>
@@ -366,7 +366,7 @@
                                                     </connections>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SmE-vs-mDA">
-                                                    <rect key="frame" x="56" y="90" width="68" height="30"/>
+                                                    <rect key="frame" x="62" y="90" width="68" height="30"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="68" id="duQ-GC-vSs"/>
                                                     </constraints>
@@ -394,11 +394,11 @@
                                                 <constraint firstItem="JfU-zN-Tgm" firstAttribute="top" secondItem="5KL-GU-b0u" secondAttribute="bottom" constant="3" id="LBa-eE-IFR"/>
                                                 <constraint firstItem="lZZ-Nc-rvW" firstAttribute="leading" secondItem="X1J-vG-J7A" secondAttribute="leadingMargin" id="LWu-01-5JE"/>
                                                 <constraint firstItem="HgE-u4-qI3" firstAttribute="leading" secondItem="X1J-vG-J7A" secondAttribute="leadingMargin" id="MQ0-3J-goo"/>
-                                                <constraint firstItem="uRv-Ov-mhP" firstAttribute="leading" secondItem="5KL-GU-b0u" secondAttribute="trailing" constant="24" id="OMB-ev-iU5"/>
+                                                <constraint firstItem="uRv-Ov-mhP" firstAttribute="leading" secondItem="5KL-GU-b0u" secondAttribute="trailing" constant="30" id="OMB-ev-iU5"/>
                                                 <constraint firstItem="QfU-FI-ddA" firstAttribute="top" secondItem="X1J-vG-J7A" secondAttribute="topMargin" id="anT-Q3-JJK"/>
                                                 <constraint firstItem="lZZ-Nc-rvW" firstAttribute="top" secondItem="X1J-vG-J7A" secondAttribute="topMargin" id="dVJ-Z2-j7e"/>
                                                 <constraint firstItem="uRv-Ov-mhP" firstAttribute="centerY" secondItem="5KL-GU-b0u" secondAttribute="centerY" id="dgH-6j-TYv"/>
-                                                <constraint firstItem="SmE-vs-mDA" firstAttribute="leading" secondItem="JfU-zN-Tgm" secondAttribute="trailing" constant="18" id="fgZ-KB-MUC"/>
+                                                <constraint firstItem="SmE-vs-mDA" firstAttribute="leading" secondItem="JfU-zN-Tgm" secondAttribute="trailing" constant="8" id="fgZ-KB-MUC"/>
                                                 <constraint firstItem="wwn-Fn-DnJ" firstAttribute="leading" secondItem="X1J-vG-J7A" secondAttribute="leadingMargin" id="gha-DS-ptV"/>
                                                 <constraint firstItem="SmE-vs-mDA" firstAttribute="centerY" secondItem="JfU-zN-Tgm" secondAttribute="centerY" id="ieh-F8-AXk"/>
                                                 <constraint firstItem="wwn-Fn-DnJ" firstAttribute="trailing" secondItem="X1J-vG-J7A" secondAttribute="trailingMargin" id="rBH-Nx-x9V"/>

@@ -93,14 +93,6 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             
         }
         
-//        if indexPath.row > 0 {
-//            var separatorLineView = UIView(frame: CGRectMake(0, 0, 20, 1))
-//            
-//            separatorLineView.backgroundColor = UIColor.lightGrayColor()
-//            
-//            cell.contentView.addSubview(separatorLineView)
-//        }
-        
         return cell
     }
     
@@ -111,7 +103,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         if cachedHeights[post.id] != nil {
             return cachedHeights[post.id]!
         } else {
-            return 140
+            return 165
         }
     }
     
