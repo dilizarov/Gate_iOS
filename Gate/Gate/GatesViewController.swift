@@ -154,10 +154,6 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func requestGatesAndPopulateList(refreshing: Bool) {
         
-        if (refreshing) {
-            println("Refreshing")
-        }
-        
         var request = HTTPTask()
         
         var userInfo = NSUserDefaults.standardUserDefaults()
@@ -168,7 +164,6 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         request.GET("https://infinite-river-7560.herokuapp.com/api/v1/gates.json", parameters: params,
             success: {(response: HTTPResponse) in
-                println(response.responseObject!)
 
                 if refreshing {
                     self.refresher.endRefreshing()

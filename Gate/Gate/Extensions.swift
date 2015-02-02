@@ -56,6 +56,15 @@ extension NSDate {
         }
 
     }
+    
+    func stringFromDate() -> String {
+        let formatter = NSDateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+        formatter.timeZone = NSTimeZone(forSecondsFromGMT: 0)
+        formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        
+        return formatter.stringFromDate(self)
+    }
 }
 
 extension String {
