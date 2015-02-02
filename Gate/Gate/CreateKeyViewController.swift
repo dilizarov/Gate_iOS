@@ -13,6 +13,8 @@ class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableVie
 
     var gates = [Gate]()
     var selectedGates = [String: Gate]()
+    var fadedCheckMarkColor: UIColor!
+    var checkMarkColor: UIColor!
     
     @IBOutlet var gatesTable: UITableView!
     @IBAction func tapForKey(sender: AnyObject) {
@@ -26,11 +28,24 @@ class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableVie
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupNavBar()
+        
+        var red: CGFloat = 0.0862745
+        var green: CGFloat = 0.258824
+        var blue: CGFloat = 0.458824
+        
+        fadedCheckMarkColor = UIColor(red: red, green: green, blue: blue, alpha: 0.3)
+        checkMarkColor = UIColor(red: red, green: green, blue: blue, alpha: 1.0)
+        
+        gatesTable.reloadData()
+    }
+    
+    func setupNavBar() {
         var navBar: UINavigationBar = UINavigationBar(frame: CGRectMake(0, 0, self.view.bounds.width, 64))
         
         navBar.barTintColor = UIColor.blackColor()
         navBar.translucent = false
-
+        
         var navbarView = UIView()
         
         var navTitle = UILabel()
@@ -55,7 +70,6 @@ class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableVie
         
         navBar.pushNavigationItem(navigationItem, animated: false)
 
-        gatesTable.reloadData()
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -68,7 +82,10 @@ class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableVie
         var gateName = cell.viewWithTag(10)! as UILabel
         
         gateName.text = self.gates[indexPath.row].name
-                
+        
+        cell.accessoryType = UITableViewCellAccessoryType.Checkmark
+        cell.tintColor = fadedCheckMarkColor
+        
         return cell
     }
     
@@ -78,7 +95,7 @@ class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableVie
             var gate = gates[indexPath.row]
             
             selectedGates[gate.id] = gate
-            cell.accessoryType = UITableViewCellAccessoryType.Checkmark
+            cell.tintColor = checkMarkColor
         }
         
     }
@@ -89,7 +106,7 @@ class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableVie
             var gate = gates[indexPath.row]
             
             selectedGates[gate.id] = nil
-            cell.accessoryType = UITableViewCellAccessoryType.None
+            cell.tintColor = fadedCheckMarkColor
         }
         
     }
