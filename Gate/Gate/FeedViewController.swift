@@ -67,6 +67,17 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.feed.reloadData()
     }
     
+    func showFeed(gate: Gate?) {
+        
+        
+        
+        if (!onAggregateAndGettingAggregate(gate) &&
+            !onGateAndGettingSameGate(gate)) {
+            currentGate = gate
+            requestPostsAndPopulateList(true, page: nil)
+        }
+    }
+    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         var cell = self.feed.dequeueReusableCellWithIdentifier("gatePost") as PostCell
@@ -177,7 +188,15 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         request.responseSerializer = JSONResponseSerializer()
         
-        request.GET("https://infinite-river-7560.herokuapp.com/api/v1/aggregate.json", parameters: params,
+        var requestUrl = "https://infinite-river-7560.herokuapp.com/api/v1/"
+        
+        if currentGate == nil {
+            requestUrl += "aggregate.json"
+        } else {
+            requestUrl += "gates/\(currentGate!.id)/posts.json"
+        }
+        
+        request.GET(requestUrl, parameters: params,
             success: {(response: HTTPResponse) in
                 if (refreshing) {
                     self.refresher.endRefreshing()
@@ -233,6 +252,14 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             }
         )
         
+    }
+    
+    func onAggregateAndGettingAggregate(gate: Gate?) -> Bool {
+        return currentGate == nil && gate == nil
+    }
+    
+    func onGateAndGettingSameGate(gate: Gate?) -> Bool {
+        return currentGate != nil && gate != nil && currentGate!.id == gate!.id
     }
     
     override func didReceiveMemoryWarning() {

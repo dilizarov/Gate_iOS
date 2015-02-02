@@ -129,6 +129,14 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
     func showFeed(gate: Gate?) {
         scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
         pageControl.currentPage = 0
+        
+        if gate == nil {
+            navTitleLabel1.text = "Aggregate"
+        } else {
+            navTitleLabel1.text = gate!.name
+        }
+        
+        feedViewController.showFeed(gate)
     }
     
     func showKeys() {
