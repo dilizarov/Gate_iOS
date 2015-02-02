@@ -62,19 +62,42 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         return self.posts.count
     }
     
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        performSegueWithIdentifier("showComments", sender: indexPath)
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "showComments" {
+            
+            // I pass in the post as the sender, and later check to see what the sender object is. If it is a Post and not an NSIndexPath, I assume I pressed the button.
+            var destination = segue.destinationViewController as CommentsViewController
+            
+            var creatingComment = false
+            var post : Post!
+            
+            if sender is Post {
+                post = sender as Post
+                creatingComment = true
+            } else {
+                post = posts[(sender as NSIndexPath).row]
+            }
+            
+            destination.post = post
+            destination.creatingComment = creatingComment
+        }
+    }
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(false)
         self.feed.reloadData()
     }
     
     func showFeed(gate: Gate?) {
-        
-        
-        
         if (!onAggregateAndGettingAggregate(gate) &&
             !onGateAndGettingSameGate(gate)) {
             currentGate = gate
             requestPostsAndPopulateList(true, page: nil)
+            feed.setContentOffset(CGPointZero, animated: false)
         }
     }
     
@@ -85,7 +108,9 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         var post = self.posts[indexPath.row]
         
         cell.configureViews(post, gate: currentGate)
-                
+        
+        cell.commentButton.addTarget(self, action: Selector("pressedCommentButton:"), forControlEvents: .TouchUpInside)
+        
         // The next few lines are solely because of the iOS bug with UITableViewAutomaticDimension
         // when scrolling up.
         
@@ -105,6 +130,17 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         
         return cell
+    }
+    
+    func pressedCommentButton(sender: AnyObject) {
+        
+        var buttonSuperview = (sender as UIButton).superview
+        
+        if buttonSuperview != nil {
+            var post = (buttonSuperview!.superview as PostCell).post
+            
+            performSegueWithIdentifier("showComments", sender: post)
+        }
     }
     
     func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {

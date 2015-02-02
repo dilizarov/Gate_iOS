@@ -17,6 +17,7 @@
 		9A6E17F81A73534B0037F9F2 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A6E17F71A73534B0037F9F2 /* MainViewController.swift */; };
 		9A6E17FA1A7479FA0037F9F2 /* GatesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A6E17F91A7479FA0037F9F2 /* GatesViewController.swift */; };
 		9A6E17FC1A747A080037F9F2 /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A6E17FB1A747A080037F9F2 /* FeedViewController.swift */; };
+		9A7D0A6F1A7F9EFB004C6577 /* CommentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7D0A6E1A7F9EFB004C6577 /* CommentsViewController.swift */; };
 		9A94B0571A72476F003117B8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A94B0561A72476F003117B8 /* AppDelegate.swift */; };
 		9A94B05C1A72476F003117B8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9A94B05A1A72476F003117B8 /* Main.storyboard */; };
 		9A94B0611A72476F003117B8 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9A94B05F1A72476F003117B8 /* LaunchScreen.xib */; };
@@ -94,6 +95,7 @@
 		9A6E17F71A73534B0037F9F2 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		9A6E17F91A7479FA0037F9F2 /* GatesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GatesViewController.swift; sourceTree = "<group>"; };
 		9A6E17FB1A747A080037F9F2 /* FeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
+		9A7D0A6E1A7F9EFB004C6577 /* CommentsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentsViewController.swift; sourceTree = "<group>"; };
 		9A94B0511A72476F003117B8 /* Gate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A94B0551A72476F003117B8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9A94B0561A72476F003117B8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -154,6 +156,7 @@
 				9A94B0561A72476F003117B8 /* AppDelegate.swift */,
 				9A94B0761A725A90003117B8 /* LoginRegisterViewController.swift */,
 				9A94B05A1A72476F003117B8 /* Main.storyboard */,
+				9A7D0A6E1A7F9EFB004C6577 /* CommentsViewController.swift */,
 				9A6E17F71A73534B0037F9F2 /* MainViewController.swift */,
 				9A0C47301A7DA7ED001FC24E /* PostCell.swift */,
 				9A6E17F91A7479FA0037F9F2 /* GatesViewController.swift */,
@@ -347,6 +350,7 @@
 			files = (
 				9A6E17F81A73534B0037F9F2 /* MainViewController.swift in Sources */,
 				9A0408E91A79BA200062CD3D /* Extensions.swift in Sources */,
+				9A7D0A6F1A7F9EFB004C6577 /* CommentsViewController.swift in Sources */,
 				9A94B0771A725A90003117B8 /* LoginRegisterViewController.swift in Sources */,
 				9AF860451A76DBF8002951C5 /* CreateKeyViewController.swift in Sources */,
 				9A0408E41A78D0E20062CD3D /* Post.swift in Sources */,

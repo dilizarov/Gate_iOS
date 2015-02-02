@@ -26,7 +26,6 @@ class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableVie
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
         var navBar: UINavigationBar = UINavigationBar(frame: CGRectMake(0, 0, self.view.bounds.width, 64))
         
         navBar.barTintColor = UIColor.blackColor()
@@ -55,10 +54,8 @@ class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableVie
         self.view.addSubview(navBar)
         
         navBar.pushNavigationItem(navigationItem, animated: false)
-        println(gates[0].name)
 
         gatesTable.reloadData()
-        // Do any additional setup after loading the view.
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -71,7 +68,7 @@ class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableVie
         var gateName = cell.viewWithTag(10)! as UILabel
         
         gateName.text = self.gates[indexPath.row].name
-        
+                
         return cell
     }
     

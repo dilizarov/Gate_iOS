@@ -47,11 +47,7 @@ class PostCell: UITableViewCell {
             }
         )
     }
-    
-    @IBAction func commentOnPost(sender: AnyObject) {
-        println("commented on \(post.id)")
-    }
-    
+        
     func configureViews(post: Post, gate: Gate?) {
         
         self.post = post
@@ -143,7 +139,6 @@ class PostCell: UITableViewCell {
                 self.likesCount.text = "\(post.likeCount) likes"
             }
         }
-
     }
     
     override func awakeFromNib() {

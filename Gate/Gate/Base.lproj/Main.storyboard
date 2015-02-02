@@ -205,7 +205,7 @@
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" allowsMultipleSelection="YES" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="4cz-Br-Aht">
                                 <rect key="frame" x="0.0" y="80" width="320" height="434"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="tintColor" red="0.086274509799999996" green="0.25882352939999997" blue="0.45882352939999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" id="oO1-oe-tjE">
                                         <autoresizingMask key="autoresizingMask"/>
@@ -261,7 +261,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HDO-H5-qU1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-151" y="-396"/>
+            <point key="canvasLocation" x="-77" y="-352"/>
         </scene>
         <!--Feed View Controller-->
         <scene sceneID="8S8-nG-p5p">
@@ -374,9 +374,6 @@
                                                         <color key="titleColor" red="0.086274509799999996" green="0.25882352939999997" blue="0.45882352939999999" alpha="1" colorSpace="calibratedRGB"/>
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
-                                                    <connections>
-                                                        <action selector="commentOnPost:" destination="BxS-YQ-84v" eventType="touchUpInside" id="sYV-cy-CWN"/>
-                                                    </connections>
                                                 </button>
                                             </subviews>
                                             <constraints>
@@ -445,11 +442,31 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="feed" destination="dLG-Al-MTG" id="S7K-5g-lPG"/>
+                        <segue destination="7CT-Wj-wXo" kind="show" identifier="showComments" id="f2P-yS-tW1"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="go2-w2-mH0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-909" y="273"/>
+            <point key="canvasLocation" x="-985" y="371"/>
+        </scene>
+        <!--Comments View Controller-->
+        <scene sceneID="hYO-5A-YAV">
+            <objects>
+                <viewController storyboardIdentifier="CommentsViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="7CT-Wj-wXo" customClass="CommentsViewController" customModule="Gate" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="off-XO-DJB"/>
+                        <viewControllerLayoutGuide type="bottom" id="1Wa-Ea-FTr"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="ahh-BX-CdI">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Sme-R9-b0Z" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-985" y="1106"/>
         </scene>
         <!--Gates View Controller-->
         <scene sceneID="i0n-7G-KS5">
@@ -554,7 +571,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="82Q-oY-GP3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-497" y="273"/>
+            <point key="canvasLocation" x="-355" y="371"/>
         </scene>
     </scenes>
     <resources>
