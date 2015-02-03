@@ -8,20 +8,49 @@
 
 import UIKit
 
-class CommentsViewController: UIViewController, PHFComposeBarViewDelegate {
+class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGestureRecognizerDelegate {
 
     var post: Post!
     var creatingComment: Bool!
     var composeBarView: PHFComposeBarView!
+    
+    var bodyCutOff = 220
+    
+    @IBOutlet var postName: UILabel!
+    @IBOutlet var postTimestamp: UILabel!
+    @IBOutlet var postGateName: UILabel!
+    @IBOutlet var postBody: UILabel!
+    @IBOutlet var postLikesCount: UILabel!
+    @IBOutlet var postCommentsCount: UILabel!
+    @IBOutlet var postLikeButton: UIButton!
+    
+    @IBAction func likePost(sender: AnyObject) {
+    }
     
     @IBOutlet var scrollView: TPKeyboardAvoidingScrollView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        postName.text = post.name
+        postTimestamp.text = post.timestamp
+        postGateName.text = post.gateName
+        
+        if NSString(string: post.body).length >= bodyCutOff {
+            var toIndex = bodyCutOff - 5
+            var cutoffText: String = NSString(string: post.body).substringToIndex(toIndex) + "..."
+            postBody.text = cutoffText
+        } else {
+            postBody.text = post.body
+        }
+        
+        postLikesCount.text = "\(post.likeCount) likes"
+        postCommentsCount.text = "\(post.commentCount) comments"
+        
         setupNavBar()
         setupAddingComment()
     }
+    
     
     func setupAddingComment() {
         var viewBounds = self.scrollView.bounds
