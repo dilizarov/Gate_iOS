@@ -408,7 +408,7 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
         self.view.endEditing(true)
         
     }
-    
+        
     override func shouldAutorotate() -> Bool {
         return true
     }
