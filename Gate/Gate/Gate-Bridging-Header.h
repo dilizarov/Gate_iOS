@@ -4,3 +4,4 @@
 
 #import <PHFComposeBarView/PHFComposeBarView.h>
 #import <PHFDelegateChain/PHFDelegateChain.h>
+#import <TPKeyboardAvoiding/TPKeyboardAvoidingScrollView.h>

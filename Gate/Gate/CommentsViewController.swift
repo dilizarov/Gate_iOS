@@ -14,17 +14,18 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate {
     var creatingComment: Bool!
     var composeBarView: PHFComposeBarView!
     
+    @IBOutlet var scrollView: TPKeyboardAvoidingScrollView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupNavBar()
-        
         setupAddingComment()
     }
     
     func setupAddingComment() {
-        var viewBounds = self.view.bounds
-        var frame = CGRectMake(0, viewBounds.size.height - PHFComposeBarViewInitialHeight, view.bounds.width, PHFComposeBarViewInitialHeight)
+        var viewBounds = self.scrollView.bounds
+        var frame = CGRectMake(0, viewBounds.size.height - PHFComposeBarViewInitialHeight, viewBounds.width, PHFComposeBarViewInitialHeight)
         
         composeBarView = PHFComposeBarView(frame: frame)
         
@@ -39,7 +40,7 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate {
         composeBarView.buttonTintColor = UIColor(red: red, green: green, blue: blue, alpha: 1.0)
         composeBarView.textView.backgroundColor = UIColor.whiteColor()
         
-        self.view.addSubview(composeBarView)
+        self.scrollView.addSubview(composeBarView)
     }
     
     
@@ -87,19 +88,6 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate {
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return UIStatusBarStyle.LightContent
-    }
-    
-    override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
-        
-        self.view.endEditing(true)
-        
-    }
-    
-    func textFieldShouldReturn(textField: UITextField!) -> Bool {
-        
-        textField.resignFirstResponder()
-        
-        return true
     }
 
     override func didReceiveMemoryWarning() {
