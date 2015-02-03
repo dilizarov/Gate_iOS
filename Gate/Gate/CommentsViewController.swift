@@ -8,7 +8,9 @@
 
 import UIKit
 
-class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGestureRecognizerDelegate {
+class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGestureRecognizerDelegate, UITableViewDelegate, UITableViewDataSource {
+    
+    var comments = [Comment]()
 
     var post: Post!
     var creatingComment: Bool!
@@ -28,6 +30,9 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
     }
     
     @IBOutlet var scrollView: TPKeyboardAvoidingScrollView!
+    
+    @IBOutlet var commentsFeed: UITableView!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,6 +54,20 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
         
         setupNavBar()
         setupAddingComment()
+    
+        commentsFeed.rowHeight = UITableViewAutomaticDimension
+        
+        for var i = 0; i < 10; i++ {
+            
+            var body = ""
+            
+            for var j = 0; j < ((i + 1) * 5); j++ {
+                body += "body body body body body"
+            }
+            
+            self.comments.append(Comment(id: "\(i)", name: "User \(i)", body: body, likeCount: i, liked: i % 2 == 0, timeCreated: NSDate().stringFromDate()))
+        }
+        
     }
     
     
@@ -77,6 +96,8 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
         if creatingComment! {
             composeBarView.becomeFirstResponder()
         }
+        
+        commentsFeed.reloadData()
 
     }
     
@@ -109,6 +130,25 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
         self.view.addSubview(navBar)
         
         navBar.pushNavigationItem(navigationItem, animated: false)
+    }
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.comments.count
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
+        var cell = self.commentsFeed.dequeueReusableCellWithIdentifier("comment") as CommentCell
+        
+        var comment = self.comments[indexPath.row]
+        
+        cell.configureViews(comment)
+        
+        return cell
+    }
+    
+    func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 88
     }
     
     func dismiss() {

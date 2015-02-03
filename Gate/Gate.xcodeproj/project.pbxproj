@@ -12,6 +12,8 @@
 		9A0408E91A79BA200062CD3D /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A0408E81A79BA200062CD3D /* Extensions.swift */; };
 		9A0C47311A7DA7ED001FC24E /* PostCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A0C47301A7DA7ED001FC24E /* PostCell.swift */; };
 		9A2BE2C31A75276A0012E2BA /* Gate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A2BE2C21A75276A0012E2BA /* Gate.swift */; };
+		9A39C9701A81129A000167B6 /* CommentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A39C96F1A81129A000167B6 /* CommentCell.swift */; };
+		9A39C9751A8113EB000167B6 /* Comment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A39C9741A8113EB000167B6 /* Comment.swift */; };
 		9A6E17EB1A73111A0037F9F2 /* SwiftHTTP.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A94B0801A7297FB003117B8 /* SwiftHTTP.framework */; };
 		9A6E17EC1A73111A0037F9F2 /* SwiftHTTP.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9A94B0801A7297FB003117B8 /* SwiftHTTP.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9A6E17F61A7321FB0037F9F2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9A94B05D1A72476F003117B8 /* Images.xcassets */; };
@@ -95,6 +97,8 @@
 		9A0C47301A7DA7ED001FC24E /* PostCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostCell.swift; sourceTree = "<group>"; };
 		9A2BE2BF1A75189E0012E2BA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		9A2BE2C21A75276A0012E2BA /* Gate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gate.swift; sourceTree = "<group>"; };
+		9A39C96F1A81129A000167B6 /* CommentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentCell.swift; sourceTree = "<group>"; };
+		9A39C9741A8113EB000167B6 /* Comment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Comment.swift; sourceTree = "<group>"; };
 		9A507CE31A809F0300B087CC /* Gate-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Gate-Bridging-Header.h"; sourceTree = "<group>"; };
 		9A6E17F71A73534B0037F9F2 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		9A6E17F91A7479FA0037F9F2 /* GatesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GatesViewController.swift; sourceTree = "<group>"; };
@@ -184,6 +188,8 @@
 				9A7D0A6E1A7F9EFB004C6577 /* CommentsViewController.swift */,
 				9A6E17F71A73534B0037F9F2 /* MainViewController.swift */,
 				9A0C47301A7DA7ED001FC24E /* PostCell.swift */,
+				9A39C96F1A81129A000167B6 /* CommentCell.swift */,
+				9A39C9741A8113EB000167B6 /* Comment.swift */,
 				9A6E17F91A7479FA0037F9F2 /* GatesViewController.swift */,
 				9A6E17FB1A747A080037F9F2 /* FeedViewController.swift */,
 				9A0408E81A79BA200062CD3D /* Extensions.swift */,
@@ -417,9 +423,11 @@
 				9A0408E41A78D0E20062CD3D /* Post.swift in Sources */,
 				9A6E17FC1A747A080037F9F2 /* FeedViewController.swift in Sources */,
 				9A94B0571A72476F003117B8 /* AppDelegate.swift in Sources */,
+				9A39C9751A8113EB000167B6 /* Comment.swift in Sources */,
 				9A2BE2C31A75276A0012E2BA /* Gate.swift in Sources */,
 				9A6E17FA1A7479FA0037F9F2 /* GatesViewController.swift in Sources */,
 				9A0C47311A7DA7ED001FC24E /* PostCell.swift in Sources */,
+				9A39C9701A81129A000167B6 /* CommentCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
