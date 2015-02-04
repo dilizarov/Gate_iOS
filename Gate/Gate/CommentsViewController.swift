@@ -58,24 +58,12 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
         commentsFeed.rowHeight = UITableViewAutomaticDimension
         commentsFeed.estimatedRowHeight = 88
         
-//        for var i = 0; i < 10; i++ {
-//            
-//            var body = ""
-//            
-//            for var j = 0; j < ((i + 1) * 5); j++ {
-//                body += "body body body body body "
-//            }
-//            
-//            self.comments.append(Comment(id: "\(i)", name: "User \(i)", body: body, likeCount: i, liked: i % 2 == 0, timeCreated: NSDate().stringFromDate()))
-//        }
-     
-        
-        //Bring the scrollView up to the front so that we can see the addComment.
+        //Bring the scrollView up to the front so that we can see thee addComment.
         scrollView.layer.zPosition = 5000
         
         requestKeyboardNotifs()
-        
-        requestCommentsAndPopulateList()
+
+        requestCommentsAndPopulateList(false)
     }
     
     func requestKeyboardNotifs() {
@@ -115,7 +103,50 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
     }
     
     func composeBarViewDidPressButton(composeBarView: PHFComposeBarView!) {
-        println("Send a comment")
+        var comment = composeBarView.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        
+        composeBarView.text = ""
+        composeBarView.endEditing(true)
+        
+        var request = HTTPTask()
+        
+        var userInfo = NSUserDefaults.standardUserDefaults()
+        
+        var params : Dictionary<String, AnyObject> = [ "user_id" : userInfo.objectForKey("user_id") as String, "auth_token" : userInfo.objectForKey("auth_token") as String, "api_key" : "09b19f4a-6e4d-475a-b7c8-a369c60e9f83" ]
+        
+        var commentJson = [String : AnyObject]()
+        commentJson["body"] = comment
+        
+        params["comment"] = commentJson
+        
+        request.responseSerializer = JSONResponseSerializer()
+
+        request.POST("https://infinite-river-7560.herokuapp.com/api/v1/posts/\(post.id)/comments.json", parameters: params,
+            success: {(response: HTTPResponse) in
+                
+                var jsonComment = response.responseObject!["comment"] as Dictionary<String, AnyObject>
+                
+                var comment = Comment(id: jsonComment["external_id"] as String,
+                    name: (jsonComment["user"] as Dictionary<String, AnyObject>)["name"] as String,
+                    body: jsonComment["body"] as String,
+                    likeCount: 0,
+                    liked: false,
+                    timeCreated: jsonComment["created_at"] as String)
+                
+                self.comments.append(comment)
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.commentsFeed.reloadData()
+                })
+            
+            },
+            failure: {(error: NSError, response: HTTPResponse?) in
+            
+            }
+        )
+        
+        
+        
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -161,7 +192,7 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
         navBar.pushNavigationItem(navigationItem, animated: false)
     }
     
-    func requestCommentsAndPopulateList() {
+    func requestCommentsAndPopulateList(refreshing: Bool) {
         
         var request = HTTPTask()
         
@@ -194,6 +225,16 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
                 
                 dispatch_async(dispatch_get_main_queue(), {
                     self.commentsFeed.reloadData()
+                    
+                    if refreshing && self.comments.count > 0 {
+                        
+                        println("contentSize: \(self.commentsFeed.contentSize.height)")
+                        println("bounds: \(self.commentsFeed.bounds.height)")
+                        println("frame: \(self.commentsFeed.frame.size.height)")
+                        
+                        var wow = self.commentsFeed.contentSize.height - self.commentsFeed.bounds.height
+                        self.commentsFeed.setContentOffset(CGPointMake(0, wow), animated: true)
+                    }
                 })
             },
             failure: {(error: NSError, response: HTTPResponse?) in
@@ -217,7 +258,7 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
     }
     
     func refresh() {
-        println("Heehehehe")
+        requestCommentsAndPopulateList(true)
     }
     
     func dismiss() {
