@@ -28,6 +28,7 @@
 		9A94B0771A725A90003117B8 /* LoginRegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A94B0761A725A90003117B8 /* LoginRegisterViewController.swift */; };
 		9A94B0871A72986E003117B8 /* SwiftHTTP.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A94B0801A7297FB003117B8 /* SwiftHTTP.framework */; };
 		9AF860451A76DBF8002951C5 /* CreateKeyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF860441A76DBF8002951C5 /* CreateKeyViewController.swift */; };
+		9AF99E121A819BA70077FBF3 /* ClickThroughScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF99E111A819BA70077FBF3 /* ClickThroughScrollView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -116,6 +117,7 @@
 		9A94B0761A725A90003117B8 /* LoginRegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginRegisterViewController.swift; sourceTree = "<group>"; };
 		9A94B0781A7297FB003117B8 /* SwiftHTTP.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SwiftHTTP.xcodeproj; path = "../../../../Downloads/SwiftHTTP-master/SwiftHTTP.xcodeproj"; sourceTree = "<group>"; };
 		9AF860441A76DBF8002951C5 /* CreateKeyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateKeyViewController.swift; sourceTree = "<group>"; };
+		9AF99E111A819BA70077FBF3 /* ClickThroughScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClickThroughScrollView.swift; sourceTree = "<group>"; };
 		C8CFF2E2441CFB89CF5CFF80 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -185,6 +187,7 @@
 				9A94B0561A72476F003117B8 /* AppDelegate.swift */,
 				9A94B0761A725A90003117B8 /* LoginRegisterViewController.swift */,
 				9A94B05A1A72476F003117B8 /* Main.storyboard */,
+				9AF99E111A819BA70077FBF3 /* ClickThroughScrollView.swift */,
 				9A7D0A6E1A7F9EFB004C6577 /* CommentsViewController.swift */,
 				9A6E17F71A73534B0037F9F2 /* MainViewController.swift */,
 				9A0C47301A7DA7ED001FC24E /* PostCell.swift */,
@@ -419,6 +422,7 @@
 				9A0408E91A79BA200062CD3D /* Extensions.swift in Sources */,
 				9A7D0A6F1A7F9EFB004C6577 /* CommentsViewController.swift in Sources */,
 				9A94B0771A725A90003117B8 /* LoginRegisterViewController.swift in Sources */,
+				9AF99E121A819BA70077FBF3 /* ClickThroughScrollView.swift in Sources */,
 				9AF860451A76DBF8002951C5 /* CreateKeyViewController.swift in Sources */,
 				9A0408E41A78D0E20062CD3D /* Post.swift in Sources */,
 				9A6E17FC1A747A080037F9F2 /* FeedViewController.swift in Sources */,

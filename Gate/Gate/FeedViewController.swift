@@ -284,6 +284,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             failure: {(error: NSError, response: HTTPResponse?) in
                 
                 self.refresher.endRefreshing()
+                println(error.description)
                 
             }
         )

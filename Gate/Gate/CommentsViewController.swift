@@ -29,10 +29,9 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
     @IBAction func likePost(sender: AnyObject) {
     }
     
-    @IBOutlet var scrollView: TPKeyboardAvoidingScrollView!
+    @IBOutlet var scrollView: ClickThroughScrollView!
     
     @IBOutlet var commentsFeed: UITableView!
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,14 +61,32 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
             var body = ""
             
             for var j = 0; j < ((i + 1) * 5); j++ {
-                body += "body body body body body"
+                body += "body body body body body "
             }
             
             self.comments.append(Comment(id: "\(i)", name: "User \(i)", body: body, likeCount: i, liked: i % 2 == 0, timeCreated: NSDate().stringFromDate()))
         }
+     
+        scrollView.layer.zPosition = 5000
         
+        requestKeyboardNotifs()
     }
     
+    func requestKeyboardNotifs() {
+    
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillShow:"), name: UIKeyboardWillShowNotification, object: nil)
+        
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardDidHide:"), name: UIKeyboardDidHideNotification, object: nil)
+    }
+    
+    func keyboardWillShow(notification: NSNotification) {
+        scrollView.noClickThrough = true
+    }
+    
+    func keyboardDidHide(notification: NSNotification) {
+        scrollView.noClickThrough = false
+    }
     
     func setupAddingComment() {
         var viewBounds = self.scrollView.bounds
