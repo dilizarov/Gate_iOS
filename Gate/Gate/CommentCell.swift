@@ -114,6 +114,8 @@ class CommentCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        
+        self.layoutIfNeeded()
     }
 
     override func setSelected(selected: Bool, animated: Bool) {

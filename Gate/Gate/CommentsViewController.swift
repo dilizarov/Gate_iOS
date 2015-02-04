@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SwiftHTTP
 
 class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGestureRecognizerDelegate, UITableViewDelegate, UITableViewDataSource {
     
@@ -55,21 +56,26 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
         setupAddingComment()
     
         commentsFeed.rowHeight = UITableViewAutomaticDimension
+        commentsFeed.estimatedRowHeight = 88
         
-        for var i = 0; i < 10; i++ {
-            
-            var body = ""
-            
-            for var j = 0; j < ((i + 1) * 5); j++ {
-                body += "body body body body body "
-            }
-            
-            self.comments.append(Comment(id: "\(i)", name: "User \(i)", body: body, likeCount: i, liked: i % 2 == 0, timeCreated: NSDate().stringFromDate()))
-        }
+//        for var i = 0; i < 10; i++ {
+//            
+//            var body = ""
+//            
+//            for var j = 0; j < ((i + 1) * 5); j++ {
+//                body += "body body body body body "
+//            }
+//            
+//            self.comments.append(Comment(id: "\(i)", name: "User \(i)", body: body, likeCount: i, liked: i % 2 == 0, timeCreated: NSDate().stringFromDate()))
+//        }
      
+        
+        //Bring the scrollView up to the front so that we can see the addComment.
         scrollView.layer.zPosition = 5000
         
         requestKeyboardNotifs()
+        
+        requestCommentsAndPopulateList()
     }
     
     func requestKeyboardNotifs() {
@@ -108,14 +114,14 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
         self.scrollView.addSubview(composeBarView)
     }
     
+    func composeBarViewDidPressButton(composeBarView: PHFComposeBarView!) {
+        println("Send a comment")
+    }
     
     override func viewDidAppear(animated: Bool) {
         if creatingComment! {
             composeBarView.becomeFirstResponder()
         }
-        
-        commentsFeed.reloadData()
-
     }
     
     func setupNavBar() {
@@ -144,9 +150,55 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
         
         navigationItem.leftBarButtonItem = backButton
         
+        var refreshButton = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self, action: Selector("refresh"))
+        
+        refreshButton.tintColor = UIColor.whiteColor()
+        
+        navigationItem.rightBarButtonItem = refreshButton
+        
         self.view.addSubview(navBar)
         
         navBar.pushNavigationItem(navigationItem, animated: false)
+    }
+    
+    func requestCommentsAndPopulateList() {
+        
+        var request = HTTPTask()
+        
+        var userInfo = NSUserDefaults.standardUserDefaults()
+        
+        var params = [ "user_id" : userInfo.objectForKey("user_id") as String, "auth_token" : userInfo.objectForKey("auth_token") as String, "api_key" : "09b19f4a-6e4d-475a-b7c8-a369c60e9f83" ]
+        
+        request.responseSerializer = JSONResponseSerializer()
+        
+        request.GET("https://infinite-river-7560.herokuapp.com/api/v1/posts/\(post.id)/comments.json", parameters: params,
+            success: {(response: HTTPResponse) in
+                
+                self.comments = []
+                
+                var jsonComments = response.responseObject!["comments"]
+                
+                let unwrappedComments = jsonComments as [Dictionary<String, AnyObject>]
+                
+                for var i = 0; i < unwrappedComments.count; i++ {
+                    var jsonComment = unwrappedComments[i]
+                    var comment = Comment(id: jsonComment["external_id"] as String,
+                        name: (jsonComment["user"] as Dictionary<String, AnyObject>)["name"] as String,
+                        body: jsonComment["body"] as String,
+                        likeCount: jsonComment["up_count"] as Int,
+                        liked: jsonComment["uped"] as Bool,
+                        timeCreated: jsonComment["created_at"] as String)
+                
+                    self.comments.append(comment)
+                }
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.commentsFeed.reloadData()
+                })
+            },
+            failure: {(error: NSError, response: HTTPResponse?) in
+            }
+        )
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -164,8 +216,8 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
         return cell
     }
     
-    func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 88
+    func refresh() {
+        println("Heehehehe")
     }
     
     func dismiss() {
