@@ -84,6 +84,14 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             
             destination.post = post
             destination.creatingComment = creatingComment
+        } else if segue.identifier == "createPost" {
+            
+            var destination = segue.destinationViewController as CreatePostViewController
+            
+            let mainViewController = parentViewController as MainViewController
+            
+            destination.currentGate = currentGate
+            destination.gates = mainViewController.getGates()
         }
     }
     
@@ -105,11 +113,13 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         var cell = self.feed.dequeueReusableCellWithIdentifier("gatePost") as PostCell
         
-        var post = self.posts[indexPath.row]
-        
-        cell.configureViews(post, gate: currentGate)
-        
-        cell.commentButton.addTarget(self, action: Selector("pressedCommentButton:"), forControlEvents: .TouchUpInside)
+        if self.posts.count > indexPath.row {
+            var post = self.posts[indexPath.row]
+            
+            cell.configureViews(post, gate: currentGate)
+            
+            cell.commentButton.addTarget(self, action: Selector("pressedCommentButton:"), forControlEvents: .TouchUpInside)
+        }
         
         // The next few lines are solely because of the iOS bug with UITableViewAutomaticDimension
         // when scrolling up.

@@ -131,14 +131,17 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         var gateName = cell.viewWithTag(1)! as UILabel
         var gatekeepersCount = cell.viewWithTag(2)! as UILabel
         
-        var gate = self.gates[indexPath.row]
-        
-        gateName.text = gate.name
-        
-        if gate.usersCount.toInt() == 1 {
-            gatekeepersCount.text = "1 Gatekeeper"
-        } else {
-            gatekeepersCount.text = gate.usersCount + " Gatekeepers"
+        if self.gates.count > indexPath.row {
+            var gate = self.gates[indexPath.row]
+            
+            gateName.text = gate.name
+            
+            if gate.usersCount.toInt() == 1 {
+                gatekeepersCount.text = "1 Gatekeeper"
+            } else {
+                gatekeepersCount.text = gate.usersCount + " Gatekeepers"
+            }
+
         }
         
         return cell
@@ -147,9 +150,9 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         println("You have selected cell \(indexPath.row)")
         
-        let wow = parentViewController as MainViewController
+        let mainViewController = parentViewController as MainViewController
         
-        wow.showFeed(gates[indexPath.row])
+        mainViewController.showFeed(gates[indexPath.row])
     }
     
     func requestGatesAndPopulateList(refreshing: Bool) {

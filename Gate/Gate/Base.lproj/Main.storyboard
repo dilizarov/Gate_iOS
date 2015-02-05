@@ -264,6 +264,50 @@
             </objects>
             <point key="canvasLocation" x="-77" y="-352"/>
         </scene>
+        <!--Create Post View Controller-->
+        <scene sceneID="16A-gR-7UC">
+            <objects>
+                <viewController id="tjn-If-PKH" customClass="CreatePostViewController" customModule="Gate" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="DKl-1l-NJx"/>
+                        <viewControllerLayoutGuide type="bottom" id="SLY-ly-igd"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="URS-kO-rig">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ssq-b6-OTh">
+                                <rect key="frame" x="0.0" y="64" width="320" height="54"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="54" id="FPY-qo-A2F"/>
+                                </constraints>
+                                <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <state key="normal" title="Select a Gate">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="selectGate:" destination="tjn-If-PKH" eventType="touchUpInside" id="y7g-43-CLC"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Ssq-b6-OTh" firstAttribute="leading" secondItem="URS-kO-rig" secondAttribute="leadingMargin" constant="-16" id="aiW-4i-fTb"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Ssq-b6-OTh" secondAttribute="trailing" constant="-16" id="cia-B0-83c"/>
+                            <constraint firstItem="Ssq-b6-OTh" firstAttribute="top" secondItem="DKl-1l-NJx" secondAttribute="bottom" constant="44" id="h0f-3r-ytc"/>
+                        </constraints>
+                    </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <connections>
+                        <outlet property="selectGateButton" destination="Ssq-b6-OTh" id="ZAH-Jf-PKY"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jWh-nM-3ot" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1598" y="371"/>
+        </scene>
         <!--Feed View Controller-->
         <scene sceneID="8S8-nG-p5p">
             <objects>
@@ -283,12 +327,13 @@
                                     <constraint firstAttribute="height" constant="54" id="bEJ-g9-xTb"/>
                                 </constraints>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                <state key="normal" title="Create a Post">
+                                <state key="normal" title="Write a post">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
                                     <action selector="createPost:" destination="dKW-81-bag" eventType="touchUpInside" id="eLq-ZY-r09"/>
+                                    <segue destination="tjn-If-PKH" kind="show" identifier="createPost" id="wnj-7x-Ogc"/>
                                 </connections>
                             </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="155" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="dLG-Al-MTG">
@@ -555,7 +600,7 @@
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eKi-JV-jGU">
                                                     <rect key="frame" x="8" y="9" width="252" height="21"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="252" id="FDL-uJ-QMk"/>
+                                                        <constraint firstAttribute="width" constant="252" id="FDL-uJ-QMk"/>
                                                         <constraint firstAttribute="height" constant="21" id="zEA-RL-RFb"/>
                                                     </constraints>
                                                     <attributedString key="attributedText">

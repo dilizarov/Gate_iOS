@@ -17,6 +17,8 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
     var creatingComment: Bool!
     var composeBarView: PHFComposeBarView!
     
+    var refreshButton: UIBarButtonItem!
+    
     var bodyCutOff = 220
     
     @IBOutlet var postName: UILabel!
@@ -83,9 +85,9 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
 
         if post.commentCount > 0 {
             if post.commentCount > 1 {
-                postCommentsCount.text = "\(post.commentCount) likes"
+                postCommentsCount.text = "\(post.commentCount) comments"
             } else {
-                postCommentsCount.text = "1 like"
+                postCommentsCount.text = "1 comment"
             }
             
             postCommentsCount.alpha = 1.0
@@ -224,7 +226,7 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
         
         navigationItem.leftBarButtonItem = backButton
         
-        var refreshButton = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self, action: Selector("refresh"))
+        refreshButton = UIBarButtonItem(barButtonSystemItem: .Refresh, target: self, action: Selector("refresh"))
         
         refreshButton.tintColor = UIColor.whiteColor()
         
@@ -274,9 +276,11 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
                     }
                     
                     self.handleCommentCount(false)
+                    self.refreshButton.enabled = true
                 })
             },
             failure: {(error: NSError, response: HTTPResponse?) in
+                self.refreshButton.enabled = true
             }
         )
     }
@@ -289,9 +293,13 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
         
         var cell = self.commentsFeed.dequeueReusableCellWithIdentifier("comment") as CommentCell
         
-        var comment = self.comments[indexPath.row]
-        
-        cell.configureViews(comment)
+        if self.comments.count > indexPath.row {
+            
+            var comment = self.comments[indexPath.row]
+            
+            cell.configureViews(comment)
+
+        }
         
         return cell
     }
@@ -362,12 +370,19 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
         
         commentsFeed.layoutIfNeeded()
         
-        var lastRowNumber = commentsFeed.numberOfRowsInSection(0) - 1
-        var indexPath = NSIndexPath(forRow: lastRowNumber, inSection: 0)
-        commentsFeed.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Bottom, animated: true)
+        var delayInSeconds = 0.25
+        
+        dispatch_after(dispatch_time_t(0.25), dispatch_get_main_queue(), {
+            var lastRowNumber = self.commentsFeed.numberOfRowsInSection(0) - 1
+            var indexPath = NSIndexPath(forRow: lastRowNumber, inSection: 0)
+            self.commentsFeed.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Bottom, animated: true)
+        })
     }
     
     func refresh() {
+        
+        refreshButton.enabled = false
+        
         requestCommentsAndPopulateList(true)
     }
     

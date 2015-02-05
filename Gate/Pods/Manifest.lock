@@ -1,14 +1,17 @@
 PODS:
+  - ActionSheetPicker-3.0 (1.3.12)
   - PHFComposeBarView (2.0.1):
     - PHFDelegateChain (~> 1.0)
   - PHFDelegateChain (1.0.1)
   - TPKeyboardAvoiding (1.2.4)
 
 DEPENDENCIES:
+  - ActionSheetPicker-3.0
   - PHFComposeBarView (~> 2.0.1)
   - TPKeyboardAvoiding (~> 1.2)
 
 SPEC CHECKSUMS:
+  ActionSheetPicker-3.0: e49127271ec833864f3235ba7261b1f0d093a503
   PHFComposeBarView: 0fa52137ecb23725d219dc90cf77c4c95aa29d05
   PHFDelegateChain: f4d5a2847960b3dd16fc2f2196833f3a66704745
   TPKeyboardAvoiding: 925e1e1912597d1a4956697eec3bd9656552153c

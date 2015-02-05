@@ -123,7 +123,34 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         var navigationItem = UINavigationItem()
         navigationItem.leftBarButtonItems = NSArray(array: [buttonLeft, buttonRight])
 
+        var settingsButton = UIBarButtonItem(title: NSString(string: "\u{2699}"), style: UIBarButtonItemStyle.Plain, target: self, action: Selector("bringUpSettings"))
+        
+        settingsButton.tintColor = UIColor.whiteColor()
+        
+        var font = UIFont(name: "Helvetica", size: 24.0)
+        var attributes = [NSFontAttributeName : font!] as NSDictionary!
+        settingsButton.setTitleTextAttributes(attributes, forState: UIControlState.Normal)
+        
+        navigationItem.rightBarButtonItem = settingsButton
+        
         navBar.pushNavigationItem(navigationItem, animated: false)
+    }
+    
+    func bringUpSettings() {
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        
+        let logoutAction = UIAlertAction(title: "Log out", style: .Destructive, handler: {(alert: UIAlertAction!) -> Void in
+            
+            self.logout()
+            
+        })
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        
+        alertController.addAction(logoutAction)
+        alertController.addAction(cancelAction)
+        
+        self.presentViewController(alertController, animated: true, completion: nil)
     }
     
     func showFeed(gate: Gate?) {
@@ -285,6 +312,14 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
             
             }
         )
+    }
+    
+    func logout() {
+        
+    }
+    
+    func getGates() -> [Gate] {
+        return gatesViewController.gates
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
