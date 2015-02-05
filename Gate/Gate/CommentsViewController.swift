@@ -97,7 +97,6 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
         setupAddingComment()
     
         commentsFeed.rowHeight = UITableViewAutomaticDimension
-        commentsFeed.estimatedRowHeight = 88
         
         //Bring the scrollView up to the front so that we can see thee addComment.
         scrollView.layer.zPosition = 5000
@@ -180,6 +179,7 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
                     self.commentsFeed.reloadData()
                     
                     self.handleCommentCount(true)
+                    self.scrollToBottomOfComments()
                 })
             
             },
@@ -270,13 +270,7 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
                     self.commentsFeed.reloadData()
                     
                     if refreshing && self.comments.count > 0 {
-                        
-                        println("contentSize: \(self.commentsFeed.contentSize.height)")
-                        println("bounds: \(self.commentsFeed.bounds.height)")
-                        println("frame: \(self.commentsFeed.frame.size.height)")
-                        
-                        var wow = self.commentsFeed.contentSize.height - self.commentsFeed.bounds.height
-                        self.commentsFeed.setContentOffset(CGPointMake(0, wow), animated: true)
+                        self.scrollToBottomOfComments()
                     }
                     
                     self.handleCommentCount(false)
@@ -364,6 +358,14 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
         }
     }
 
+    func scrollToBottomOfComments() {
+        
+        commentsFeed.layoutIfNeeded()
+        
+        var lastRowNumber = commentsFeed.numberOfRowsInSection(0) - 1
+        var indexPath = NSIndexPath(forRow: lastRowNumber, inSection: 0)
+        commentsFeed.scrollToRowAtIndexPath(indexPath, atScrollPosition: .Bottom, animated: true)
+    }
     
     func refresh() {
         requestCommentsAndPopulateList(true)
