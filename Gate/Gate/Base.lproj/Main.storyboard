@@ -291,9 +291,19 @@
                                     <action selector="selectGate:" destination="tjn-If-PKH" eventType="touchUpInside" id="y7g-43-CLC"/>
                                 </connections>
                             </button>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Imj-uQ-xgy">
+                                <rect key="frame" x="16" y="118" width="288" height="200"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <attributedString key="attributedText"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="Imj-uQ-xgy" firstAttribute="top" secondItem="Ssq-b6-OTh" secondAttribute="bottom" id="7B8-MD-rVK"/>
+                            <constraint firstItem="Imj-uQ-xgy" firstAttribute="trailing" secondItem="URS-kO-rig" secondAttribute="trailingMargin" id="Bnz-ZI-Nlm"/>
+                            <constraint firstItem="SLY-ly-igd" firstAttribute="top" secondItem="Imj-uQ-xgy" secondAttribute="bottom" constant="250" id="MA2-vw-wLz"/>
+                            <constraint firstItem="Imj-uQ-xgy" firstAttribute="leading" secondItem="URS-kO-rig" secondAttribute="leadingMargin" id="UHj-Rb-cLh"/>
                             <constraint firstItem="Ssq-b6-OTh" firstAttribute="leading" secondItem="URS-kO-rig" secondAttribute="leadingMargin" constant="-16" id="aiW-4i-fTb"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Ssq-b6-OTh" secondAttribute="trailing" constant="-16" id="cia-B0-83c"/>
                             <constraint firstItem="Ssq-b6-OTh" firstAttribute="top" secondItem="DKl-1l-NJx" secondAttribute="bottom" constant="44" id="h0f-3r-ytc"/>
@@ -301,6 +311,7 @@
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
+                        <outlet property="postBody" destination="Imj-uQ-xgy" id="w3g-Aa-J7n"/>
                         <outlet property="selectGateButton" destination="Ssq-b6-OTh" id="ZAH-Jf-PKY"/>
                     </connections>
                 </viewController>

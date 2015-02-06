@@ -9,7 +9,11 @@
 import UIKit
 import SwiftHTTP
 
-class FeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+protocol CreatePostViewControllerDelegate {
+    func sendCreatePostRequest(postBody: String!, gate: Gate!)
+}
+
+class FeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, CreatePostViewControllerDelegate {
 
     var posts = [Post]()
     var currentGate: Gate?
@@ -87,6 +91,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         } else if segue.identifier == "createPost" {
             
             var destination = segue.destinationViewController as CreatePostViewController
+            destination.delegate = self
             
             let mainViewController = parentViewController as MainViewController
             
@@ -107,6 +112,11 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             requestPostsAndPopulateList(true, page: nil)
             feed.setContentOffset(CGPointZero, animated: false)
         }
+    }
+    
+    func sendCreatePostRequest(postBody: String!, gate: Gate!) {
+        println(postBody)
+        println(gate.name)
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
