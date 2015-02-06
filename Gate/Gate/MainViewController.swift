@@ -63,7 +63,7 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         //Paging control is added to a subview in the uinavigationcontroller
         pageControl = UIPageControl()
         pageControl.frame = CGRect(x: 0, y: 35, width: 0, height: 0)
-        pageControl.pageIndicatorTintColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.3)
+        pageControl.pageIndicatorTintColor = UIColor.whiteColor().colorWithAlphaComponent(0.3)
         pageControl.currentPageIndicatorTintColor = UIColor.whiteColor()
         pageControl.numberOfPages = 2
         pageControl.currentPage = 0
@@ -314,7 +314,17 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func logout() {
+        var defaults = NSUserDefaults.standardUserDefaults()
         
+        defaults.removeObjectForKey("auth_token")
+        defaults.removeObjectForKey("created_at")
+        defaults.removeObjectForKey("email")
+        defaults.removeObjectForKey("user_id")
+        defaults.removeObjectForKey("name")
+        
+        defaults.synchronize()
+        
+        performSegueWithIdentifier("logoutUser", sender: self)
     }
     
     func getGates() -> [Gate] {

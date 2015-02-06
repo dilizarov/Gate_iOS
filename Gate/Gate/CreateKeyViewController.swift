@@ -30,12 +30,8 @@ class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableVie
         
         setupNavBar()
         
-        var red: CGFloat = 0.0862745
-        var green: CGFloat = 0.258824
-        var blue: CGFloat = 0.458824
-        
-        fadedCheckMarkColor = UIColor(red: red, green: green, blue: blue, alpha: 0.3)
-        checkMarkColor = UIColor(red: red, green: green, blue: blue, alpha: 1.0)
+        fadedCheckMarkColor = UIColor.gateBlueColor().colorWithAlphaComponent(0.3)
+        checkMarkColor = UIColor.gateBlueColor()
         
         gatesTable.reloadData()
     }

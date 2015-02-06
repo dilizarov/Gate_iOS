@@ -140,11 +140,7 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
         composeBarView.placeholder = "Add a comment..."
         composeBarView.delegate = self
         
-        var red: CGFloat = 0.0862745
-        var green: CGFloat = 0.258824
-        var blue: CGFloat = 0.458824
-        
-        composeBarView.buttonTintColor = UIColor(red: red, green: green, blue: blue, alpha: 1.0)
+        composeBarView.buttonTintColor = UIColor.gateBlueColor()
         composeBarView.textView.backgroundColor = UIColor.whiteColor()
         
         self.scrollView.addSubview(composeBarView)
