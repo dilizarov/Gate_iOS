@@ -167,6 +167,8 @@ class CreatePostViewController: UIViewController, UITextViewDelegate {
             var postBody = self.postBody.text.stringByTrimmingCharactersInSet(.whitespaceAndNewlineCharacterSet())
             
             self.delegate?.sendCreatePostRequest(postBody, gate: selectedGate!)
+            
+            dismiss()
         }
     }
     

@@ -115,8 +115,70 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func sendCreatePostRequest(postBody: String!, gate: Gate!) {
-        println(postBody)
-        println(gate.name)
+    
+        var request = HTTPTask()
+        
+        var userInfo = NSUserDefaults.standardUserDefaults()
+        
+        var params: Dictionary<String, AnyObject> = [ "user_id" : userInfo.objectForKey("user_id") as String, "auth_token" : userInfo.objectForKey("auth_token") as String, "api_key" : "09b19f4a-6e4d-475a-b7c8-a369c60e9f83" ]
+        
+        var post = ["body" : postBody]
+        
+        params["post"] = post
+        
+        request.responseSerializer = JSONResponseSerializer()
+        
+        request.POST("https://infinite-river-7560.herokuapp.com/api/v1/gates/\(gate.id)/posts.json", parameters: params,
+            success: { (response: HTTPResponse) in
+                
+                if self.currentGate == nil || self.onGateAndGettingSameGate(gate) {
+                    
+                    var jsonPost = response.responseObject!["post"] as Dictionary<String, AnyObject>
+                    
+                    println(jsonPost)
+                    
+                    var post = Post(
+                        id: jsonPost["external_id"] as String,
+                        name: (jsonPost["user"] as Dictionary<String, AnyObject>)["name"] as String,
+                        body: jsonPost["body"] as String,
+                        gateId: (jsonPost["gate"] as Dictionary<String, AnyObject>)["external_id"] as String,
+                        gateName: (jsonPost["gate"] as Dictionary<String, AnyObject>)["name"] as String,
+                        commentCount: jsonPost["comments_count"] as Int,
+                        likeCount: jsonPost["up_count"] as Int,
+                        liked: false,
+                        timeCreated: jsonPost["created_at"] as String
+                    )
+                    
+                    self.posts.insert(post, atIndex: 0)
+                    
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.feed.reloadData()
+                        self.feed.setContentOffset(CGPointZero, animated: true)
+                    })
+                    
+                } else {
+                    let alertController = UIAlertController(title: "Posted to another Gate", message: nil, preferredStyle: .Alert)
+                    
+                    let confirmAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                    
+                    alertController.addAction(confirmAction)
+                    
+                    dispatch_async(dispatch_get_main_queue(), {
+                        self.presentViewController(alertController, animated: true, completion: nil)
+                    })
+                }
+                
+                
+            },
+            failure: { (error: NSError, response: HTTPResponse?) in
+                
+                
+                
+            }
+        )
+        
+
+        
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
