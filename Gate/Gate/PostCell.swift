@@ -85,6 +85,9 @@ class PostCell: UITableViewCell {
         } else {
             self.likeButton.setTitle("Like", forState: .Normal)
         }
+        // Trick for system buttons when trying to set title without animation.
+        self.likeButton.layoutIfNeeded()
+        
         UIView.setAnimationsEnabled(true)
         
         if post.commentCount > 0 {

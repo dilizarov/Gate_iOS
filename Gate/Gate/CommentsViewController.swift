@@ -95,6 +95,12 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
             postCommentsCount.alpha = 0.0
         }
         
+        if post.liked {
+            self.postLikeButton.setTitle("Unlike", forState: .Normal)
+        } else {
+            self.postLikeButton.setTitle("Like", forState: .Normal)
+        }
+        
         setupNavBar()
         setupAddingComment()
     

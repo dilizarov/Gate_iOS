@@ -39,7 +39,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+                
         infiniteScrollBufferCount = 3
         reachedEndOfList = false
         reachedEndOfCallback = false
@@ -331,7 +331,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 for var i = 0; i < jsonPosts.count; i++ {
                     var jsonPost = jsonPosts[i]
-                    
+
                     var post = Post(
                         id: jsonPost["external_id"] as String,
                         name: (jsonPost["user"] as Dictionary<String, AnyObject>)["name"] as String,

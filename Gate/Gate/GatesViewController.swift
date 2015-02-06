@@ -180,6 +180,7 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 
                 for var i = 0; i < unwrappedGates.count; i++ {
                     var jsonGate = unwrappedGates[i]
+                    
                     var gate = Gate(id: jsonGate["external_id"] as String,
                         name: jsonGate["name"] as String,
                         usersCount: jsonGate["users_count"] as Int,

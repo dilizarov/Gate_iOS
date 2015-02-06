@@ -69,7 +69,6 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         pageControl.currentPage = 0
         self.navbarView.addSubview(pageControl)
         
-        
         //Titles for the nav controller (also added to a subview in the uinavigationcontroller)
         //Setting size for the titles. FYI changing width will break the paging fades/movement
         navTitleLabel1 = UILabel()
@@ -333,7 +332,7 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        navbarView.frame = CGRect(x: 0, y: 20, width: self.view.bounds.width, height: 64)
+        navbarView.frame = CGRect(x: 0, y: 20, width: self.view.bounds.width, height: 44)
     }
     
     
@@ -344,7 +343,6 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         //Setup some math to position the elements where we need them when the view is scrolled
         
         var wBounds = self.view.bounds.width
-        var hBounds = self.view.bounds.height
         var widthOffset = wBounds / 100
         var offsetPosition = 0 - xOffset/widthOffset
         
