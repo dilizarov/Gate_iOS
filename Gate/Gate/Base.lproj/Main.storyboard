@@ -984,6 +984,19 @@
                                     <outlet property="delegate" destination="nYR-fA-YAL" id="XAJ-F1-aka"/>
                                 </connections>
                             </tableView>
+                            <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pyb-Qr-QQY">
+                                <rect key="frame" x="16" y="288" width="288" height="21"/>
+                                <attributedString key="attributedText">
+                                    <fragment content="Label">
+                                        <attributes>
+                                            <color key="NSColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                            <font key="NSFont" size="15" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -994,15 +1007,20 @@
                             <constraint firstAttribute="trailingMargin" secondItem="oVq-SB-0MV" secondAttribute="trailing" constant="-16" id="IlX-Kx-sdS"/>
                             <constraint firstItem="oVq-SB-0MV" firstAttribute="leading" secondItem="VRD-oZ-eCz" secondAttribute="trailing" id="J71-Rp-ohi"/>
                             <constraint firstItem="gLb-kn-e9y" firstAttribute="top" secondItem="VRD-oZ-eCz" secondAttribute="bottom" id="MEl-BU-hlk"/>
+                            <constraint firstItem="pyb-Qr-QQY" firstAttribute="leading" secondItem="Ed7-AX-tDr" secondAttribute="leadingMargin" id="SEe-2A-TkU"/>
+                            <constraint firstAttribute="centerX" secondItem="pyb-Qr-QQY" secondAttribute="centerX" id="ZNe-xU-QdC"/>
                             <constraint firstItem="gLb-kn-e9y" firstAttribute="top" secondItem="oVq-SB-0MV" secondAttribute="bottom" id="aFW-Yg-hFE"/>
+                            <constraint firstAttribute="centerY" secondItem="pyb-Qr-QQY" secondAttribute="centerY" id="bL9-DG-Nmu"/>
                             <constraint firstItem="oVq-SB-0MV" firstAttribute="width" secondItem="VRD-oZ-eCz" secondAttribute="width" id="dbh-6N-o4O"/>
                             <constraint firstItem="VRD-oZ-eCz" firstAttribute="leading" secondItem="Ed7-AX-tDr" secondAttribute="leadingMargin" constant="-16" id="euy-2f-ItI"/>
                             <constraint firstItem="oVq-SB-0MV" firstAttribute="leading" secondItem="VRD-oZ-eCz" secondAttribute="trailing" id="hCy-Yt-a5p"/>
+                            <constraint firstItem="pyb-Qr-QQY" firstAttribute="trailing" secondItem="Ed7-AX-tDr" secondAttribute="trailingMargin" id="q34-HK-3mL"/>
                         </constraints>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="gatesTable" destination="nUP-NO-8vI" id="vGE-Yt-hJd"/>
+                        <outlet property="noGatesText" destination="pyb-Qr-QQY" id="O88-aE-mlT"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="82Q-oY-GP3" userLabel="First Responder" sceneMemberID="firstResponder"/>

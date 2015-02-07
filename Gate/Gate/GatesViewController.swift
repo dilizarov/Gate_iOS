@@ -15,6 +15,8 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var gates = [Gate]()
     var refresher: UIRefreshControl!
 
+    var loadingIndicator: UIActivityIndicatorView!
+    @IBOutlet var noGatesText: UILabel!
     
     @IBOutlet var gatesTable: UITableView!
     @IBAction func viewAggregate(sender: AnyObject) {
@@ -37,7 +39,7 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
             var potentialName = self.gateName.text
             
             potentialName.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-            
+
             self.createGate(potentialName)
             
         }))
@@ -59,6 +61,13 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         presentViewController(createGateAlert, animated: true, completion: nil)
     }
     
+//    override func viewDidAppear(animated: Bool) {
+//        dispatch_async(dispatch_get_main_queue(), {
+//            var hud = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+//            hud.labelText = "Robots processing..."
+//        })
+//    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -72,13 +81,19 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         longPressGestureRecognizer.delegate = self
         gatesTable.addGestureRecognizer(longPressGestureRecognizer)
         
+        loadingIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+        
+        loadingIndicator.center = self.view.center
+        
+        loadingIndicator.layer.zPosition = 5000
+        
+        self.view.addSubview(loadingIndicator)
+        
         requestGatesAndPopulateList(false)
     }
     
     func refresh() {
-        
         requestGatesAndPopulateList(true)
-        
     }
     
     func createGateTextChanged(sender: AnyObject) {
@@ -101,7 +116,7 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 
                 var gate = gates[unwrappedIndexPath.row]
                 
-                let alertController = UIAlertController(title: "Leave \(gate.name)", message: "Are you sure you want to leave \(gate.name)?", preferredStyle: .ActionSheet)
+                let alertController = UIAlertController(title: "Leave \(gate.name)", message: "Are you sure you want to leave?", preferredStyle: .ActionSheet)
                 
                 let deleteAction = UIAlertAction(title: "Leave", style: .Destructive, handler: {
                     (alert: UIAlertAction!) -> Void in
@@ -148,14 +163,15 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        println("You have selected cell \(indexPath.row)")
-        
         let mainViewController = parentViewController as MainViewController
         
         mainViewController.showFeed(gates[indexPath.row])
     }
     
     func requestGatesAndPopulateList(refreshing: Bool) {
+        if refreshing == false {
+            startLoading()
+        }
         
         var request = HTTPTask()
         
@@ -190,19 +206,43 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 }
                 
                 dispatch_async(dispatch_get_main_queue(), {
+                    self.loadingIndicator.stopAnimating()
+                    
                     self.gatesTable.reloadData()
+                    
+                    if self.gates.count == 0 {
+                        self.noGatesText.text = "No gates yet"
+                        self.noGatesText.alpha = 1.0
+                    } else {
+                        self.noGatesText.alpha = 0.0
+                    }
                 })
             },
             failure: {(error: NSError, response: HTTPResponse?) in
-            
-                if refreshing {
-                    self.refresher.endRefreshing()
-                }
-                
+                self.refresher.endRefreshing()
+
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.loadingIndicator.stopAnimating()
+                    
+                    if self.gates.count == 0 {
+                        if response == nil {
+                            self.noGatesText.text = "We couldn't connect to the internet"
+                        } else {
+                            self.noGatesText.text = "Something went wrong"
+                        }
+                        
+                        self.noGatesText.alpha = 1.0
+                    }
+                    
+                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+                })
             }
         )
-        
-        
+    }
+    
+    func startLoading() {
+        noGatesText.alpha = 0.0
+        loadingIndicator.startAnimating()
     }
     
     func leaveGate(gate: Gate, index: Int) {
@@ -226,13 +266,8 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 
                 dispatch_async(dispatch_get_main_queue(), {
                     self.gatesTable.reloadData()
-                    let alertController = UIAlertController(title: "Failed to leave Gate", message: "We couldn't connect to the internet", preferredStyle: .Alert)
                     
-                    let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
-                    
-                    alertController.addAction(defaultAction)
-                    
-                    self.presentViewController(alertController, animated: true, completion: nil)
+                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
                 })
                 
             }
@@ -241,6 +276,16 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     func createGate(name: String) {
+        // There is a bug here that shifts the ViewController bounds when I use
+        // self.view. Anywhere else, it doesn't happen, but it does here, so to mitigate it, I instead opt to use the parent of this view controller. 
+        
+        dispatch_async(dispatch_get_main_queue(), {
+            let mainViewController = self.parentViewController as MainViewController
+            
+            var hud = MBProgressHUD.showHUDAddedTo(mainViewController.view, animated: true)
+            hud.labelText = "Robots processing..."
+        })
+        
         var request = HTTPTask()
         
         var userInfo = NSUserDefaults.standardUserDefaults()
@@ -264,18 +309,26 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                     name: jsonGate["name"] as String,
                     usersCount: 1,
                     creator: (jsonGate["creator"] as Dictionary<String, String>)["name"]!)
-                    
-                self.addGatesToArray([gate])
                 
                 dispatch_async(dispatch_get_main_queue(), {
+                    let mainViewController = self.parentViewController as MainViewController
+                    MBProgressHUD.hideHUDForView(mainViewController.view, animated: true)
+                    
+                    self.addGatesToArray([gate])
                     self.gatesTable.reloadData()
                 })
 
                 
             },
             failure: { (error: NSError, response: HTTPResponse?) in
-                
-                
+                dispatch_async(dispatch_get_main_queue(), {
+                    let mainViewController = self.parentViewController as MainViewController
+                    MBProgressHUD.hideHUDForView(mainViewController.view, animated: true)
+                    
+                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+                    
+                    self.presentViewController(self.createGateAlert, animated: true, completion: nil)
+                })
             
             }
         )

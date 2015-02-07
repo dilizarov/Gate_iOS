@@ -43,6 +43,8 @@ class PostCell: UITableViewCell {
             failure: {(error: NSError, response: HTTPResponse?) in
                 dispatch_async(dispatch_get_main_queue(), {
                     self.toggleLikePost()
+                    
+                    Toast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
                 })
             }
         )
