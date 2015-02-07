@@ -122,8 +122,6 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
         
         loadingIndicator.center = CGPointMake(self.view.center.x, self.view.bounds.height - 264 - loadingIndicator.bounds.height / 2)
         
-        var views: NSDictionary = ["loading" : loadingIndicator]
-        
         loadingIndicator.layer.zPosition = 5000
         
         self.view.addSubview(loadingIndicator)

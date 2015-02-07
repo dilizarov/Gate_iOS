@@ -19,6 +19,9 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     var currentGate: Gate?
     var refresher: UIRefreshControl!
     
+    var loadingIndicator: UIActivityIndicatorView!
+    @IBOutlet var noPostsText: UILabel!
+    
     var cachedHeights = [String: CGFloat]()
     
     @IBOutlet var feed: UITableView!
@@ -63,10 +66,17 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         self.feed.addSubview(refresher)
         
+        loadingIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+        
+        loadingIndicator.center = self.view.center
+        
+        loadingIndicator.layer.zPosition = 5000
+        
+        self.view.addSubview(loadingIndicator)
+        
         feed.rowHeight = UITableViewAutomaticDimension
         
         requestPostsAndPopulateList(false, page: nil)
-        // Do any additional setup after loading the view.
     }
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -133,6 +143,11 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         if (!onAggregateAndGettingAggregate(gate) &&
             !onGateAndGettingSameGate(gate)) {
             currentGate = gate
+                
+            self.posts = []
+            self.feed.reloadData()
+                
+            startLoading()
             requestPostsAndPopulateList(true, page: nil)
             feed.setContentOffset(CGPointZero, animated: false)
         }
@@ -320,16 +335,16 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func refresh() {
-        
         requestPostsAndPopulateList(true, page: nil)
-        
     }
     
     func requestPostsAndPopulateList(refreshing: Bool, page: Int?) {
+        // Only care about the very first load of feed
+        if !refreshing && page == nil {
+            startLoading()
+        }
         
         var request = HTTPTask()
-        
-        println("Sending request")
         
         var userInfo = NSUserDefaults.standardUserDefaults()
         
@@ -397,7 +412,16 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                 }
                 
                 dispatch_async(dispatch_get_main_queue(), {
+                    self.loadingIndicator.stopAnimating()
+                    
                     self.feed.reloadData()
+                    
+                    if self.posts.count == 0 {
+                        self.noPostsText.text = "No posts yet"
+                        self.noPostsText.alpha = 1.0
+                    } else {
+                        self.noPostsText.alpha = 0.0
+                    }
                     
                     if refreshing {
                         self.currentPage = 2
@@ -407,13 +431,32 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                 })
             },
             failure: {(error: NSError, response: HTTPResponse?) in
-                
                 self.refresher.endRefreshing()
-                println(error.description)
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.loadingIndicator.stopAnimating()
+                    
+                    if self.posts.count == 0 {
+                        if response == nil {
+                            self.noPostsText.text = "We couldn't connect to the internet"
+                        } else {
+                            self.noPostsText.text = "Something went wrong"
+                        }
+                        
+                        self.noPostsText.alpha = 1.0
+                    }
+                    
+                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+                })
                 
             }
         )
         
+    }
+    
+    func startLoading() {
+        noPostsText.alpha = 0.0
+        loadingIndicator.startAnimating()
     }
     
     func onAggregateAndGettingAggregate(gate: Gate?) -> Bool {

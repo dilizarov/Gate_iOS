@@ -487,21 +487,48 @@
                                     <outlet property="delegate" destination="dKW-81-bag" id="z9J-wG-9IU"/>
                                 </connections>
                             </tableView>
+                            <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gd8-A1-F9z">
+                                <rect key="frame" x="16" y="300" width="288" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="IDJ-Tx-3BR"/>
+                                </constraints>
+                                <attributedString key="attributedText">
+                                    <fragment content="Label">
+                                        <attributes>
+                                            <color key="NSColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                            <font key="NSFont" size="15" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="gd8-A1-F9z" firstAttribute="leading" secondItem="N3B-3u-l9o" secondAttribute="leadingMargin" id="Bmm-Pu-lNO"/>
                             <constraint firstAttribute="trailingMargin" secondItem="dLG-Al-MTG" secondAttribute="trailing" constant="-16" id="E4N-QI-n2t"/>
                             <constraint firstItem="sVo-g2-iFI" firstAttribute="top" secondItem="dLG-Al-MTG" secondAttribute="bottom" id="FBL-xC-y8K"/>
                             <constraint firstAttribute="trailingMargin" secondItem="sVo-g2-iFI" secondAttribute="trailing" constant="-16" id="FXV-d6-1Pa"/>
                             <constraint firstItem="dLG-Al-MTG" firstAttribute="leading" secondItem="N3B-3u-l9o" secondAttribute="leadingMargin" constant="-16" id="RJB-ej-204"/>
                             <constraint firstItem="sVo-g2-iFI" firstAttribute="leading" secondItem="N3B-3u-l9o" secondAttribute="leadingMargin" constant="-16" id="by9-iM-H7B"/>
+                            <constraint firstItem="gd8-A1-F9z" firstAttribute="trailing" secondItem="N3B-3u-l9o" secondAttribute="trailingMargin" id="fmk-nr-N5o"/>
+                            <constraint firstAttribute="centerY" secondItem="gd8-A1-F9z" secondAttribute="centerY" id="jap-4O-0gf"/>
+                            <constraint firstItem="sVo-g2-iFI" firstAttribute="top" secondItem="gd8-A1-F9z" secondAttribute="bottom" constant="8" symbolic="YES" id="kej-aJ-QcW"/>
                             <constraint firstItem="wCi-yk-VKs" firstAttribute="top" secondItem="sVo-g2-iFI" secondAttribute="bottom" id="mZo-Hy-pOC"/>
                             <constraint firstItem="dLG-Al-MTG" firstAttribute="top" secondItem="Wxb-vx-QeD" secondAttribute="bottom" constant="44" id="pnA-70-4et"/>
+                            <constraint firstAttribute="centerX" secondItem="gd8-A1-F9z" secondAttribute="centerX" id="zzI-ZS-spv"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="kej-aJ-QcW"/>
+                            </mask>
+                        </variation>
                     </view>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="feed" destination="dLG-Al-MTG" id="S7K-5g-lPG"/>
+                        <outlet property="noPostsText" destination="gd8-A1-F9z" id="UCo-LM-fK1"/>
                         <segue destination="7CT-Wj-wXo" kind="show" identifier="showComments" id="f2P-yS-tW1"/>
                     </connections>
                 </viewController>
