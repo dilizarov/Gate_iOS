@@ -327,8 +327,7 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
                 alertController.addAction(defaultAction)
                 
                 dispatch_async(dispatch_get_main_queue(), {
-                    var hud = MBProgressHUD.hide(self.view, animated: true)
-                    hud.labelText = "Robots processing..."
+                    MBProgressHUD.hideHUDForView(self.view, animated: true)
                     
                     self.presentViewController(alertController, animated: true, completion: nil)
                 })
