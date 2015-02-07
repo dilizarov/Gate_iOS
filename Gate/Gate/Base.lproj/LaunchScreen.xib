@@ -23,16 +23,22 @@
                     </state>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wQK-GW-E7B">
-                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="64"/>
                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="44" id="23m-OM-Px2"/>
+                        <constraint firstAttribute="height" constant="64" id="yDX-WL-YWj"/>
                     </constraints>
                     <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                     <state key="normal">
                         <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <color key="titleShadowColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </state>
+                    <variation key="default">
+                        <mask key="constraints">
+                            <exclude reference="23m-OM-Px2"/>
+                        </mask>
+                    </variation>
                 </button>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
@@ -41,8 +47,8 @@
                 <constraint firstItem="wQK-GW-E7B" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="8n9-wG-qZJ"/>
                 <constraint firstAttribute="bottom" secondItem="ml2-1W-C1w" secondAttribute="bottom" id="V8s-6c-fxq"/>
                 <constraint firstItem="ml2-1W-C1w" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="fF3-X8-CaM"/>
+                <constraint firstItem="wQK-GW-E7B" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="lIc-Wu-vLu"/>
                 <constraint firstAttribute="trailing" secondItem="wQK-GW-E7B" secondAttribute="trailing" id="tlB-nh-KXH"/>
-                <constraint firstItem="wQK-GW-E7B" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="yud-nm-bea"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>

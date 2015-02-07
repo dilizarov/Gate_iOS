@@ -56,7 +56,7 @@ class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableVie
         
         var navigationItem = UINavigationItem()
         
-        var backButton = UIBarButtonItem(title: "Back", style: .Plain, target: self, action: Selector("dismiss"))
+        var backButton = UIBarButtonItem(image: UIImage(named: "Back"), style: .Plain, target: self, action: Selector("dismiss"))
         
         backButton.tintColor = UIColor.whiteColor()
         

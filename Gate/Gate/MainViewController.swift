@@ -116,13 +116,18 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         navBar.addSubview(navbarView)
         self.view.addSubview(navBar)
         
-        buttonLeft = UIBarButtonItem(title: "K", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("showKeys"))
-        buttonRight = UIBarButtonItem(title: "B", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("enterKey"))
+        buttonLeft = UIBarButtonItem(image: UIImage(named: "CreateKey"), style: .Plain, target: self, action: Selector("showCreateKey"))
+        
+        buttonLeft.tintColor = UIColor.whiteColor()
+        
+        buttonRight = UIBarButtonItem(image: UIImage(named: "Unlock"), style: .Plain, target: self, action: Selector("enterKey"))
+        
+        buttonRight.tintColor = UIColor.whiteColor()
         
         var navigationItem = UINavigationItem()
         navigationItem.leftBarButtonItems = NSArray(array: [buttonLeft, buttonRight])
 
-        var settingsButton = UIBarButtonItem(title: NSString(string: "\u{2699}"), style: UIBarButtonItemStyle.Plain, target: self, action: Selector("bringUpSettings"))
+        var settingsButton = UIBarButtonItem(image: UIImage(named: "Settings"), style: .Plain, target: self, action: Selector("bringUpSettings"))
         
         settingsButton.tintColor = UIColor.whiteColor()
         
@@ -165,7 +170,7 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         feedViewController.showFeed(gate)
     }
     
-    func showKeys() {
+    func showCreateKey() {
         performSegueWithIdentifier("createKey", sender: self)
     }
     
