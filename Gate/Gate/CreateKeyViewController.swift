@@ -19,8 +19,11 @@ class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableVie
     @IBOutlet var gatesTable: UITableView!
     @IBAction func tapForKey(sender: AnyObject) {
         if (selectedGates.isEmpty) {
-            // TODO: Code this in
+            iToast.makeText(" You must unlock at least one Gate").setDuration(3000).setGravity(iToastGravityCenter).show()
         } else {
+            
+            var hud = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+            hud.labelText = "Robots processing..."
             processGatesForKey()
         }
     }
@@ -173,11 +176,17 @@ class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableVie
                 alertController.addAction(shareAction)
                 
                 dispatch_async(dispatch_get_main_queue(), {
+                    MBProgressHUD.hideHUDForView(self.view, animated: true)
+                    
                     self.presentViewController(alertController, animated: true, completion: nil)
                 })
             },
             failure: { (error: NSError, response: HTTPResponse?) in
-                println(error)
+                dispatch_async(dispatch_get_main_queue(), {
+                    MBProgressHUD.hideHUDForView(self.view, animated: true)
+                    
+                    iToast.makeText(" " + String.prettyErrorMessage(response)).setDuration(3000).setGravity(iToastGravityCenter).show()
+                })
             }
         )
     }
