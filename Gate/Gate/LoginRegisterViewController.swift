@@ -164,6 +164,11 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
     }
     
     func processLogin() {
+        dispatch_async(dispatch_get_main_queue(), {
+            var hud = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+            
+            hud.labelText = "Robots processing..."
+        })
         
         var request = HTTPTask()
         
@@ -185,6 +190,8 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
                 self.storeSessionData(response.responseObject! as Dictionary<String, Dictionary<String, AnyObject>>)
                 
                 dispatch_async(dispatch_get_main_queue(), {
+                    MBProgressHUD.hideHUDForView(self.view, animated: true)
+                    
                     self.performSegueWithIdentifier("loginUser", sender: self)
                 })
             },
@@ -214,13 +221,20 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
                 
                 alertController.addAction(defaultAction)
                 
-                dispatch_async(dispatch_get_main_queue(), {
+                dispatch_async(dispatch_get_main_queue(), {                    MBProgressHUD.hideHUDForView(self.view, animated: true)
+                    
                     self.presentViewController(alertController, animated: true, completion: nil)
                 })
         })
     }
     
     func processRegistration() {
+        dispatch_async(dispatch_get_main_queue(), {
+            var hud = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+            
+            hud.labelText = "Robots processing..."
+        })
+        
         var request = HTTPTask()
         
         var emailText = strippedString(email.text)
@@ -242,6 +256,8 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
                 self.storeSessionData(response.responseObject! as Dictionary<String, Dictionary<String, AnyObject>>)
                 
                 dispatch_async(dispatch_get_main_queue(), {
+                    MBProgressHUD.hideHUDForView(self.view, animated: true)
+                    
                     self.performSegueWithIdentifier("loginUser", sender: self)
                 })
                 
@@ -280,6 +296,8 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
                 alertController.addAction(defaultAction)
                 
                 dispatch_async(dispatch_get_main_queue(), {
+                    MBProgressHUD.hideHUDForView(self.view, animated: true)
+                    
                     self.presentViewController(alertController, animated: true, completion: nil)
                 })
         })
@@ -287,6 +305,12 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
     }
     
     func processForgotPassword() {
+        dispatch_async(dispatch_get_main_queue(), {
+            var hud = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+            
+            hud.labelText = "Robots processing..."
+        })
+        
         var request = HTTPTask()
         
         var emailText = strippedString(email.text)
@@ -303,6 +327,9 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
                 alertController.addAction(defaultAction)
                 
                 dispatch_async(dispatch_get_main_queue(), {
+                    var hud = MBProgressHUD.hide(self.view, animated: true)
+                    hud.labelText = "Robots processing..."
+                    
                     self.presentViewController(alertController, animated: true, completion: nil)
                 })
                 
@@ -333,6 +360,8 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
                 alertController.addAction(defaultAction)
                 
                 dispatch_async(dispatch_get_main_queue(), {
+                    MBProgressHUD.hideHUDForView(self.view, animated: true)
+    
                     self.presentViewController(alertController, animated: true, completion: nil)
                 })
                 
