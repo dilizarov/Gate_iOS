@@ -44,7 +44,7 @@ class PostCell: UITableViewCell {
                 dispatch_async(dispatch_get_main_queue(), {
                     self.toggleLikePost()
                     
-                    Toast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
                 })
             }
         )
