@@ -19,6 +19,8 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
     
     var refreshButton: UIBarButtonItem!
     
+    var loadingIndicator: UIActivityIndicatorView!
+    
     var bodyCutOff = 220
     
     @IBOutlet var postName: UILabel!
@@ -28,6 +30,7 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
     @IBOutlet var postLikesCount: UILabel!
     @IBOutlet var postCommentsCount: UILabel!
     @IBOutlet var postLikeButton: UIButton!
+    @IBOutlet var noCommentsText: UILabel!
     
     @IBAction func likePost(sender: AnyObject) {
         toggleLikePost()
@@ -47,6 +50,8 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
             failure: {(error: NSError, response: HTTPResponse?) in
                 dispatch_async(dispatch_get_main_queue(), {
                     self.toggleLikePost()
+                    
+                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
                 })
             }
         )
@@ -111,6 +116,18 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
         
         requestKeyboardNotifs()
 
+        loadingIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray)
+        
+        // A bit hacky, but the constraint for no comment text is 264 from the bottom, so I'm positioning this on it.
+        
+        loadingIndicator.center = CGPointMake(self.view.center.x, self.view.bounds.height - 264 - loadingIndicator.bounds.height / 2)
+        
+        var views: NSDictionary = ["loading" : loadingIndicator]
+        
+        loadingIndicator.layer.zPosition = 5000
+        
+        self.view.addSubview(loadingIndicator)
+        
         requestCommentsAndPopulateList(false)
     }
     
@@ -147,6 +164,8 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
     }
     
     func composeBarViewDidPressButton(composeBarView: PHFComposeBarView!) {
+        startLoading()
+        
         var comment = composeBarView.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
         
         composeBarView.text = ""
@@ -180,6 +199,7 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
                 self.comments.append(comment)
                 
                 dispatch_async(dispatch_get_main_queue(), {
+                    self.loadingIndicator.stopAnimating()
                     self.commentsFeed.reloadData()
                     
                     self.handleCommentCount(true)
@@ -188,7 +208,19 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
             
             },
             failure: {(error: NSError, response: HTTPResponse?) in
-            
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.loadingIndicator.stopAnimating()
+                    if self.comments.count == 0 {
+                        self.noCommentsText.alpha = 1.0
+                    }
+                    
+                    self.composeBarView.text = comment
+                    self.composeBarView.becomeFirstResponder()
+                    
+                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+
+                })
             }
         )
         
@@ -240,6 +272,7 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
     }
     
     func requestCommentsAndPopulateList(refreshing: Bool) {
+        startLoading()
         
         var request = HTTPTask()
         
@@ -271,6 +304,15 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
                 }
                 
                 dispatch_async(dispatch_get_main_queue(), {
+                    self.loadingIndicator.stopAnimating()
+                    
+                    if self.comments.count == 0 {
+                        self.noCommentsText.text = "No comments yet"
+                        self.noCommentsText.alpha = 1.0
+                    } else {
+                        self.noCommentsText.alpha = 0.0
+                    }
+                    
                     self.commentsFeed.reloadData()
                     
                     if refreshing && self.comments.count > 0 {
@@ -282,7 +324,24 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
                 })
             },
             failure: {(error: NSError, response: HTTPResponse?) in
-                self.refreshButton.enabled = true
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.loadingIndicator.stopAnimating()
+                    
+                    if self.comments.count == 0 {
+                        if response == nil {
+                            self.noCommentsText.text = "We couldn't connect to the internet"
+                        } else {
+                            self.noCommentsText.text = "Something went wrong"
+                        }
+                        
+                        self.noCommentsText.alpha = 1.0
+                    }
+                    
+                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+                    
+                    
+                    self.refreshButton.enabled = true
+                })
             }
         )
     }
@@ -344,6 +403,11 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
                 self.postLikesCount.text = "\(post.likeCount) likes"
             }
         }
+    }
+    
+    func startLoading() {
+        noCommentsText.alpha = 0.0
+        loadingIndicator.startAnimating()
     }
     
     func handleCommentCount(creating: Bool) {

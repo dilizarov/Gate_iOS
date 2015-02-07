@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import SwiftHTTP
 
 extension NSDate {
     func yearsFrom(date:NSDate) -> Int{
@@ -77,6 +78,38 @@ extension String {
         formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
         
         return formatter.dateFromString(self)!
+    }
+    
+    static func prettyErrorMessage(response: HTTPResponse?) -> String {
+        var errorText = ""
+        
+        if response != nil && response!.statusCode != nil {
+            var statusCode = response?.statusCode!
+            
+            if statusCode >= 500 {
+                errorText += "We made a mistake somewhere. Robots are investigating."
+            } else if statusCode == 401 {
+                errorText += "Gatekeeper, you are unauthorized to perform this action"
+            } else {
+                if response!.responseObject != nil {
+                    var errors = (response!.responseObject as Dictionary<String, AnyObject>)["errors"] as [String]
+                    
+                    for var i = 0; i < errors.count; i++ {
+                        if (i != 0) { errorText += "\n" }
+                        errorText += errors[i]
+                    }
+                }
+            }
+            
+        } else {
+            errorText += "We couldn't connect to the internet"
+        }
+        
+        if errorText == "" {
+            errorText = "Something went wrong"
+        }
+
+        return errorText
     }
     
 }

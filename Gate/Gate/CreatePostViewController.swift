@@ -61,6 +61,15 @@ class CreatePostViewController: UIViewController, UITextViewDelegate {
                     return
                 },
                 origin: sender)
+
+            var doneButton = UIBarButtonItem(title: "Done", style: .Plain, target: nil, action: nil)
+            doneButton.tintColor = UIColor.gateBlueColor()
+            
+            var cancelButton = UIBarButtonItem(title: "Cancel", style: .Plain, target: nil, action: nil)
+            cancelButton.tintColor = UIColor.gateBlueColor()
+            
+            picker.setDoneButton(doneButton)
+            picker.setCancelButton(cancelButton)
             
             picker.showActionSheetPicker()
 
@@ -102,6 +111,10 @@ class CreatePostViewController: UIViewController, UITextViewDelegate {
         postBody.becomeFirstResponder()
     }
     
+    func actionSheetPicker(actionSheetPicker: AbstractActionSheetPicker!, configurePickerView pickerView: UIPickerView!) {
+        pickerView.backgroundColor = UIColor.lightGrayColor()
+    }
+    
     func checkPostRequirements() {
         if selectedGate != nil && !postBody.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()).isEmpty {
             postButton.enabled = true
@@ -121,6 +134,10 @@ class CreatePostViewController: UIViewController, UITextViewDelegate {
             })
         }
     }
+    
+//    func actionSheetPicker(actionSheetPicker: AbstractActionSheetPicker!, configurePickerView pickerView: UIPickerView!) {
+//        actionSheetPicker.
+//    }
     
     func setupNavBar() {
         var navBar: UINavigationBar = UINavigationBar(frame: CGRectMake(0, 0, self.view.bounds.width, 64))

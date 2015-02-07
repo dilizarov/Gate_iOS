@@ -37,6 +37,8 @@ class CommentCell: UITableViewCell {
             failure: {(error: NSError, response: HTTPResponse?) in
                 dispatch_async(dispatch_get_main_queue(), {
                     self.toggleLikeComment()
+                    
+                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
                 })
             }
         )

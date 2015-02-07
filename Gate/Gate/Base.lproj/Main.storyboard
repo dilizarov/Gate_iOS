@@ -775,12 +775,30 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mwD-UW-7se" customClass="ClickThroughScrollView" customModule="Gate" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="20" width="320" height="548"/>
                             </scrollView>
+                            <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Gq-qt-xm9">
+                                <rect key="frame" x="16" y="283" width="288" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="YTY-4u-VKD"/>
+                                </constraints>
+                                <attributedString key="attributedText">
+                                    <fragment content="Label">
+                                        <attributes>
+                                            <color key="NSColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                            <font key="NSFont" size="15" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="adD-6D-jef" firstAttribute="top" secondItem="3OZ-p6-LXP" secondAttribute="bottom" constant="2" id="0c0-P7-jff"/>
                             <constraint firstItem="mwD-UW-7se" firstAttribute="top" secondItem="3OZ-p6-LXP" secondAttribute="bottom" constant="2" id="1kR-cg-aqf"/>
+                            <constraint firstItem="5Gq-qt-xm9" firstAttribute="trailing" secondItem="ahh-BX-CdI" secondAttribute="trailingMargin" id="3e4-Yk-uL7"/>
                             <constraint firstItem="fyM-9f-Ve2" firstAttribute="top" secondItem="adD-6D-jef" secondAttribute="bottom" constant="1" id="3k3-xt-fDB"/>
+                            <constraint firstItem="5Gq-qt-xm9" firstAttribute="leading" secondItem="ahh-BX-CdI" secondAttribute="leadingMargin" id="43N-wI-1Cc"/>
                             <constraint firstItem="fDC-cM-wGX" firstAttribute="leading" secondItem="ahh-BX-CdI" secondAttribute="leadingMargin" constant="-8" id="6z6-Ce-rjl"/>
                             <constraint firstItem="gzZ-Fd-gKI" firstAttribute="top" secondItem="off-XO-DJB" secondAttribute="bottom" constant="54" id="88d-0C-C4j"/>
                             <constraint firstItem="oc7-OH-BaV" firstAttribute="top" secondItem="gzZ-Fd-gKI" secondAttribute="bottom" constant="2" id="BFY-CE-trL"/>
@@ -797,6 +815,7 @@
                             <constraint firstItem="mwD-UW-7se" firstAttribute="leading" secondItem="ahh-BX-CdI" secondAttribute="leadingMargin" constant="-16" id="QEF-56-Bvd"/>
                             <constraint firstItem="fyM-9f-Ve2" firstAttribute="top" secondItem="adD-6D-jef" secondAttribute="bottom" constant="3" id="RlG-ye-rkF"/>
                             <constraint firstItem="adD-6D-jef" firstAttribute="leading" secondItem="ahh-BX-CdI" secondAttribute="leadingMargin" constant="-16" id="Rvf-Su-nFm"/>
+                            <constraint firstItem="1Wa-Ea-FTr" firstAttribute="top" secondItem="5Gq-qt-xm9" secondAttribute="bottom" constant="264" id="TLK-12-aQZ"/>
                             <constraint firstItem="1Wa-Ea-FTr" firstAttribute="top" secondItem="mwD-UW-7se" secondAttribute="bottom" id="V4F-kJ-DKd"/>
                             <constraint firstItem="TTt-kp-vfl" firstAttribute="centerY" secondItem="Ew1-dI-Rlr" secondAttribute="centerY" id="YUH-9b-RBe"/>
                             <constraint firstItem="gzZ-Fd-gKI" firstAttribute="leading" secondItem="ahh-BX-CdI" secondAttribute="leadingMargin" constant="-8" id="ZkN-KF-4PY"/>
@@ -843,6 +862,7 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
                     <connections>
                         <outlet property="commentsFeed" destination="fyM-9f-Ve2" id="jpw-7c-Oe4"/>
+                        <outlet property="noCommentsText" destination="5Gq-qt-xm9" id="neN-P1-EfD"/>
                         <outlet property="postBody" destination="fDC-cM-wGX" id="mYt-yn-ID6"/>
                         <outlet property="postCommentsCount" destination="TTt-kp-vfl" id="igi-Su-njo"/>
                         <outlet property="postGateName" destination="oc7-OH-BaV" id="3Lr-Lf-yq1"/>
