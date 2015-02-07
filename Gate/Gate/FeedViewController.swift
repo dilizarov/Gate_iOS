@@ -10,7 +10,7 @@ import UIKit
 import SwiftHTTP
 
 protocol CreatePostViewControllerDelegate {
-    func sendCreatePostRequest(postBody: String!, gate: Gate!)
+    func sendCreatePostRequest(postBody: String!, gate: Gate!, gates: [Gate])
 }
 
 class FeedViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, CreatePostViewControllerDelegate {
@@ -33,6 +33,13 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     var currentPage: Int!
     var infiniteScrollTimeBuffer: String!
     var lastTimeLoading: NSDate!
+    
+    // Pass back to createPostViewController if 
+    // Failed to successfully post
+    var attemptedGate: Gate?
+    var attemptedPostBody: String?
+    var attemptedGates: [Gate]?
+    var createPostErrorMessage: String?
     
     @IBAction func createPost(sender: AnyObject) {
     }
@@ -96,7 +103,24 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             let mainViewController = parentViewController as MainViewController
             
             destination.currentGate = currentGate
-            destination.gates = mainViewController.getGates()
+            
+            if attemptedGate != nil {
+                destination.attemptedGate = attemptedGate
+            }
+
+            if attemptedPostBody != nil {
+                destination.attemptedPostBody = attemptedPostBody
+            }
+            
+            if attemptedGates != nil {
+                destination.gates = attemptedGates!
+            } else {
+                destination.gates = mainViewController.getGates()
+            }
+            
+            if createPostErrorMessage != nil {
+                destination.createPostErrorMessage = createPostErrorMessage
+            }
         }
     }
     
@@ -114,8 +138,13 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
     
-    func sendCreatePostRequest(postBody: String!, gate: Gate!) {
-    
+    func sendCreatePostRequest(postBody: String!, gate: Gate!, gates: [Gate]) {
+        dispatch_async(dispatch_get_main_queue(), {
+            var hud = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+            
+            hud.labelText = "Robots processing..."
+        })
+        
         var request = HTTPTask()
         
         var userInfo = NSUserDefaults.standardUserDefaults()
@@ -135,8 +164,6 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                     
                     var jsonPost = response.responseObject!["post"] as Dictionary<String, AnyObject>
                     
-                    println(jsonPost)
-                    
                     var post = Post(
                         id: jsonPost["external_id"] as String,
                         name: (jsonPost["user"] as Dictionary<String, AnyObject>)["name"] as String,
@@ -152,6 +179,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                     self.posts.insert(post, atIndex: 0)
                     
                     dispatch_async(dispatch_get_main_queue(), {
+                        MBProgressHUD.hideHUDForView(self.view, animated: true)
                         self.feed.reloadData()
                         self.feed.setContentOffset(CGPointZero, animated: true)
                     })
@@ -164,6 +192,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                     alertController.addAction(confirmAction)
                     
                     dispatch_async(dispatch_get_main_queue(), {
+                        MBProgressHUD.hideHUDForView(self.view, animated: true)
                         self.presentViewController(alertController, animated: true, completion: nil)
                     })
                 }
@@ -171,7 +200,21 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
             },
             failure: { (error: NSError, response: HTTPResponse?) in
-                
+                dispatch_async(dispatch_get_main_queue(), {
+                    MBProgressHUD.hideHUDForView(self.view, animated: true)
+                    
+                    self.attemptedGate = gate
+                    self.attemptedPostBody = postBody
+                    self.attemptedGates = gates
+                    self.createPostErrorMessage = String.prettyErrorMessage(response)
+                    
+                    // If someone has no internet connection, everything fires off too fast and the Segue doesn't get performed, so we delay it by a second.
+                    let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(1 * Double(NSEC_PER_SEC)))
+                    
+                    dispatch_after(delayTime, dispatch_get_main_queue(), {
+                        self.performSegueWithIdentifier("createPost", sender: self)
+                    })
+                })
                 
                 
             }

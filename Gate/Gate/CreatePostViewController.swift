@@ -15,6 +15,10 @@ class CreatePostViewController: UIViewController, UITextViewDelegate {
     var gates = [Gate]()
     var selectedGate: Gate?
     
+    var attemptedGate: Gate?
+    var attemptedPostBody: String?
+    var createPostErrorMessage: String?
+    
     var postButton: UIBarButtonItem!
     
     var delegate : CreatePostViewControllerDelegate?
@@ -86,19 +90,30 @@ class CreatePostViewController: UIViewController, UITextViewDelegate {
 
         setupNavBar()
         
+        if createPostErrorMessage != nil {
+            iToast.makeText(" " + createPostErrorMessage!).setGravity(iToastGravityCenter).setDuration(3000).show()
+        }
+        
         if self.gates.isEmpty {
             selectGateButton.setTitle("Loading Gates...", forState: .Normal)
             selectGateButton.enabled = false
             
             loadGates(false)
         } else {
-            if currentGate != nil {
+            // Attempted Gate gets precedence over current Gate
+            if attemptedGate != nil {
+                selectGateButton.setTitle(attemptedGate!.name, forState: .Normal)
+                selectedGate = attemptedGate!
+            } else if currentGate != nil {
                 selectGateButton.setTitle(currentGate!.name, forState: .Normal)
                 selectedGate = currentGate!
             } else {
                 selectGate(selectGateButton)
             }
-
+        }
+        
+        if attemptedPostBody != nil {
+            postBody.text = attemptedPostBody
         }
         
         postBody.delegate = self
@@ -183,7 +198,9 @@ class CreatePostViewController: UIViewController, UITextViewDelegate {
             
             var postBody = self.postBody.text.stringByTrimmingCharactersInSet(.whitespaceAndNewlineCharacterSet())
             
-            self.delegate?.sendCreatePostRequest(postBody, gate: selectedGate!)
+            // We pass in gates so that we don't have to load the gates again on a potential failed attempt. Further, if ambitious enough, we can just use these gates data now and populate the Gates page, but... not today :)
+            
+            self.delegate?.sendCreatePostRequest(postBody, gate: selectedGate!, gates: gates)
             
             dismiss()
         }
@@ -248,26 +265,14 @@ class CreatePostViewController: UIViewController, UITextViewDelegate {
                 
             },
             failure: {(error: NSError, response: HTTPResponse?) in
-                
-                let failedLoad = UIAlertController(title: "Unable to load Gates", message: "We had trouble connecting to the Internet", preferredStyle: .Alert)
-                
-                let confirmAction = UIAlertAction(title: "OK", style: .Default,
-                    handler: {(alert) in
-                    
-                        self.selectGateButton.setTitle("Reload Gates", forState: .Normal)
-                    
-                        self.selectGateButton.enabled = true
-                    }
-                )
-                
-                failedLoad.addAction(confirmAction)
-                
                 dispatch_async(dispatch_get_main_queue(), {
-                    self.presentViewController(failedLoad, animated: true, completion: nil)
+                    iToast.makeText(" We couldn't load the Gates").setGravity(iToastGravityCenter).setDuration(3000).show()
+                    
+                    
+                    self.selectGateButton.setTitle("Reload Gates", forState: .Normal)
+                    
+                    self.selectGateButton.enabled = true
                 })
-                
-                //Tell them we couldn't load the gates. Button becomes retry so we could retry loading the buttons.
-                
             }
         )
 
