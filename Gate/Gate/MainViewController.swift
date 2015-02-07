@@ -171,7 +171,14 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func showCreateKey() {
-        performSegueWithIdentifier("createKey", sender: self)
+        if getGates().count == 0 {
+            scrollView.setContentOffset(CGPoint(x: self.view.bounds.width, y: 0), animated: true)
+            pageControl.currentPage = 1
+            
+            iToast.makeText(" You have no Gates to unlock").setGravity(iToastGravityCenter).setDuration(3000).show()
+        } else {
+            performSegueWithIdentifier("createKey", sender: self)
+        }
     }
     
     func enterKey() {
@@ -219,6 +226,10 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func processKey(key: String) {
+        dispatch_async(dispatch_get_main_queue(), {
+            var hud = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+            hud.labelText = "Robots processing..."
+        })
         
         var request = HTTPTask()
         
@@ -298,6 +309,8 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
                 
                 
                 dispatch_async(dispatch_get_main_queue(), {
+                    MBProgressHUD.hideHUDForView(self.view, animated: true)
+                    
                     if !unwrappedGates.isEmpty {
                         self.gatesViewController.gatesTable.reloadData()
                     }
@@ -313,7 +326,13 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
                 
             },
             failure: {(error: NSError, response: HTTPResponse?) in
-            
+                dispatch_async(dispatch_get_main_queue(), {
+                    MBProgressHUD.hideHUDForView(self.view, animated: true)
+                    
+                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+
+                    self.presentViewController(self.enterKeyAlert, animated: true, completion: nil)
+                })
             }
         )
     }

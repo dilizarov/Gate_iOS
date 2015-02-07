@@ -18,9 +18,9 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     @IBOutlet var gatesTable: UITableView!
     @IBAction func viewAggregate(sender: AnyObject) {
-        let wow = parentViewController as MainViewController
+        let parent = parentViewController as MainViewController
         
-        wow.showFeed(nil)
+        parent.showFeed(nil)
     }
     
     @IBAction func createGate(sender: AnyObject) {
