@@ -152,6 +152,7 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
         composeBarView = PHFComposeBarView(frame: frame)
         
         composeBarView.maxLinesCount = 6
+        composeBarView.maxCharCount = 500
         composeBarView.placeholder = "Add a comment..."
         composeBarView.delegate = self
         

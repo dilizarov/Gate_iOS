@@ -634,6 +634,11 @@ static CGFloat kTextViewToSuperviewHeightDelta;
 
 - (void)updateButtonEnabled {
     BOOL enabled = [self isEnabled] && [[[[self textView] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] > 0;
+    
+    if (_maxCharCount > 0) {
+        enabled = [[[[self textView] text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] <= _maxCharCount;
+    }
+    
     [[self button] setEnabled:enabled];
 }
 
