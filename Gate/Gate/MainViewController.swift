@@ -145,8 +145,21 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         
         let logoutAction = UIAlertAction(title: "Log out", style: .Destructive, handler: {(alert: UIAlertAction!) -> Void in
             
-            self.logout()
+            var userName = NSUserDefaults.standardUserDefaults().objectForKey("name") as String
             
+            let logoutAlert = UIAlertController(title: userName, message: "Are you sure you want to log out of Gate?", preferredStyle: .Alert)
+            
+            let confirmAction = UIAlertAction(title: "Log out", style: .Default, handler: {(alert: UIAlertAction!) in
+                self.logout()
+            })
+            
+            let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler:  {(alert: UIAlertAction!) in
+            })
+
+            logoutAlert.addAction(cancelAction)
+            logoutAlert.addAction(confirmAction)
+            
+            self.presentViewController(logoutAlert, animated: true, completion: nil)
         })
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
