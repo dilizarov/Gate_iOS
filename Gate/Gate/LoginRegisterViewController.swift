@@ -134,7 +134,21 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
         case .Login:
             processLogin()
         case .Register:
-            processRegistration()
+            
+            let registrationAlert = UIAlertController(title: "One more step", message: "The Privacy Policy and Terms of Service aren\'t written yet. We\'re hard at work trying to perfect this awesome product. When these documents are officially drafted, we\'ll send you an email. Is that alright?", preferredStyle: .Alert)
+            
+            let confirmAction = UIAlertAction(title: "YES", style: .Default, handler: {(alert: UIAlertAction!) -> Void in
+                
+                self.processRegistration()
+                
+            })
+            
+            let cancelAction = UIAlertAction(title: "NO", style: .Cancel, handler: nil)
+            
+            registrationAlert.addAction(cancelAction)
+            registrationAlert.addAction(confirmAction)
+            
+            presentViewController(registrationAlert, animated: true, completion: nil)
         case .ForgotPassword:
             processForgotPassword()
         }
@@ -196,34 +210,9 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
                 })
             },
             failure: {(error: NSError, response: HTTPResponse?) in
-                
-                var message = ""
-                
-                if response != nil {
-                    
-                    let unwrappedResponse = response!
-                    
-                    if unwrappedResponse.statusCode! == 422 {
-                        let errorsDict = unwrappedResponse.responseObject! as Dictionary<String, Array<String>>
-                        var errors = errorsDict["errors"]
-                        message = errors![0]
-                    } else {
-                        message = "We made a mistake somewhere. Robots are investigating."
-                    }
-                    
-                } else {
-                    message = "We couldn't connect to the internet"
-                }
-                
-                let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .Alert)
-                
-                let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
-                
-                alertController.addAction(defaultAction)
-                
                 dispatch_async(dispatch_get_main_queue(), {                    MBProgressHUD.hideHUDForView(self.view, animated: true)
                     
-                    self.presentViewController(alertController, animated: true, completion: nil)
+                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
                 })
         })
     }
@@ -263,42 +252,10 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
                 
             },
             failure: {(error: NSError, response: HTTPResponse?) in
-                
-                var message = ""
-                
-                if response != nil {
-                    
-                    let unwrappedResponse = response!
-                    
-                    if unwrappedResponse.statusCode! == 422 {
-                        let errorsDict = unwrappedResponse.responseObject as Dictionary<String, Array<String>>
-                        
-                        var errors = errorsDict["errors"]!
-                        
-                        for var i = 0; i < errors.count; i++ {
-                            if i != 0 {
-                                message += "\n"
-                            }
-                            
-                            message += errors[i]
-                        }
-                    } else {
-                        message = "We made a mistake somewhere. Robots are investigating."
-                    }
-                } else {
-                    message = "We couldn't connect to the internet"
-                }
-                
-                let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .Alert)
-                
-                let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
-                
-                alertController.addAction(defaultAction)
-                
                 dispatch_async(dispatch_get_main_queue(), {
                     MBProgressHUD.hideHUDForView(self.view, animated: true)
                     
-                    self.presentViewController(alertController, animated: true, completion: nil)
+                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
                 })
         })
         
@@ -351,17 +308,10 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
                     message = "We couldn't connect to the internet"
                 }
                 
-
-                let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .Alert)
-                
-                let defaultAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
-                
-                alertController.addAction(defaultAction)
-                
                 dispatch_async(dispatch_get_main_queue(), {
                     MBProgressHUD.hideHUDForView(self.view, animated: true)
     
-                    self.presentViewController(alertController, animated: true, completion: nil)
+                    iToast.makeText(" " + message).setGravity(iToastGravityCenter).setDuration(3000).show()
                 })
                 
             })
