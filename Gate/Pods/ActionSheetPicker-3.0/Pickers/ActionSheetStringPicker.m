@@ -74,7 +74,7 @@
     stringPicker.delegate = self;
     stringPicker.dataSource = self;
     [stringPicker selectRow:self.selectedIndex inComponent:0 animated:NO];
-    stringPicker.backgroundColor = [[UIColor alloc] initWithRed: 246.0/255.0 green: 246.0/255.0 blue: 246.0/255.0 alpha:1.0];
+    //stringPicker.backgroundColor = [[UIColor alloc] initWithRed: 246.0/255.0 green: 246.0/255.0 blue: 246.0/255.0 alpha:1.0];
     if (self.data.count == 0) {
         stringPicker.showsSelectionIndicator = NO;
         stringPicker.userInteractionEnabled = NO;

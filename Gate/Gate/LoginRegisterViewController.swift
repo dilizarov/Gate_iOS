@@ -17,6 +17,8 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
     
     var viewState: ViewState?
     
+    var called = false
+    
     @IBOutlet var email: UITextField!
     @IBOutlet var password: UITextField!
     @IBOutlet var name: UITextField!
@@ -176,7 +178,21 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
             email.text = last_email_used
         }
     }
+
+    override func viewWillAppear(animated: Bool) {
+        if NSUserDefaults.standardUserDefaults().objectForKey("auth_token") != nil {
+            self.view.hidden = true
+        } else {
+            self.view.hidden = false
+        }
+    }
     
+    override func viewDidAppear(animated: Bool) {
+        if NSUserDefaults.standardUserDefaults().objectForKey("auth_token") != nil {
+            performSegueWithIdentifier("loginUser", sender: self)
+        }
+    }
+
     func processLogin() {
         dispatch_async(dispatch_get_main_queue(), {
             var hud = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
@@ -193,6 +209,13 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
         
         var user = [ "email" : emailText, "password" : passwordText ]
         
+        var userInfo = NSUserDefaults.standardUserDefaults()
+        
+        if userInfo.objectForKey("device_token") != nil {
+            var device = [ "token" : userInfo.objectForKey("device_token") as String, "platform" : "ios" ]
+            params["device"] = device
+        }
+                
         params["user"] = user
         params["api_key"] = "09b19f4a-6e4d-475a-b7c8-a369c60e9f83"
         
@@ -234,9 +257,16 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
         
         var user = [ "email" : emailText, "password" : passwordText, "name" : nameText ]
         
+        var userInfo = NSUserDefaults.standardUserDefaults()
+        
+        if userInfo.objectForKey("device_token") != nil {
+            var device = [ "token" : userInfo.objectForKey("device_token") as String, "platform" : "ios" ]
+            params["device"] = device
+        }
+        
         params["user"] = user
         params["api_key"] = "09b19f4a-6e4d-475a-b7c8-a369c60e9f83"
-        
+            
         request.responseSerializer = JSONResponseSerializer()
         
         request.POST("https://infinite-river-7560.herokuapp.com/api/v1/registrations.json", parameters: params,

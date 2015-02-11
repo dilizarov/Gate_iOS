@@ -74,8 +74,12 @@
                                     <action selector="toggleForgotPassword:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="9pQ-UN-BGX"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="G1M-OA-CbY">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="G1M-OA-CbY">
                                 <rect key="frame" x="16" y="534" width="57" height="14"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="14" id="ZU5-So-9rB"/>
+                                    <constraint firstAttribute="width" constant="57" id="isI-ou-Y7F"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                 <state key="normal" title="Register">
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
@@ -85,8 +89,12 @@
                                     <action selector="toggleRegisterLogin:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="z2z-ks-3JQ"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LgG-FK-fGU">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LgG-FK-fGU">
                                 <rect key="frame" x="262" y="534" width="42" height="14"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="42" id="dUX-hM-KGU"/>
+                                    <constraint firstAttribute="height" constant="14" id="fpj-J7-FiK"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                 <state key="normal" title="Terms">
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>

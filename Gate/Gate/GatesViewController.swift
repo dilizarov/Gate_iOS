@@ -28,10 +28,7 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     @IBAction func createGate(sender: AnyObject) {
         createGateAlert = UIAlertController(title: "Create Gate", message: nil, preferredStyle: .Alert)
         
-        createGateAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: {
-            (action: UIAlertAction!) in
-            self.dismissViewControllerAnimated(true, completion: nil)
-        }))
+        createGateAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
         
         createGateAlert.addAction(UIAlertAction(title: "Create", style: .Default, handler: {
             (action: UIAlertAction!) in
@@ -60,13 +57,6 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         presentViewController(createGateAlert, animated: true, completion: nil)
     }
-    
-//    override func viewDidAppear(animated: Bool) {
-//        dispatch_async(dispatch_get_main_queue(), {
-//            var hud = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
-//            hud.labelText = "Robots processing..."
-//        })
-//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()

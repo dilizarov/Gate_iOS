@@ -126,9 +126,9 @@ class CreatePostViewController: UIViewController, UITextViewDelegate {
         postBody.becomeFirstResponder()
     }
     
-    func actionSheetPicker(actionSheetPicker: AbstractActionSheetPicker!, configurePickerView pickerView: UIPickerView!) {
-        pickerView.backgroundColor = UIColor.lightGrayColor()
-    }
+//    func actionSheetPicker(actionSheetPicker: AbstractActionSheetPicker!, configurePickerView pickerView: UIPickerView!) {
+//        pickerView.backgroundColor = UIColor.lightGrayColor()
+//    }
     
     func checkPostRequirements() {
         if selectedGate != nil && !postBody.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()).isEmpty {
@@ -149,11 +149,7 @@ class CreatePostViewController: UIViewController, UITextViewDelegate {
             })
         }
     }
-    
-//    func actionSheetPicker(actionSheetPicker: AbstractActionSheetPicker!, configurePickerView pickerView: UIPickerView!) {
-//        actionSheetPicker.
-//    }
-    
+  
     func setupNavBar() {
         var navBar: UINavigationBar = UINavigationBar(frame: CGRectMake(0, 0, self.view.bounds.width, 64))
         

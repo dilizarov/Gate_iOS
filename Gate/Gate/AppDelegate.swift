@@ -12,19 +12,35 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+
+        var pushSettings: UIUserNotificationSettings = UIUserNotificationSettings(forTypes: .Alert | .Badge | .Sound, categories: nil)
         
-        if NSUserDefaults.standardUserDefaults().objectForKey("auth_token") != nil {
-            
-            var storyboard = UIStoryboard(name: "Main", bundle: nil)
-            
-            self.window?.rootViewController = storyboard.instantiateViewControllerWithIdentifier("MainViewController") as? UIViewController
-            self.window!.makeKeyAndVisible()
-        }
+        application.registerUserNotificationSettings(pushSettings)
         
+        application.registerForRemoteNotifications()
+
         return true
         
+    }
+    
+    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+    
+        NSUserDefaults.standardUserDefaults().setObject(deviceToken.description, forKey: "device_token")
+        NSUserDefaults.standardUserDefaults().synchronize()
+    }
+    
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+        var alert = (userInfo["aps"] as Dictionary<String, AnyObject>)["alert"] as String
+        
+        if application.applicationState == UIApplicationState.Active {
+            iToast.makeText(" " + alert).setDuration(3000).setGravity(iToastGravityCenter).show()
+        }
+        
+    }
+    
+    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
     }
 
     func applicationWillResignActive(application: UIApplication) {
@@ -38,7 +54,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
-        // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     }
 
     func applicationDidBecomeActive(application: UIApplication) {

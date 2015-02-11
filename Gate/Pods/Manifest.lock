@@ -5,7 +5,7 @@ PODS:
   - PHFComposeBarView (2.0.1):
     - PHFDelegateChain (~> 1.0)
   - PHFDelegateChain (1.0.1)
-  - TPKeyboardAvoiding (1.2.4)
+  - TPKeyboardAvoiding (1.2.6)
 
 DEPENDENCIES:
   - ActionSheetPicker-3.0
@@ -20,6 +20,6 @@ SPEC CHECKSUMS:
   MBProgressHUD: 2038dbcf3dce73215abed6001657043d53aa79a8
   PHFComposeBarView: 0fa52137ecb23725d219dc90cf77c4c95aa29d05
   PHFDelegateChain: f4d5a2847960b3dd16fc2f2196833f3a66704745
-  TPKeyboardAvoiding: 925e1e1912597d1a4956697eec3bd9656552153c
+  TPKeyboardAvoiding: 0797ad5f2366e2435e605202b01f3b7cff5d82cd
 
 COCOAPODS: 0.36.0.beta.1

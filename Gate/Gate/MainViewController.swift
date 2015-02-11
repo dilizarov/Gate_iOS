@@ -35,6 +35,7 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
         
         var navBar: UINavigationBar = UINavigationBar(frame: CGRectMake(0, 0, self.view.bounds.width, 64))
         
@@ -351,17 +352,50 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func logout() {
-        var defaults = NSUserDefaults.standardUserDefaults()
         
-        defaults.removeObjectForKey("auth_token")
-        defaults.removeObjectForKey("created_at")
-        defaults.removeObjectForKey("email")
-        defaults.removeObjectForKey("user_id")
-        defaults.removeObjectForKey("name")
+        dispatch_async(dispatch_get_main_queue(), {
+            var hud = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+            
+            hud.labelText = "Robots processing..."
+        })
         
-        defaults.synchronize()
+        var request = HTTPTask()
         
-        performSegueWithIdentifier("logoutUser", sender: self)
+        var userInfo = NSUserDefaults.standardUserDefaults()
+        
+        var params: Dictionary<String, AnyObject> = [ "user_id" : userInfo.objectForKey("user_id") as String, "auth_token" : userInfo.objectForKey("auth_token") as String, "api_key" : "09b19f4a-6e4d-475a-b7c8-a369c60e9f83" ]
+        
+        var device = [ "token" : userInfo.objectForKey("device_token") as String, "platform" : "ios" ]
+        
+        params["device"] = device
+        
+        request.POST("https://infinite-river-7560.herokuapp.com/api/v1/sessions/logout.json", parameters: params,
+            success: {(response: HTTPResponse) in
+                userInfo.removeObjectForKey("auth_token")
+                userInfo.removeObjectForKey("created_at")
+                userInfo.removeObjectForKey("email")
+                userInfo.removeObjectForKey("user_id")
+                userInfo.removeObjectForKey("name")
+                userInfo.removeObjectForKey("device_token")
+                
+                userInfo.synchronize()
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    MBProgressHUD.hideHUDForView(self.view, animated: true)
+                    self.performSegueWithIdentifier("logoutUser", sender: self)
+                })
+            },
+            failure: {(error: NSError, response: HTTPResponse?) in
+                dispatch_async(dispatch_get_main_queue(), {
+                    MBProgressHUD.hideHUDForView(self.view, animated: true)
+                    
+                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+                })
+                
+                
+            }
+        )
+        
     }
     
     func getGates() -> [Gate] {
@@ -381,7 +415,6 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         
         navbarView.frame = CGRect(x: 0, y: 20, width: self.view.bounds.width, height: 44)
     }
-    
     
     func scrollViewDidScroll(scrollView: UIScrollView) {
         

@@ -148,7 +148,7 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
     func setupAddingComment() {
         var viewBounds = self.scrollView.bounds
         var frame = CGRectMake(0, viewBounds.size.height - PHFComposeBarViewInitialHeight, viewBounds.width, PHFComposeBarViewInitialHeight)
-        
+
         composeBarView = PHFComposeBarView(frame: frame)
         
         composeBarView.maxLinesCount = 6
@@ -222,8 +222,6 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
                 })
             }
         )
-        
-        
         
     }
     
