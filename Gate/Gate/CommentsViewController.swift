@@ -39,7 +39,7 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
         
         var userInfo = NSUserDefaults.standardUserDefaults()
         
-        var params : Dictionary<String, AnyObject> = [ "user_id" : userInfo.objectForKey("user_id") as String, "auth_token" : userInfo.objectForKey("auth_token") as String, "api_key" : "09b19f4a-6e4d-475a-b7c8-a369c60e9f83" ]
+        var params : Dictionary<String, AnyObject> = [ "user_id" : userInfo.objectForKey("user_id") as String, "auth_token" : userInfo.objectForKey("auth_token") as String, "api_key" : "91b75c9e-6a00-4fa9-bf65-610c12024bab" ]
         
         if !post.liked { params["revert"] = true }
         
@@ -174,7 +174,7 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
         
         var userInfo = NSUserDefaults.standardUserDefaults()
         
-        var params : Dictionary<String, AnyObject> = [ "user_id" : userInfo.objectForKey("user_id") as String, "auth_token" : userInfo.objectForKey("auth_token") as String, "api_key" : "09b19f4a-6e4d-475a-b7c8-a369c60e9f83" ]
+        var params : Dictionary<String, AnyObject> = [ "user_id" : userInfo.objectForKey("user_id") as String, "auth_token" : userInfo.objectForKey("auth_token") as String, "api_key" : "91b75c9e-6a00-4fa9-bf65-610c12024bab" ]
         
         var commentJson = [String : AnyObject]()
         commentJson["body"] = comment
@@ -275,7 +275,7 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
         
         var userInfo = NSUserDefaults.standardUserDefaults()
         
-        var params = [ "user_id" : userInfo.objectForKey("user_id") as String, "auth_token" : userInfo.objectForKey("auth_token") as String, "api_key" : "09b19f4a-6e4d-475a-b7c8-a369c60e9f83" ]
+        var params = [ "user_id" : userInfo.objectForKey("user_id") as String, "auth_token" : userInfo.objectForKey("auth_token") as String, "api_key" : "91b75c9e-6a00-4fa9-bf65-610c12024bab" ]
         
         request.responseSerializer = JSONResponseSerializer()
         

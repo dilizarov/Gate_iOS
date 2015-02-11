@@ -217,7 +217,7 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
         }
                 
         params["user"] = user
-        params["api_key"] = "09b19f4a-6e4d-475a-b7c8-a369c60e9f83"
+        params["api_key"] = "91b75c9e-6a00-4fa9-bf65-610c12024bab"
         
         request.responseSerializer = JSONResponseSerializer()
         
@@ -265,7 +265,7 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
         }
         
         params["user"] = user
-        params["api_key"] = "09b19f4a-6e4d-475a-b7c8-a369c60e9f83"
+        params["api_key"] = "91b75c9e-6a00-4fa9-bf65-610c12024bab"
             
         request.responseSerializer = JSONResponseSerializer()
         
