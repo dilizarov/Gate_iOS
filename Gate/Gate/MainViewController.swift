@@ -11,6 +11,8 @@ import SwiftHTTP
 
 class MainViewController: UIViewController, UIScrollViewDelegate {
     
+    var appDelegate: AppDelegate!
+    
     var scrollView:UIScrollView!
     var pageControl:UIPageControl!
     var navbarView:UIView!
@@ -35,7 +37,6 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         
         var navBar: UINavigationBar = UINavigationBar(frame: CGRectMake(0, 0, self.view.bounds.width, 64))
         
@@ -139,6 +140,11 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         navigationItem.rightBarButtonItem = settingsButton
         
         navBar.pushNavigationItem(navigationItem, animated: false)
+        
+        appDelegate = UIApplication.sharedApplication().delegate as AppDelegate
+        
+        appDelegate.mainViewController = self
+        
     }
     
     func bringUpSettings() {
@@ -365,10 +371,11 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         
         var params: Dictionary<String, AnyObject> = [ "user_id" : userInfo.objectForKey("user_id") as String, "auth_token" : userInfo.objectForKey("auth_token") as String, "api_key" : "91b75c9e-6a00-4fa9-bf65-610c12024bab" ]
         
-        var device = [ "token" : userInfo.objectForKey("device_token") as String, "platform" : "ios" ]
-        
-        params["device"] = device
-        
+        if userInfo.objectForKey("device_token") != nil {
+            var device = [ "token" : userInfo.objectForKey("device_token") as String, "platform" : "ios" ]
+            params["device"] = device
+        }
+
         request.POST("https://infinite-river-7560.herokuapp.com/api/v1/sessions/logout.json", parameters: params,
             success: {(response: HTTPResponse) in
                 userInfo.removeObjectForKey("auth_token")
@@ -382,6 +389,7 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
                 
                 dispatch_async(dispatch_get_main_queue(), {
                     MBProgressHUD.hideHUDForView(self.view, animated: true)
+                    self.appDelegate.mainViewController = nil
                     self.performSegueWithIdentifier("logoutUser", sender: self)
                 })
             },

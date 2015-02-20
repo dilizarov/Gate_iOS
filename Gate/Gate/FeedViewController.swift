@@ -26,6 +26,12 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     @IBOutlet var feed: UITableView!
  
+    // Handle Notifications that trigger segue to comments
+    var commentsNotification = false
+    var postId: String?
+    var notifType: Int?
+    
+    
     // Infinite scroll handling
     var infiniteScrollBufferCount: Int!
     var reachedEndOfList: Bool!
@@ -76,9 +82,41 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         feed.rowHeight = UITableViewAutomaticDimension
         
-        requestPostsAndPopulateList(false, page: nil)
+        requestPostsAndPopulateList(false, page: nil, completionHandler: nil)
+        
+        // Listen for notifications
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleNotification"), name: "handleNotification", object: nil)
     }
-
+    
+    func handleNotification() {
+        
+        println("Pokepokepoke")
+        // Markers for type of notification.
+        var postCreated = 42
+        var commentCreated = 126
+        var postLiked = 168
+        var commentLiked = 210
+        
+        // Swift compile bug requires me to hard-code in the top variables
+        if notifType != nil {
+            if notifType == commentCreated || notifType == postLiked || notifType == commentLiked {
+                commentsNotification = true
+                let mainViewController = parentViewController as MainViewController
+                
+                mainViewController.scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+                mainViewController.pageControl.currentPage = 0
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    self.performSegueWithIdentifier("showComments", sender: self)
+                })
+                
+            } else if notifType == postCreated {
+                println("No")
+            }
+        }
+        
+    }
+    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.posts.count
     }
@@ -99,12 +137,22 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             if sender is Post {
                 post = sender as Post
                 creatingComment = true
-            } else {
+            } else if sender is NSIndexPath {
                 post = posts[(sender as NSIndexPath).row]
             }
             
-            destination.post = post
-            destination.creatingComment = creatingComment
+            if commentsNotification {
+                destination.creatingComment = creatingComment
+                destination.notification = true
+                destination.postId = postId
+                
+                commentsNotification = false
+                postId = nil
+            } else {
+                destination.post = post
+                destination.creatingComment = creatingComment
+                destination.notification = false
+            }
         } else if segue.identifier == "createPost" {
             
             var destination = segue.destinationViewController as CreatePostViewController
@@ -148,7 +196,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             self.feed.reloadData()
                 
             startLoading()
-            requestPostsAndPopulateList(true, page: nil)
+            requestPostsAndPopulateList(true, page: nil, completionHandler: nil)
             feed.setContentOffset(CGPointZero, animated: false)
         }
     }
@@ -327,7 +375,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                 isLoading = true
                 reachedEndOfCallback = false
                 lastTimeLoading = NSDate()
-                requestPostsAndPopulateList(false, page: currentPage)
+                requestPostsAndPopulateList(false, page: currentPage, completionHandler: nil)
             }
             
         }
@@ -335,10 +383,14 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func refresh() {
-        requestPostsAndPopulateList(true, page: nil)
+        requestPostsAndPopulateList(true, page: nil, completionHandler: nil)
     }
     
-    func requestPostsAndPopulateList(refreshing: Bool, page: Int?) {
+    func backgroundRefresh(completionHandler: (UIBackgroundFetchResult) -> Void) {
+        requestPostsAndPopulateList(true, page: nil, completionHandler: completionHandler)
+    }
+    
+    func requestPostsAndPopulateList(refreshing: Bool, page: Int?, completionHandler: ((UIBackgroundFetchResult) -> Void)?) {
         // Only care about the very first load of feed
         if !refreshing && page == nil {
             startLoading()
@@ -386,7 +438,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                 if (jsonPosts.count < 15) {
                     self.reachedEndOfList = true
                 }
-                
+                                
                 for var i = 0; i < jsonPosts.count; i++ {
                     var jsonPost = jsonPosts[i]
 
@@ -411,8 +463,14 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                     self.posts.append(post)
                 }
                 
+
+                
                 dispatch_async(dispatch_get_main_queue(), {
                     self.loadingIndicator.stopAnimating()
+                    
+                    if completionHandler != nil {
+                        self.feed.setContentOffset(CGPointZero, animated: false)
+                    }
                     
                     self.feed.reloadData()
                     
@@ -428,6 +486,10 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                     }
                     
                     self.reachedEndOfCallback = true
+                    
+                    if completionHandler != nil {
+                        completionHandler!(UIBackgroundFetchResult.NewData)
+                    }
                 })
             },
             failure: {(error: NSError, response: HTTPResponse?) in
@@ -446,7 +508,11 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                         self.noPostsText.alpha = 1.0
                     }
                     
-                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+                    if completionHandler != nil {
+                        completionHandler!(UIBackgroundFetchResult.Failed)
+                    } else {
+                        iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+                    }
                 })
                 
             }

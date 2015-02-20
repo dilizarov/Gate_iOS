@@ -12,6 +12,7 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    var mainViewController: MainViewController?
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 
@@ -20,11 +21,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         application.registerUserNotificationSettings(pushSettings)
         
         application.registerForRemoteNotifications()
-
-        return true
         
+        application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
+
+        println("In the didfinishlaunchingwithoptions")
+        
+        if launchOptions != nil && launchOptions![UIApplicationLaunchOptionsRemoteNotificationKey] != nil {
+            var userInfo = launchOptions![UIApplicationLaunchOptionsRemoteNotificationKey] as Dictionary<NSObject, AnyObject>
+            
+            self.application(application, didReceiveRemoteNotification: userInfo)
+        }
+        
+        return true
     }
-    
+        
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
     
         NSUserDefaults.standardUserDefaults().setObject(deviceToken.description, forKey: "device_token")
@@ -32,15 +42,41 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
-        var alert = (userInfo["aps"] as Dictionary<String, AnyObject>)["alert"] as String
         
-        if application.applicationState == UIApplicationState.Active {
-            iToast.makeText(" " + alert).setDuration(3000).setGravity(iToastGravityCenter).show()
+        var state = application.applicationState
+        
+        println("In didReceiveRemoteNotification")
+        
+        if state == UIApplicationState.Active {
+            var alert = (userInfo["aps"] as Dictionary<String, AnyObject>)["alert"] as String
+            
+            if application.applicationState == UIApplicationState.Active {
+                iToast.makeText(" " + alert).setDuration(2000).setGravity(iToastGravityBottom).show()
+            }
+        } else if state == UIApplicationState.Inactive {
+            
+            println("IN THE THING")
+            
+            var notifType = userInfo["notification_type"] as Int
+            if mainViewController != nil {
+                mainViewController!.feedViewController.postId = userInfo["post_id"] as? String
+                mainViewController!.feedViewController.notifType = notifType
+                
+                NSNotificationCenter.defaultCenter().postNotificationName("handleNotification", object: nil)
+            }
         }
-        
     }
     
     func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+    }
+    
+    func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+        
+        if mainViewController != nil {
+            mainViewController?.feedViewController.backgroundRefresh(completionHandler)
+        } else {
+            completionHandler(UIBackgroundFetchResult.Failed)
+        }
     }
 
     func applicationWillResignActive(application: UIApplication) {

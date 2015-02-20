@@ -23,6 +23,10 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
     
     var bodyCutOff = 220
     
+    // Handle notification
+    var notification = false
+    var postId: String?
+    
     @IBOutlet var postName: UILabel!
     @IBOutlet var postTimestamp: UILabel!
     @IBOutlet var postGateName: UILabel!
@@ -64,6 +68,36 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        if notification {
+            hidePost()
+        } else {
+            populatePostViews()
+        }
+        
+        setupNavBar()
+        setupAddingComment()
+    
+        commentsFeed.rowHeight = UITableViewAutomaticDimension
+        
+        //Bring the scrollView up to the front so that we can see the addComment.
+        scrollView.layer.zPosition = 5000
+        
+        requestKeyboardNotifs()
+
+        loadingIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray)
+        
+        // A bit hacky, but the constraint for no comment text is 264 from the bottom, so I'm positioning this on it.
+        
+        loadingIndicator.center = CGPointMake(self.view.center.x, self.view.bounds.height - 264 - loadingIndicator.bounds.height / 2)
+        
+        loadingIndicator.layer.zPosition = 5000
+        
+        self.view.addSubview(loadingIndicator)
+        
+        requestDataAndPopulate(false)
+    }
+    
+    func populatePostViews() {
         postName.text = post.name
         postTimestamp.text = post.timestamp
         postGateName.text = post.gateName
@@ -87,8 +121,18 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
         } else {
             postLikesCount.alpha = 0.0
         }
-
-        if post.commentCount > 0 {
+        
+        if post.commentCount < comments.count {
+            if comments.count > 0 {
+                if comments.count > 1 {
+                    postCommentsCount.text = "\(comments.count) comments"
+                } else {
+                    postCommentsCount.text = "1 comment"
+                }
+                
+                postCommentsCount.alpha = 1.0
+            }
+        } else if post.commentCount > 0 {
             if post.commentCount > 1 {
                 postCommentsCount.text = "\(post.commentCount) comments"
             } else {
@@ -105,28 +149,32 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
         } else {
             self.postLikeButton.setTitle("Like", forState: .Normal)
         }
-        
-        setupNavBar()
-        setupAddingComment()
-    
-        commentsFeed.rowHeight = UITableViewAutomaticDimension
-        
-        //Bring the scrollView up to the front so that we can see thee addComment.
-        scrollView.layer.zPosition = 5000
-        
-        requestKeyboardNotifs()
 
-        loadingIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray)
+    }
+    
+    func hidePost() {
+        postName.alpha = 0.0
+        postTimestamp.alpha = 0.0
+        postGateName.alpha = 0.0
+        postBody.alpha = 0.0
+        postLikesCount.alpha = 0.0
+        postCommentsCount.alpha = 0.0
+        postLikeButton.alpha = 0.0
+    }
+    
+    func showPost() {
+        postName.alpha = 1.0
+        postTimestamp.alpha = 1.0
+        postGateName.alpha = 1.0
+        postBody.alpha = 1.0
+        postLikeButton.alpha = 1.0
+        if post.likeCount > 0 {
+            postLikesCount.alpha = 1.0
+        }
         
-        // A bit hacky, but the constraint for no comment text is 264 from the bottom, so I'm positioning this on it.
-        
-        loadingIndicator.center = CGPointMake(self.view.center.x, self.view.bounds.height - 264 - loadingIndicator.bounds.height / 2)
-        
-        loadingIndicator.layer.zPosition = 5000
-        
-        self.view.addSubview(loadingIndicator)
-        
-        requestCommentsAndPopulateList(false)
+        if post.commentCount > 0 {
+            postCommentsCount.alpha = 1.0
+        }
     }
     
     func requestKeyboardNotifs() {
@@ -268,18 +316,31 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
         navBar.pushNavigationItem(navigationItem, animated: false)
     }
     
-    func requestCommentsAndPopulateList(refreshing: Bool) {
+    func requestDataAndPopulate(refreshing: Bool) {
+        refreshButton.enabled = false
         startLoading()
         
         var request = HTTPTask()
         
         var userInfo = NSUserDefaults.standardUserDefaults()
         
-        var params = [ "user_id" : userInfo.objectForKey("user_id") as String, "auth_token" : userInfo.objectForKey("auth_token") as String, "api_key" : "91b75c9e-6a00-4fa9-bf65-610c12024bab" ]
+        var params : Dictionary<String, AnyObject> = [ "user_id" : userInfo.objectForKey("user_id") as String, "auth_token" : userInfo.objectForKey("auth_token") as String, "api_key" : "91b75c9e-6a00-4fa9-bf65-610c12024bab" ]
         
         request.responseSerializer = JSONResponseSerializer()
         
-        request.GET("https://infinite-river-7560.herokuapp.com/api/v1/posts/\(post.id)/comments.json", parameters: params,
+        var id: String
+        
+        if postId == nil {
+            id = post.id
+        } else {
+            id = postId!
+        }
+
+        if refreshing || postId != nil {
+            params["include_post"] = true
+        }
+        
+        request.GET("https://infinite-river-7560.herokuapp.com/api/v1/posts/\(id)/comments.json", parameters: params,
             success: {(response: HTTPResponse) in
                 
                 self.comments = []
@@ -300,6 +361,25 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
                     self.comments.append(comment)
                 }
                 
+                // For some reason I can't do response.responseObject!["meta"] != nil
+                if (response.responseObject as Dictionary<String, AnyObject>)["meta"] != nil {
+                    var jsonPost = (response.responseObject!["meta"] as Dictionary<String, AnyObject>)["post"] as Dictionary<String, AnyObject>
+                    
+                    self.post = Post(
+                        id: jsonPost["external_id"] as String,
+                        name: (jsonPost["user"] as Dictionary<String, AnyObject>)["name"] as String,
+                        body: jsonPost["body"] as String,
+                        gateId: (jsonPost["gate"] as Dictionary<String, AnyObject>)["external_id"] as String,
+                        gateName: (jsonPost["gate"] as Dictionary<String, AnyObject>)["name"] as String,
+                        commentCount: jsonPost["comments_count"] as Int,
+                        likeCount: jsonPost["up_count"] as Int,
+                        liked: jsonPost["uped"] as Bool,
+                        timeCreated: jsonPost["created_at"] as String
+                    )
+                    
+                    self.postId = nil
+                }
+                
                 dispatch_async(dispatch_get_main_queue(), {
                     self.loadingIndicator.stopAnimating()
                     
@@ -309,6 +389,9 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
                     } else {
                         self.noCommentsText.alpha = 0.0
                     }
+                    
+                    self.populatePostViews()
+                    self.showPost()
                     
                     self.commentsFeed.reloadData()
                     
@@ -408,6 +491,11 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
     }
     
     func handleCommentCount(creating: Bool) {
+        // Only handle comment count whenever there is an actual post.
+        if postId != nil {
+            return
+        }
+        
         var wasCommentCountZero = post.commentCount == 0
         
         if creating {
@@ -443,10 +531,7 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
     }
     
     func refresh() {
-        
-        refreshButton.enabled = false
-        
-        requestCommentsAndPopulateList(true)
+        requestDataAndPopulate(true)
     }
     
     func dismiss() {

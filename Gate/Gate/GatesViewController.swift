@@ -207,6 +207,7 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                         self.noGatesText.alpha = 0.0
                     }
                 })
+                
             },
             failure: {(error: NSError, response: HTTPResponse?) in
                 self.refresher.endRefreshing()

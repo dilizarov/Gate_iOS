@@ -126,10 +126,6 @@ class CreatePostViewController: UIViewController, UITextViewDelegate {
         postBody.becomeFirstResponder()
     }
     
-//    func actionSheetPicker(actionSheetPicker: AbstractActionSheetPicker!, configurePickerView pickerView: UIPickerView!) {
-//        pickerView.backgroundColor = UIColor.lightGrayColor()
-//    }
-    
     func checkPostRequirements() {
         if selectedGate != nil && !postBody.text.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet()).isEmpty {
             postButton.enabled = true
