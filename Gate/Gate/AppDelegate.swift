@@ -13,6 +13,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     var mainViewController: MainViewController?
+    // Used to handle getting back to mainViewController to trigger notification work.
+    var toggledViewController: UIViewController?
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 
@@ -24,8 +26,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
 
-        println("In the didfinishlaunchingwithoptions")
-        
         if launchOptions != nil && launchOptions![UIApplicationLaunchOptionsRemoteNotificationKey] != nil {
             var userInfo = launchOptions![UIApplicationLaunchOptionsRemoteNotificationKey] as Dictionary<NSObject, AnyObject>
             
@@ -45,8 +45,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         var state = application.applicationState
         
-        println("In didReceiveRemoteNotification")
-        
         if state == UIApplicationState.Active {
             var alert = (userInfo["aps"] as Dictionary<String, AnyObject>)["alert"] as String
             
@@ -55,14 +53,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         } else if state == UIApplicationState.Inactive {
             
-            println("IN THE THING")
-            
             var notifType = userInfo["notification_type"] as Int
             if mainViewController != nil {
                 mainViewController!.feedViewController.postId = userInfo["post_id"] as? String
                 mainViewController!.feedViewController.notifType = notifType
                 
-                NSNotificationCenter.defaultCenter().postNotificationName("handleNotification", object: nil)
+                if toggledViewController != nil {
+                    if toggledViewController is CreateKeyViewController {
+                        (toggledViewController as CreateKeyViewController).notification = true
+                    }
+                    
+                    toggledViewController!.dismissViewControllerAnimated(true, completion: {
+                        dispatch_async(dispatch_get_main_queue(), {
+                            NSNotificationCenter.defaultCenter().postNotificationName("handleNotification", object: nil)
+                        })
+                    })
+                } else {
+                    dispatch_async(dispatch_get_main_queue(), {
+                        NSNotificationCenter.defaultCenter().postNotificationName("handleNotification", object: nil)
+                    })
+                }
             }
         }
     }

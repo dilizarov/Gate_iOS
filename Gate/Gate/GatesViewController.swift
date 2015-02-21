@@ -12,9 +12,13 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
 
     var gateName: UITextField!
     var createGateAlert: UIAlertController!
+    var createGateAlertDisplayed = false
     var gates = [Gate]()
     var refresher: UIRefreshControl!
 
+    var leaveController: UIAlertController!
+    var leaveAlertDisplayed = false
+    
     var loadingIndicator: UIActivityIndicatorView!
     @IBOutlet var noGatesText: UILabel!
     
@@ -28,10 +32,14 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     @IBAction func createGate(sender: AnyObject) {
         createGateAlert = UIAlertController(title: "Create Gate", message: nil, preferredStyle: .Alert)
         
-        createGateAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        createGateAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { (action: UIAlertAction!) in
+            self.createGateAlertDisplayed = false
+        }))
         
         createGateAlert.addAction(UIAlertAction(title: "Create", style: .Default, handler: {
             (action: UIAlertAction!) in
+            
+            self.createGateAlertDisplayed = false
             
             var potentialName = self.gateName.text
             
@@ -55,6 +63,7 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         (createGateAlert.actions[1] as UIAlertAction).enabled = false
         
+        createGateAlertDisplayed = true
         presentViewController(createGateAlert, animated: true, completion: nil)
     }
     
@@ -106,21 +115,25 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 
                 var gate = gates[unwrappedIndexPath.row]
                 
-                let alertController = UIAlertController(title: "Leave \(gate.name)", message: "Are you sure you want to leave?", preferredStyle: .ActionSheet)
+                leaveController = UIAlertController(title: "Leave \(gate.name)", message: "Are you sure you want to leave?", preferredStyle: .ActionSheet)
                 
                 let deleteAction = UIAlertAction(title: "Leave", style: .Destructive, handler: {
                     (alert: UIAlertAction!) -> Void in
                     
+                    self.leaveAlertDisplayed = false
                     self.leaveGate(gate, index: unwrappedIndexPath.row)
                     
                 })
                 
-                let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+                let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: { (alert: UIAlertAction!) in
+                    self.leaveAlertDisplayed = false
+                })
                 
-                alertController.addAction(deleteAction)
-                alertController.addAction(cancelAction)
+                leaveController.addAction(deleteAction)
+                leaveController.addAction(cancelAction)
                 
-                self.presentViewController(alertController, animated: true, completion: nil)
+                leaveAlertDisplayed = true
+                self.presentViewController(leaveController, animated: true, completion: nil)
             }
         }
     }

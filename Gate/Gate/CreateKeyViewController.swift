@@ -16,6 +16,12 @@ class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableVie
     var fadedCheckMarkColor: UIColor!
     var checkMarkColor: UIColor!
     
+    var alertController: UIAlertController?
+    var keyViewUp = false
+    var sharingViewUp = false
+    
+    var notification = false
+    
     @IBOutlet var gatesTable: UITableView!
     @IBAction func tapForKey(sender: AnyObject) {
         if (selectedGates.isEmpty) {
@@ -111,9 +117,25 @@ class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func dismiss() {
-        self.dismissViewControllerAnimated(true, completion: nil)
+        (UIApplication.sharedApplication().delegate as AppDelegate).toggledViewController = nil
+        super.dismissViewControllerAnimated(true, completion: nil)
     }
-
+    
+    override func dismissViewControllerAnimated(flag: Bool, completion: (() -> Void)?) {
+        if keyViewUp && notification {
+            notification = false
+            alertController!.dismissViewControllerAnimated(true, completion: {
+                // Can't call super in closure due to Swift bug
+                self.callSuperDismissViewControllerAnimated(flag, completion: completion)
+            })
+        } else if !notification {
+            super.dismissViewControllerAnimated(flag, completion: completion)
+        }
+    }
+    
+    func callSuperDismissViewControllerAnimated(flag: Bool, completion: (() -> Void)?) {
+        super.dismissViewControllerAnimated(flag, completion: completion)
+    }
     
     func processGatesForKey() {
         var request = HTTPTask()
@@ -158,9 +180,11 @@ class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableVie
                     }
                 }
                 
-                let alertController = UIAlertController(title: key, message: "This key unlocks " + gatesString + "\n\n" + "The key expires 3 days after inactivity", preferredStyle: .Alert)
+                self.alertController = UIAlertController(title: key, message: "This key unlocks " + gatesString + "\n\n" + "The key expires 3 days after inactivity", preferredStyle: .Alert)
                 
                 let shareAction = UIAlertAction(title: "Share", style: .Default, handler: { (alert: UIAlertAction!) in
+                    
+                        self.keyViewUp = false
                     
                         var sharingItems = [AnyObject]()
                         sharingItems.append(NSString(string: "Use " + key + " to #unlock " + gatesString + " on #Gate\n\nhttp://unlockgate.today"))
@@ -169,16 +193,18 @@ class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableVie
                     
                         activityViewController.excludedActivityTypes = [UIActivityTypePrint, UIActivityTypeAssignToContact, UIActivityTypeSaveToCameraRoll, UIActivityTypeAddToReadingList, UIActivityTypePostToFlickr, UIActivityTypePostToVimeo, UIActivityTypeAirDrop]
                     
+                        self.sharingViewUp = true
+                    
                         self.presentViewController(activityViewController, animated: true, completion: nil)
-
                 })
                 
-                alertController.addAction(shareAction)
+                self.alertController!.addAction(shareAction)
                 
                 dispatch_async(dispatch_get_main_queue(), {
                     MBProgressHUD.hideHUDForView(self.view, animated: true)
                     
-                    self.presentViewController(alertController, animated: true, completion: nil)
+                    self.keyViewUp = true
+                    self.presentViewController(self.alertController!, animated: true, completion: nil)
                 })
             },
             failure: { (error: NSError, response: HTTPResponse?) in

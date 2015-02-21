@@ -50,6 +50,9 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     var attemptedGates: [Gate]?
     var createPostErrorMessage: String?
     
+    var postedToOtherGateAlert: UIAlertController!
+    var alertDisplayed = false
+    
     @IBAction func createPost(sender: AnyObject) {
     }
     
@@ -83,14 +86,10 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         feed.rowHeight = UITableViewAutomaticDimension
         
         requestPostsAndPopulateList(false, page: nil, completionHandler: nil)
-        
-        // Listen for notifications
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleNotification"), name: "handleNotification", object: nil)
     }
     
     func handleNotification() {
-        
-        println("Pokepokepoke")
+    
         // Markers for type of notification.
         var postCreated = 42
         var commentCreated = 126
@@ -111,7 +110,9 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                 })
                 
             } else if notifType == postCreated {
-                println("No")
+                let mainViewController = parentViewController as MainViewController
+                
+                mainViewController.showFeed(nil)
             }
         }
         
@@ -153,6 +154,8 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                 destination.creatingComment = creatingComment
                 destination.notification = false
             }
+            
+            (UIApplication.sharedApplication().delegate as AppDelegate).toggledViewController = destination
         } else if segue.identifier == "createPost" {
             
             var destination = segue.destinationViewController as CreatePostViewController
@@ -179,6 +182,8 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             if createPostErrorMessage != nil {
                 destination.createPostErrorMessage = createPostErrorMessage
             }
+            
+            (UIApplication.sharedApplication().delegate as AppDelegate).toggledViewController = destination
         }
     }
     
@@ -186,7 +191,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         super.viewWillAppear(false)
         self.feed.reloadData()
     }
-    
+        
     func showFeed(gate: Gate?) {
         if (!onAggregateAndGettingAggregate(gate) &&
             !onGateAndGettingSameGate(gate)) {
@@ -248,15 +253,18 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                     })
                     
                 } else {
-                    let alertController = UIAlertController(title: "Posted to another Gate", message: nil, preferredStyle: .Alert)
+                    self.postedToOtherGateAlert = UIAlertController(title: "Posted to another Gate", message: nil, preferredStyle: .Alert)
                     
-                    let confirmAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                    let confirmAction = UIAlertAction(title: "OK", style: .Default, handler: { (alert: UIAlertAction!) in
+                        self.alertDisplayed = false
+                    })
                     
-                    alertController.addAction(confirmAction)
+                    self.postedToOtherGateAlert.addAction(confirmAction)
                     
                     dispatch_async(dispatch_get_main_queue(), {
                         MBProgressHUD.hideHUDForView(self.view, animated: true)
-                        self.presentViewController(alertController, animated: true, completion: nil)
+                        self.alertDisplayed = true
+                        self.presentViewController(self.postedToOtherGateAlert, animated: true, completion: nil)
                     })
                 }
                 

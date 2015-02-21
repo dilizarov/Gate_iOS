@@ -30,10 +30,18 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
     var view2:UIView!
     
     var enterKeyAlert: UIAlertController!
+    var enterKeyAlertDisplayed = false
     var enteredKey: UITextField!
     // Used to keep track of length before editing
     // To take care of deleting -'s
     var beforeEditKeyString = ""
+    
+    var settingsController: UIAlertController!
+    var settingsAlertDisplayed = false
+    var logoutAlert: UIAlertController!
+    var logoutAlertDisplayed = false
+    var unlockedGatesAlert: UIAlertController!
+    var unlockedGatesAlertDisplayed = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -148,33 +156,40 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func bringUpSettings() {
-        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        settingsController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
         
         let logoutAction = UIAlertAction(title: "Log out", style: .Destructive, handler: {(alert: UIAlertAction!) -> Void in
+            self.settingsAlertDisplayed = false
             
             var userName = NSUserDefaults.standardUserDefaults().objectForKey("name") as String
             
-            let logoutAlert = UIAlertController(title: userName, message: "Are you sure you want to log out of Gate?", preferredStyle: .Alert)
+            self.logoutAlert = UIAlertController(title: userName, message: "Are you sure you want to log out of Gate?", preferredStyle: .Alert)
             
             let confirmAction = UIAlertAction(title: "Log out", style: .Default, handler: {(alert: UIAlertAction!) in
+                self.logoutAlertDisplayed = false
                 self.logout()
             })
             
             let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler:  {(alert: UIAlertAction!) in
+                self.logoutAlertDisplayed = false
             })
 
-            logoutAlert.addAction(cancelAction)
-            logoutAlert.addAction(confirmAction)
+            self.logoutAlert.addAction(cancelAction)
+            self.logoutAlert.addAction(confirmAction)
             
-            self.presentViewController(logoutAlert, animated: true, completion: nil)
+            self.logoutAlertDisplayed = true
+            self.presentViewController(self.logoutAlert, animated: true, completion: nil)
         })
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: { (alert: UIAlertAction!) in
+            self.settingsAlertDisplayed = false
+        })
         
-        alertController.addAction(logoutAction)
-        alertController.addAction(cancelAction)
+        settingsController.addAction(logoutAction)
+        settingsController.addAction(cancelAction)
         
-        self.presentViewController(alertController, animated: true, completion: nil)
+        settingsAlertDisplayed = true
+        self.presentViewController(settingsController, animated: true, completion: nil)
     }
     
     func showFeed(gate: Gate?) {
@@ -204,7 +219,9 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
     func enterKey() {
         enterKeyAlert = UIAlertController(title: "Enter key", message: nil, preferredStyle: .Alert)
         
-        enterKeyAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: nil))
+        enterKeyAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { (alert: UIAlertAction!) in
+            self.enterKeyAlertDisplayed = false
+        }))
         
         enterKeyAlert.addTextFieldWithConfigurationHandler({
             (textField: UITextField!) in
@@ -219,6 +236,7 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
             self.enteredKey = textField
         })
         
+        enterKeyAlertDisplayed = true
         presentViewController(enterKeyAlert, animated: true, completion: nil)
     }
 
@@ -335,13 +353,16 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
                         self.gatesViewController.gatesTable.reloadData()
                     }
                     
-                    let unlockedGatesAlert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .Alert)
+                    self.unlockedGatesAlert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .Alert)
                     
-                    let alertAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                    let alertAction = UIAlertAction(title: "OK", style: .Default, handler: { (alert: UIAlertAction!) in
+                        self.unlockedGatesAlertDisplayed = false
+                    })
                     
-                    unlockedGatesAlert.addAction(alertAction)
+                    self.unlockedGatesAlert.addAction(alertAction)
                     
-                    self.presentViewController(unlockedGatesAlert, animated: true, completion: nil)
+                    self.unlockedGatesAlertDisplayed = true
+                    self.presentViewController(self.unlockedGatesAlert, animated: true, completion: nil)
                 })
                 
             },
@@ -415,6 +436,59 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
             var destination = segue.destinationViewController as CreateKeyViewController
             
             destination.gates = gatesViewController.gates
+            (UIApplication.sharedApplication().delegate as AppDelegate).toggledViewController = destination
+        }
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        // Listen for notifications
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleNotification"), name: "handleNotification", object: nil)
+
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: "handleNotification", object: nil)
+    }
+    
+    func handleNotification() {
+        
+        if feedViewController.alertDisplayed {
+            feedViewController.alertDisplayed = false
+            feedViewController.postedToOtherGateAlert.dismissViewControllerAnimated(false, completion: {
+                self.feedViewController.handleNotification()
+            })
+        } else if gatesViewController.createGateAlertDisplayed {
+            gatesViewController.createGateAlertDisplayed = false
+            gatesViewController.createGateAlert.dismissViewControllerAnimated(false, completion: {
+                self.feedViewController.handleNotification()
+            })
+        } else if gatesViewController.leaveAlertDisplayed {
+            gatesViewController.leaveAlertDisplayed = false
+            gatesViewController.leaveController.dismissViewControllerAnimated(false, completion: {
+                self.feedViewController.handleNotification()
+            })
+        } else if settingsAlertDisplayed {
+            settingsAlertDisplayed = false
+            settingsController.dismissViewControllerAnimated(false, completion: {
+                self.feedViewController.handleNotification()
+            })
+        } else if logoutAlertDisplayed {
+            logoutAlertDisplayed = false
+            logoutAlert.dismissViewControllerAnimated(false, completion: {
+                self.feedViewController.handleNotification()
+            })
+        } else if unlockedGatesAlertDisplayed {
+            unlockedGatesAlertDisplayed = false
+            unlockedGatesAlert.dismissViewControllerAnimated(false, completion: {
+                self.feedViewController.handleNotification()
+            })
+        } else if enterKeyAlertDisplayed {
+            enterKeyAlertDisplayed = false
+            enterKeyAlert.dismissViewControllerAnimated(false, completion: {
+                self.feedViewController.handleNotification()
+            })
+        } else {
+            feedViewController.handleNotification()
         }
     }
     

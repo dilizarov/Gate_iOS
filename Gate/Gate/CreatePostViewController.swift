@@ -15,6 +15,9 @@ class CreatePostViewController: UIViewController, UITextViewDelegate {
     var gates = [Gate]()
     var selectedGate: Gate?
     
+    var gatePicker: ActionSheetStringPicker?
+    var cancelButton: UIBarButtonItem!
+    
     var attemptedGate: Gate?
     var attemptedPostBody: String?
     var createPostErrorMessage: String?
@@ -46,7 +49,7 @@ class CreatePostViewController: UIViewController, UITextViewDelegate {
                 }
             }
             
-            var picker = ActionSheetStringPicker(title: "Select a Gate", rows: names, initialSelection: index,
+            gatePicker = ActionSheetStringPicker(title: "Select a Gate", rows: names, initialSelection: index,
                 doneBlock: {(picker, index, value) in
                     
                     if !self.gates.isEmpty {
@@ -69,14 +72,13 @@ class CreatePostViewController: UIViewController, UITextViewDelegate {
             var doneButton = UIBarButtonItem(title: "Done", style: .Plain, target: nil, action: nil)
             doneButton.tintColor = UIColor.gateBlueColor()
             
-            var cancelButton = UIBarButtonItem(title: "Cancel", style: .Plain, target: nil, action: nil)
+            cancelButton = UIBarButtonItem(title: "Cancel", style: .Plain, target: nil, action: Selector("cancel"))
             cancelButton.tintColor = UIColor.gateBlueColor()
             
-            picker.setDoneButton(doneButton)
-            picker.setCancelButton(cancelButton)
+            gatePicker!.setDoneButton(doneButton)
+            gatePicker!.setCancelButton(cancelButton)
             
-            picker.showActionSheetPicker()
-
+            gatePicker!.showActionSheetPicker()
         } else {
             selectGateButton.setTitle("Loading Gates...", forState: .Normal)
             selectGateButton.enabled = false
@@ -271,7 +273,18 @@ class CreatePostViewController: UIViewController, UITextViewDelegate {
     }
     
     func dismiss() {
+        (UIApplication.sharedApplication().delegate as AppDelegate).toggledViewController = nil
         self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    override func dismissViewControllerAnimated(flag: Bool, completion: (() -> Void)?) {
+        if gatePicker != nil {
+            dispatch_async(dispatch_get_main_queue(), {
+                self.gatePicker!.hidePickerWithCancelAction()
+            })
+        }
+        
+        super.dismissViewControllerAnimated(flag, completion: completion)
     }
     
     override func preferredStatusBarStyle() -> UIStatusBarStyle {

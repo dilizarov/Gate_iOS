@@ -535,6 +535,7 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
     }
     
     func dismiss() {
+        (UIApplication.sharedApplication().delegate as AppDelegate).toggledViewController = nil
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
