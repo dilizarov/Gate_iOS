@@ -112,7 +112,9 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             } else if notifType == postCreated {
                 let mainViewController = parentViewController as MainViewController
                 
-                mainViewController.showFeed(nil)
+                dispatch_async(dispatch_get_main_queue(), {
+                    mainViewController.showFeed(nil)
+                })
             }
         }
         

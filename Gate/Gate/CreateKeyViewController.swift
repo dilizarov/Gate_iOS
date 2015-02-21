@@ -17,19 +17,17 @@ class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableVie
     var checkMarkColor: UIColor!
     
     var alertController: UIAlertController?
-    var keyViewUp = false
-    var sharingViewUp = false
     
-    var notification = false
+    var buttonTapped = false
     
     @IBOutlet var gatesTable: UITableView!
     @IBAction func tapForKey(sender: AnyObject) {
         if (selectedGates.isEmpty) {
             iToast.makeText(" You must unlock at least one Gate").setDuration(3000).setGravity(iToastGravityCenter).show()
         } else {
-            
             var hud = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
             hud.labelText = "Robots processing..."
+            self.buttonTapped = true
             processGatesForKey()
         }
     }
@@ -122,19 +120,9 @@ class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     override func dismissViewControllerAnimated(flag: Bool, completion: (() -> Void)?) {
-        if keyViewUp && notification {
-            notification = false
-            alertController!.dismissViewControllerAnimated(true, completion: {
-                // Can't call super in closure due to Swift bug
-                self.callSuperDismissViewControllerAnimated(flag, completion: completion)
-            })
-        } else if !notification {
+        if !buttonTapped {
             super.dismissViewControllerAnimated(flag, completion: completion)
         }
-    }
-    
-    func callSuperDismissViewControllerAnimated(flag: Bool, completion: (() -> Void)?) {
-        super.dismissViewControllerAnimated(flag, completion: completion)
     }
     
     func processGatesForKey() {
@@ -184,16 +172,12 @@ class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableVie
                 
                 let shareAction = UIAlertAction(title: "Share", style: .Default, handler: { (alert: UIAlertAction!) in
                     
-                        self.keyViewUp = false
-                    
                         var sharingItems = [AnyObject]()
                         sharingItems.append(NSString(string: "Use " + key + " to #unlock " + gatesString + " on #Gate\n\nhttp://unlockgate.today"))
                     
                         let activityViewController = UIActivityViewController(activityItems: sharingItems, applicationActivities: nil)
                     
                         activityViewController.excludedActivityTypes = [UIActivityTypePrint, UIActivityTypeAssignToContact, UIActivityTypeSaveToCameraRoll, UIActivityTypeAddToReadingList, UIActivityTypePostToFlickr, UIActivityTypePostToVimeo, UIActivityTypeAirDrop]
-                    
-                        self.sharingViewUp = true
                     
                         self.presentViewController(activityViewController, animated: true, completion: nil)
                 })
@@ -203,13 +187,14 @@ class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableVie
                 dispatch_async(dispatch_get_main_queue(), {
                     MBProgressHUD.hideHUDForView(self.view, animated: true)
                     
-                    self.keyViewUp = true
                     self.presentViewController(self.alertController!, animated: true, completion: nil)
                 })
             },
             failure: { (error: NSError, response: HTTPResponse?) in
                 dispatch_async(dispatch_get_main_queue(), {
                     MBProgressHUD.hideHUDForView(self.view, animated: true)
+                    
+                    self.buttonTapped = false
                     
                     iToast.makeText(" " + String.prettyErrorMessage(response)).setDuration(3000).setGravity(iToastGravityCenter).show()
                 })
