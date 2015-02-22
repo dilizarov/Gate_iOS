@@ -116,13 +116,7 @@ class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func dismiss() {
         (UIApplication.sharedApplication().delegate as AppDelegate).toggledViewController = nil
-        super.dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    override func dismissViewControllerAnimated(flag: Bool, completion: (() -> Void)?) {
-        if !buttonTapped {
-            super.dismissViewControllerAnimated(flag, completion: completion)
-        }
+        dismissViewControllerAnimated(true, completion: nil)
     }
     
     func processGatesForKey() {
@@ -171,9 +165,11 @@ class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableVie
                 self.alertController = UIAlertController(title: key, message: "This key unlocks " + gatesString + "\n\n" + "The key expires 3 days after inactivity", preferredStyle: .Alert)
                 
                 let shareAction = UIAlertAction(title: "Share", style: .Default, handler: { (alert: UIAlertAction!) in
+
+                        var stringToShare = KeyShareProvider(placeholder: "Use " + key + " to #unlock " + gatesString + " on #Gate\n\nhttp://unlockgate.today", key: key)
                     
                         var sharingItems = [AnyObject]()
-                        sharingItems.append(NSString(string: "Use " + key + " to #unlock " + gatesString + " on #Gate\n\nhttp://unlockgate.today"))
+                        sharingItems.append(stringToShare)
                     
                         let activityViewController = UIActivityViewController(activityItems: sharingItems, applicationActivities: nil)
                     

@@ -59,6 +59,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 mainViewController!.feedViewController.notifType = notifType
                 
                 if toggledViewController != nil {
+                    if toggledViewController is CreateKeyViewController &&
+                    (toggledViewController as CreateKeyViewController).buttonTapped {
+                        return
+                    }
                     
                     toggledViewController!.dismissViewControllerAnimated(true, completion: {
                         dispatch_async(dispatch_get_main_queue(), {
