@@ -66,6 +66,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     
                     toggledViewController!.dismissViewControllerAnimated(true, completion: {
                         dispatch_async(dispatch_get_main_queue(), {
+                            self.toggledViewController = nil
                             NSNotificationCenter.defaultCenter().postNotificationName("handleNotification", object: nil)
                         })
                     })

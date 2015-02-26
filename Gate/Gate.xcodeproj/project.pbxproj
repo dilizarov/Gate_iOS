@@ -21,6 +21,9 @@
 		9A6E17FA1A7479FA0037F9F2 /* GatesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A6E17F91A7479FA0037F9F2 /* GatesViewController.swift */; };
 		9A6E17FC1A747A080037F9F2 /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A6E17FB1A747A080037F9F2 /* FeedViewController.swift */; };
 		9A7D0A6F1A7F9EFB004C6577 /* CommentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7D0A6E1A7F9EFB004C6577 /* CommentsViewController.swift */; };
+		9A8D4E731A9E4A55002EA1D2 /* HqViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A8D4E721A9E4A55002EA1D2 /* HqViewController.swift */; };
+		9A8D4E751A9E4C64002EA1D2 /* Key.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A8D4E741A9E4C64002EA1D2 /* Key.swift */; };
+		9A8D4E771A9EA8EB002EA1D2 /* KeyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A8D4E761A9EA8EB002EA1D2 /* KeyCell.swift */; };
 		9A94B0571A72476F003117B8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A94B0561A72476F003117B8 /* AppDelegate.swift */; };
 		9A94B0611A72476F003117B8 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9A94B05F1A72476F003117B8 /* LaunchScreen.xib */; };
 		9A94B06D1A72476F003117B8 /* GateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A94B06C1A72476F003117B8 /* GateTests.swift */; };
@@ -107,6 +110,9 @@
 		9A6E17F91A7479FA0037F9F2 /* GatesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GatesViewController.swift; sourceTree = "<group>"; };
 		9A6E17FB1A747A080037F9F2 /* FeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
 		9A7D0A6E1A7F9EFB004C6577 /* CommentsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentsViewController.swift; sourceTree = "<group>"; };
+		9A8D4E721A9E4A55002EA1D2 /* HqViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HqViewController.swift; sourceTree = "<group>"; };
+		9A8D4E741A9E4C64002EA1D2 /* Key.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Key.swift; sourceTree = "<group>"; };
+		9A8D4E761A9EA8EB002EA1D2 /* KeyCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyCell.swift; sourceTree = "<group>"; };
 		9A94B0511A72476F003117B8 /* Gate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A94B0551A72476F003117B8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9A94B0561A72476F003117B8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; wrapsLines = 0; };
@@ -209,6 +215,9 @@
 				9AF860441A76DBF8002951C5 /* CreateKeyViewController.swift */,
 				9A507CE31A809F0300B087CC /* Gate-Bridging-Header.h */,
 				9AF29F231A994FCE00067887 /* KeyShareProvider.swift */,
+				9A8D4E721A9E4A55002EA1D2 /* HqViewController.swift */,
+				9A8D4E741A9E4C64002EA1D2 /* Key.swift */,
+				9A8D4E761A9EA8EB002EA1D2 /* KeyCell.swift */,
 			);
 			path = Gate;
 			sourceTree = "<group>";
@@ -434,16 +443,19 @@
 				9A7D0A6F1A7F9EFB004C6577 /* CommentsViewController.swift in Sources */,
 				9A94B0771A725A90003117B8 /* LoginRegisterViewController.swift in Sources */,
 				9AF99E121A819BA70077FBF3 /* ClickThroughScrollView.swift in Sources */,
+				9A8D4E731A9E4A55002EA1D2 /* HqViewController.swift in Sources */,
 				9AF860451A76DBF8002951C5 /* CreateKeyViewController.swift in Sources */,
 				9A0408E41A78D0E20062CD3D /* Post.swift in Sources */,
 				9A6E17FC1A747A080037F9F2 /* FeedViewController.swift in Sources */,
 				9AF29F241A994FCE00067887 /* KeyShareProvider.swift in Sources */,
 				9A94B0571A72476F003117B8 /* AppDelegate.swift in Sources */,
+				9A8D4E751A9E4C64002EA1D2 /* Key.swift in Sources */,
 				9A39C9751A8113EB000167B6 /* Comment.swift in Sources */,
 				9AF99E171A835F680077FBF3 /* CreatePostViewController.swift in Sources */,
 				9A2BE2C31A75276A0012E2BA /* Gate.swift in Sources */,
 				9A6E17FA1A7479FA0037F9F2 /* GatesViewController.swift in Sources */,
 				9A0C47311A7DA7ED001FC24E /* PostCell.swift in Sources */,
+				9A8D4E771A9EA8EB002EA1D2 /* KeyCell.swift in Sources */,
 				9A39C9701A81129A000167B6 /* CommentCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

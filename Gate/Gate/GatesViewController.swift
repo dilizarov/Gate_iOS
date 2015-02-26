@@ -76,7 +76,7 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         self.gatesTable.addSubview(refresher)
         
         var longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: Selector("handleLongPress:"))
-        longPressGestureRecognizer.minimumPressDuration = 2.0
+        longPressGestureRecognizer.minimumPressDuration = 1.5
         longPressGestureRecognizer.delegate = self
         gatesTable.addGestureRecognizer(longPressGestureRecognizer)
         
@@ -89,6 +89,10 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         self.view.addSubview(loadingIndicator)
         
         requestGatesAndPopulateList(false)
+    }
+    
+    override func viewDidLayoutSubviews() {
+        println(self.gatesTable.contentInset.top)
     }
     
     func refresh() {
@@ -342,6 +346,11 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func addGatesToArray(newGates: [Gate]) {
         
         var len = newGates.count
+        
+        if len > 0 {
+            noGatesText.alpha = 0.0
+        }
+        
         var startingPoint = 0
         var reachedEnd = false
         for var i = 0; i < len; i++ {

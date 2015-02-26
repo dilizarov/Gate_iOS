@@ -25,7 +25,7 @@ class KeyShareProvider: NSObject, UIActivityItemSource {
     }
         
     func activityViewController(activityViewController: UIActivityViewController, itemForActivityType activityType: String) -> AnyObject? {
-        if activityType == UIActivityTypeMessage {
+        if activityType == UIActivityTypeMessage || activityType == UIActivityTypeCopyToPasteboard {
             return NSString(string: key)
         } else {
             return NSString(string: placeholder)

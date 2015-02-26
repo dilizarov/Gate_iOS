@@ -195,17 +195,14 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
         
     func showFeed(gate: Gate?) {
-        if (!onAggregateAndGettingAggregate(gate) &&
-            !onGateAndGettingSameGate(gate)) {
-            currentGate = gate
-                
-            self.posts = []
-            self.feed.reloadData()
-                
-            startLoading()
-            requestPostsAndPopulateList(true, page: nil, completionHandler: nil)
-            feed.setContentOffset(CGPointZero, animated: false)
-        }
+        currentGate = gate
+            
+        self.posts = []
+        self.feed.reloadData()
+            
+        startLoading()
+        requestPostsAndPopulateList(true, page: nil, completionHandler: nil)
+        feed.setContentOffset(CGPointZero, animated: false)
     }
     
     func sendCreatePostRequest(postBody: String!, gate: Gate!, gates: [Gate]) {

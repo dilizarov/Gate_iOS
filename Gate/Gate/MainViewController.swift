@@ -126,7 +126,7 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         navBar.addSubview(navbarView)
         self.view.addSubview(navBar)
         
-        buttonLeft = UIBarButtonItem(image: UIImage(named: "CreateKey"), style: .Plain, target: self, action: Selector("showCreateKey"))
+        buttonLeft = UIBarButtonItem(image: UIImage(named: "CreateKey"), style: .Plain, target: self, action: Selector("showKeys"))
         
         buttonLeft.tintColor = UIColor.whiteColor()
         
@@ -205,15 +205,8 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         feedViewController.showFeed(gate)
     }
     
-    func showCreateKey() {
-        if getGates().count == 0 {
-            scrollView.setContentOffset(CGPoint(x: self.view.bounds.width, y: 0), animated: true)
-            pageControl.currentPage = 1
-            
-            iToast.makeText(" You have no Gates to unlock").setGravity(iToastGravityCenter).setDuration(3000).show()
-        } else {
-            performSegueWithIdentifier("createKey", sender: self)
-        }
+    func showKeys() {
+        performSegueWithIdentifier("showKeys", sender: self)
     }
     
     func enterKey() {
@@ -432,8 +425,8 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == "createKey" {
-            var destination = segue.destinationViewController as CreateKeyViewController
+        if segue.identifier == "showKeys" {
+            var destination = segue.destinationViewController as HqViewController
             
             destination.gates = gatesViewController.gates
             (UIApplication.sharedApplication().delegate as AppDelegate).toggledViewController = destination
@@ -441,6 +434,7 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
     }
     
     override func viewWillAppear(animated: Bool) {
+        
         // Listen for notifications
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleNotification"), name: "handleNotification", object: nil)
 

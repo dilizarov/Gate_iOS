@@ -395,7 +395,7 @@ class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGes
                     
                     self.commentsFeed.reloadData()
                     
-                    if refreshing && self.comments.count > 0 {
+                    if (refreshing || self.notification) && self.comments.count > 0 {
                         self.scrollToBottomOfComments()
                     }
                     

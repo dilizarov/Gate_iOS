@@ -58,6 +58,13 @@ extension NSDate {
 
     }
     
+    func minusDays(days: Int) -> NSDate {
+        var dateComponents = NSDateComponents()
+        dateComponents.day = -days
+        return NSCalendar.currentCalendar().dateByAddingComponents(dateComponents, toDate: self, options: nil)!
+        
+    }
+    
     func stringFromDate() -> String {
         let formatter = NSDateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
