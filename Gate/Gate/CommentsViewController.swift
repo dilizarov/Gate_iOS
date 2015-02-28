@@ -9,7 +9,7 @@
 import UIKit
 import SwiftHTTP
 
-class CommentsViewController: UIViewController, PHFComposeBarViewDelegate, UIGestureRecognizerDelegate, UITableViewDelegate, UITableViewDataSource {
+class CommentsViewController: MyViewController, PHFComposeBarViewDelegate, UIGestureRecognizerDelegate, UITableViewDelegate, UITableViewDataSource {
     
     var comments = [Comment]()
 

@@ -216,26 +216,13 @@
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="YXL-Pg-qxn" id="YdG-tN-BsR">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2dG-oo-RJd">
-                                                    <rect key="frame" x="16" y="14" width="253" height="21"/>
-                                                    <attributedString key="attributedText">
-                                                        <fragment content="1234-5678-9012-3456">
-                                                            <attributes>
-                                                                <color key="NSColor" red="0.086274509799999996" green="0.25882352939999997" blue="0.45882352939999999" alpha="1" colorSpace="calibratedRGB"/>
-                                                                <font key="NSFont" size="17" name="HelveticaNeue-Bold"/>
-                                                                <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
-                                                            </attributes>
-                                                        </fragment>
-                                                    </attributedString>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MsX-qt-8ic">
-                                                    <rect key="frame" x="16" y="35" width="296" height="28"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MsX-qt-8ic">
+                                                    <rect key="frame" x="8" y="35" width="304" height="28"/>
                                                     <attributedString key="attributedText">
                                                         <fragment content="Gates">
                                                             <attributes>
-                                                                <color key="NSColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                                                <font key="NSFont" size="15" name="HelveticaNeue"/>
+                                                                <color key="NSColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                                <font key="NSFont" size="13" name="HelveticaNeue"/>
                                                                 <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural"/>
                                                             </attributes>
                                                         </fragment>
@@ -253,16 +240,25 @@
                                                         <action selector="expiresSoonAction:" destination="YXL-Pg-qxn" eventType="touchUpInside" id="NOa-Vm-pOd"/>
                                                     </connections>
                                                 </button>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="1234-5678-9012-3456" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2dG-oo-RJd">
+                                                    <rect key="frame" x="8" y="14" width="261" height="21"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="21" id="J0R-Zj-6jm"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                                    <color key="textColor" red="0.086274509799999996" green="0.25882352939999997" blue="0.45882352939999999" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstAttribute="bottomMargin" secondItem="MsX-qt-8ic" secondAttribute="bottom" constant="9" id="CRb-Rh-Cd8"/>
                                                 <constraint firstItem="2dG-oo-RJd" firstAttribute="top" secondItem="YdG-tN-BsR" secondAttribute="topMargin" constant="5" id="DfP-yM-dDx"/>
-                                                <constraint firstItem="MsX-qt-8ic" firstAttribute="top" secondItem="2dG-oo-RJd" secondAttribute="bottom" constant="4" id="Ygl-Bf-Fjx"/>
+                                                <constraint firstItem="MsX-qt-8ic" firstAttribute="leading" secondItem="YdG-tN-BsR" secondAttribute="leadingMargin" id="JKd-Yl-rhE"/>
+                                                <constraint firstItem="MsX-qt-8ic" firstAttribute="top" secondItem="2dG-oo-RJd" secondAttribute="bottom" id="Ygl-Bf-Fjx"/>
                                                 <constraint firstItem="pZA-Os-5wP" firstAttribute="trailing" secondItem="YdG-tN-BsR" secondAttribute="trailingMargin" id="afE-B0-lM2"/>
                                                 <constraint firstItem="pZA-Os-5wP" firstAttribute="top" secondItem="YdG-tN-BsR" secondAttribute="topMargin" constant="6" id="dwy-aS-udb"/>
                                                 <constraint firstItem="MsX-qt-8ic" firstAttribute="trailing" secondItem="YdG-tN-BsR" secondAttribute="trailingMargin" id="pq9-yu-e5S"/>
-                                                <constraint firstItem="2dG-oo-RJd" firstAttribute="leading" secondItem="YdG-tN-BsR" secondAttribute="leadingMargin" constant="8" id="xWl-9d-YFF"/>
-                                                <constraint firstItem="MsX-qt-8ic" firstAttribute="leading" secondItem="YdG-tN-BsR" secondAttribute="leadingMargin" constant="8" id="y8F-xJ-C8z"/>
+                                                <constraint firstItem="2dG-oo-RJd" firstAttribute="leading" secondItem="YdG-tN-BsR" secondAttribute="leadingMargin" id="tn4-wm-fvr"/>
                                                 <constraint firstItem="pZA-Os-5wP" firstAttribute="leading" secondItem="2dG-oo-RJd" secondAttribute="trailing" constant="21" id="yri-Wt-dTi"/>
                                             </constraints>
                                         </tableViewCellContentView>

@@ -11,12 +11,12 @@ import SwiftHTTP
 class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate {
 
     var gateName: UITextField!
-    var createGateAlert: UIAlertController!
+    var createGateAlert: MyAlertController!
     var createGateAlertDisplayed = false
     var gates = [Gate]()
     var refresher: UIRefreshControl!
 
-    var leaveController: UIAlertController!
+    var leaveController: MyAlertController!
     var leaveAlertDisplayed = false
     
     var loadingIndicator: UIActivityIndicatorView!
@@ -30,7 +30,7 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     @IBAction func createGate(sender: AnyObject) {
-        createGateAlert = UIAlertController(title: "Create Gate", message: nil, preferredStyle: .Alert)
+        createGateAlert = MyAlertController(title: "Create Gate", message: nil, preferredStyle: .Alert)
         
         createGateAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { (action: UIAlertAction!) in
             self.createGateAlertDisplayed = false
@@ -90,11 +90,7 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         requestGatesAndPopulateList(false)
     }
-    
-    override func viewDidLayoutSubviews() {
-        println(self.gatesTable.contentInset.top)
-    }
-    
+        
     func refresh() {
         requestGatesAndPopulateList(true)
     }
@@ -119,7 +115,7 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 
                 var gate = gates[unwrappedIndexPath.row]
                 
-                leaveController = UIAlertController(title: "Leave \(gate.name)", message: "Are you sure you want to leave?", preferredStyle: .ActionSheet)
+                leaveController = MyAlertController(title: "Leave \(gate.name)", message: "Are you sure you want to leave?", preferredStyle: .ActionSheet)
                 
                 let deleteAction = UIAlertAction(title: "Leave", style: .Destructive, handler: {
                     (alert: UIAlertAction!) -> Void in
@@ -141,7 +137,6 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
             }
         }
     }
-    
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.gates.count

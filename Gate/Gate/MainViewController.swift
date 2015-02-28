@@ -9,7 +9,7 @@
 import UIKit
 import SwiftHTTP
 
-class MainViewController: UIViewController, UIScrollViewDelegate {
+class MainViewController: MyViewController, UIScrollViewDelegate {
     
     var appDelegate: AppDelegate!
     
@@ -29,18 +29,18 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
     var view1:UIView!
     var view2:UIView!
     
-    var enterKeyAlert: UIAlertController!
+    var enterKeyAlert: MyAlertController!
     var enterKeyAlertDisplayed = false
     var enteredKey: UITextField!
     // Used to keep track of length before editing
     // To take care of deleting -'s
     var beforeEditKeyString = ""
     
-    var settingsController: UIAlertController!
+    var settingsController: MyAlertController!
     var settingsAlertDisplayed = false
-    var logoutAlert: UIAlertController!
+    var logoutAlert: MyAlertController!
     var logoutAlertDisplayed = false
-    var unlockedGatesAlert: UIAlertController!
+    var unlockedGatesAlert: MyAlertController!
     var unlockedGatesAlertDisplayed = false
     
     override func viewDidLoad() {
@@ -153,17 +153,19 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         
         appDelegate.mainViewController = self
         
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleNotification"), name: "handleNotification", object: nil)
+
     }
     
     func bringUpSettings() {
-        settingsController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        settingsController = MyAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
         
         let logoutAction = UIAlertAction(title: "Log out", style: .Destructive, handler: {(alert: UIAlertAction!) -> Void in
             self.settingsAlertDisplayed = false
             
             var userName = NSUserDefaults.standardUserDefaults().objectForKey("name") as String
             
-            self.logoutAlert = UIAlertController(title: userName, message: "Are you sure you want to log out of Gate?", preferredStyle: .Alert)
+            self.logoutAlert = MyAlertController(title: userName, message: "Are you sure you want to log out of Gate?", preferredStyle: .Alert)
             
             let confirmAction = UIAlertAction(title: "Log out", style: .Default, handler: {(alert: UIAlertAction!) in
                 self.logoutAlertDisplayed = false
@@ -210,7 +212,7 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
     }
     
     func enterKey() {
-        enterKeyAlert = UIAlertController(title: "Enter key", message: nil, preferredStyle: .Alert)
+        enterKeyAlert = MyAlertController(title: "Enter key", message: nil, preferredStyle: .Alert)
         
         enterKeyAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { (alert: UIAlertAction!) in
             self.enterKeyAlertDisplayed = false
@@ -346,11 +348,16 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
                         self.gatesViewController.gatesTable.reloadData()
                     }
                     
-                    self.unlockedGatesAlert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .Alert)
+                    self.unlockedGatesAlert = MyAlertController(title: alertTitle, message: alertMessage, preferredStyle: .Alert)
                     
                     let alertAction = UIAlertAction(title: "OK", style: .Default, handler: { (alert: UIAlertAction!) in
                         self.unlockedGatesAlertDisplayed = false
                     })
+                    
+                    // If on aggregate load the new gates into the feed.
+                    if self.feedViewController.currentGate == nil {
+                        self.feedViewController.showFeed(nil)
+                    }
                     
                     self.unlockedGatesAlert.addAction(alertAction)
                     
@@ -433,62 +440,16 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         }
     }
     
-    override func viewWillAppear(animated: Bool) {
-        
-        // Listen for notifications
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleNotification"), name: "handleNotification", object: nil)
-
-    }
-    
-    override func viewWillDisappear(animated: Bool) {
-        NSNotificationCenter.defaultCenter().removeObserver(self, name: "handleNotification", object: nil)
-    }
-    
     func handleNotification() {
         
-        if feedViewController.alertDisplayed {
-            feedViewController.alertDisplayed = false
-            feedViewController.postedToOtherGateAlert.dismissViewControllerAnimated(false, completion: {
-                self.feedViewController.handleNotification()
-            })
-        } else if gatesViewController.createGateAlertDisplayed {
-            gatesViewController.createGateAlertDisplayed = false
-            gatesViewController.createGateAlert.dismissViewControllerAnimated(false, completion: {
-                self.feedViewController.handleNotification()
-            })
-        } else if gatesViewController.leaveAlertDisplayed {
-            gatesViewController.leaveAlertDisplayed = false
-            gatesViewController.leaveController.dismissViewControllerAnimated(false, completion: {
-                self.feedViewController.handleNotification()
-            })
-        } else if settingsAlertDisplayed {
-            settingsAlertDisplayed = false
-            settingsController.dismissViewControllerAnimated(false, completion: {
-                self.feedViewController.handleNotification()
-            })
-        } else if logoutAlertDisplayed {
-            logoutAlertDisplayed = false
-            logoutAlert.dismissViewControllerAnimated(false, completion: {
-                self.feedViewController.handleNotification()
-            })
-        } else if unlockedGatesAlertDisplayed {
-            unlockedGatesAlertDisplayed = false
-            unlockedGatesAlert.dismissViewControllerAnimated(false, completion: {
-                self.feedViewController.handleNotification()
-            })
-        } else if enterKeyAlertDisplayed {
-            enterKeyAlertDisplayed = false
-            enterKeyAlert.dismissViewControllerAnimated(false, completion: {
-                self.feedViewController.handleNotification()
-            })
-        } else {
-            feedViewController.handleNotification()
-        }
+        appDelegate.toggledViewController = nil
+        
+        feedViewController.handleNotification()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        
+
         navbarView.frame = CGRect(x: 0, y: 20, width: self.view.bounds.width, height: 44)
     }
     
@@ -544,6 +505,9 @@ class MainViewController: UIViewController, UIScrollViewDelegate {
         // Dispose of any resources that can be recreated.
     }
     
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: "handleNotification", object: nil)
+    }
 
     /*
     // MARK: - Navigation

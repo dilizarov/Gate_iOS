@@ -15,6 +15,19 @@ class Gate {
     var usersCount: String
     var creator: String
     
+    //NOTE:
+    // This is used when showing appropriate feed based on Gate from notification.
+    // I don't pass in the usersCount nor the creator. usersCount isn't used in FeedFragment
+    // and creator isn't used at all right now. This might get probablematic later when more updates
+    // come, but at that time, the notification infrastructure can be edited.
+    
+    init(id: String, name: String) {
+        self.id = id
+        self.name = name
+        self.usersCount = ""
+        self.creator = ""
+    }
+    
     init(id: String, name: String, usersCount: Int, creator: String) {
         self.id = id
         self.name = name

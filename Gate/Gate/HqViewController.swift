@@ -13,7 +13,7 @@ protocol AddKeysDelegate {
     func addKeys(keys: [Key])
 }
 
-class HqViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate, AddKeysDelegate {
+class HqViewController: MyViewController, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate, AddKeysDelegate {
 
     var keys = [Key]()
     
@@ -23,9 +23,11 @@ class HqViewController: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     var loadingIndicator: UIActivityIndicatorView!
     
-    var alertController: UIAlertController?
-
-    var deleteController: UIAlertController!
+    var alertController: MyAlertController?
+    
+    var buttonTapped = false
+    
+    var deleteController: MyAlertController!
     var deleteAlertDisplayed = false
     
     @IBOutlet var keysList: UITableView!
@@ -56,6 +58,8 @@ class HqViewController: UIViewController, UITableViewDelegate, UITableViewDataSo
     }
     
     override func viewWillAppear(animated: Bool) {
+        (UIApplication.sharedApplication().delegate as AppDelegate).toggledViewController = self
+        
         if keys.count > 0 {
             keysList.reloadData()
         }
@@ -199,7 +203,9 @@ class HqViewController: UIViewController, UITableViewDelegate, UITableViewDataSo
         if indexPath.row < keys.count {
             var key = keys[indexPath.row]
             
-            self.alertController = UIAlertController(title: key.key, message: "This key unlocks " + key.gatesList(), preferredStyle: .Alert)
+            self.buttonTapped = true
+            
+            self.alertController = MyAlertController(title: key.key, message: "This key unlocks " + key.gatesList(), preferredStyle: .Alert)
             
             let shareAction = UIAlertAction(title: "Share", style: .Default, handler: {
                 (alert: UIAlertAction!) in
@@ -209,14 +215,14 @@ class HqViewController: UIViewController, UITableViewDelegate, UITableViewDataSo
                 var sharingItems = [AnyObject]()
                 sharingItems.append(stringToShare)
                 
-                let activityViewController = UIActivityViewController(activityItems: sharingItems, applicationActivities: nil)
+                let activityViewController = MyActivityViewController(activityItems: sharingItems, applicationActivities: nil)
                 
                 activityViewController.excludedActivityTypes = [UIActivityTypePrint, UIActivityTypeAssignToContact, UIActivityTypeSaveToCameraRoll, UIActivityTypeAddToReadingList, UIActivityTypePostToFlickr, UIActivityTypePostToVimeo, UIActivityTypeAirDrop]
                 
                 activityViewController.completionWithItemsHandler = {
                     (activityType: String!, completed: Bool, returnedItems: [AnyObject]!, activityError: NSError!) in
                     
-                    //self.buttonTapped = false
+                    self.buttonTapped = false
                     
                 }
                 
@@ -247,7 +253,7 @@ class HqViewController: UIViewController, UITableViewDelegate, UITableViewDataSo
                 
                 var key = keys[unwrappedIndexPath.row]
                 
-                deleteController = UIAlertController(title: "Delete \(key.key)", message: "Are you sure you want to delete this key? It unlocks \(key.gatesList()).", preferredStyle: .ActionSheet)
+                deleteController = MyAlertController(title: "Delete \(key.key)", message: "Are you sure you want to delete this key? It unlocks \(key.gatesList()).", preferredStyle: .ActionSheet)
                 
                 let deleteAction = UIAlertAction(title: "Delete", style: .Destructive, handler: {
                     (alert: UIAlertAction!) -> Void in

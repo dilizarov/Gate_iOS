@@ -55,26 +55,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             var notifType = userInfo["notification_type"] as Int
             if mainViewController != nil {
+                mainViewController!.feedViewController.notifAttributes = userInfo
                 mainViewController!.feedViewController.postId = userInfo["post_id"] as? String
+                
                 mainViewController!.feedViewController.notifType = notifType
                 
-                if toggledViewController != nil {
-                    if toggledViewController is CreateKeyViewController &&
-                    (toggledViewController as CreateKeyViewController).buttonTapped {
-                        return
-                    }
+                //UIActivityViewController
+                NSNotificationCenter.defaultCenter().postNotificationName("dismissActivityForNotif", object: nil)
+
+                dispatch_after(dispatch_time_t(2.00), dispatch_get_main_queue(), {
+                    NSNotificationCenter.defaultCenter().postNotificationName("dismissAlertForNotif", object: nil)
                     
-                    toggledViewController!.dismissViewControllerAnimated(true, completion: {
-                        dispatch_async(dispatch_get_main_queue(), {
-                            self.toggledViewController = nil
-                            NSNotificationCenter.defaultCenter().postNotificationName("handleNotification", object: nil)
-                        })
+                    dispatch_after(dispatch_time_t(2.00), dispatch_get_main_queue(), {
+                        if self.toggledViewController != nil && self.toggledViewController is CreateKeyViewController {
+                            (self.toggledViewController)?.dismissViewControllerAnimated(true, completion: {
+                                NSNotificationCenter.defaultCenter().postNotificationName("dismissForNotif", object: nil)
+//                                dispatch_after(dispatch_time_t(2.00), dispatch_get_main_queue(), {
+//                                    NSNotificationCenter.defaultCenter().postNotificationName("handleNotification", object: nil)
+//                                })
+                            })
+                        } else {
+                            NSNotificationCenter.defaultCenter().postNotificationName("dismissForNotif", object: nil)
+                            
+//                            dispatch_after(dispatch_time_t(2.00), dispatch_get_main_queue(), {
+//                                NSNotificationCenter.defaultCenter().postNotificationName("handleNotification", object: nil)
+//                            })
+                        }
                     })
-                } else {
-                    dispatch_async(dispatch_get_main_queue(), {
-                        NSNotificationCenter.defaultCenter().postNotificationName("handleNotification", object: nil)
-                    })
-                }
+                })
             }
         }
     }

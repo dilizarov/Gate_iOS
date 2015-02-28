@@ -19,6 +19,8 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     var currentGate: Gate?
     var refresher: UIRefreshControl!
     
+    var notifAttributes = [NSObject : AnyObject]()
+    
     var loadingIndicator: UIActivityIndicatorView!
     @IBOutlet var noPostsText: UILabel!
     
@@ -50,7 +52,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     var attemptedGates: [Gate]?
     var createPostErrorMessage: String?
     
-    var postedToOtherGateAlert: UIAlertController!
+    var postedToOtherGateAlert: MyAlertController!
     var alertDisplayed = false
     
     @IBAction func createPost(sender: AnyObject) {
@@ -96,24 +98,37 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         var postLiked = 168
         var commentLiked = 210
         
-        // Swift compile bug requires me to hard-code in the top variables
+        let delayInSeconds = 0.75
+        let startTime = dispatch_time(DISPATCH_TIME_NOW, Int64(delayInSeconds * Double(NSEC_PER_SEC)))
+        
         if notifType != nil {
             if notifType == commentCreated || notifType == postLiked || notifType == commentLiked {
                 commentsNotification = true
                 let mainViewController = parentViewController as MainViewController
-                
-                mainViewController.scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
-                mainViewController.pageControl.currentPage = 0
-                
-                dispatch_async(dispatch_get_main_queue(), {
+                                
+                dispatch_after(startTime, dispatch_get_main_queue(), {
+                    mainViewController.scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+                    mainViewController.pageControl.currentPage = 0
+                    
                     self.performSegueWithIdentifier("showComments", sender: self)
                 })
                 
             } else if notifType == postCreated {
                 let mainViewController = parentViewController as MainViewController
                 
-                dispatch_async(dispatch_get_main_queue(), {
-                    mainViewController.showFeed(nil)
+                var gate: Gate?
+                
+                if (notifAttributes["gate_id"] as? String) == nil {
+                    gate = nil
+                } else {
+                    var name : String? = notifAttributes["gate_name"] as? String
+                    if name == nil { name = "Feed" }
+                    
+                    gate = Gate(id: notifAttributes["gate_id"] as String, name: name!)
+                }
+                
+                dispatch_after(startTime, dispatch_get_main_queue(), {
+                    mainViewController.showFeed(gate)
                 })
             }
         }
@@ -252,7 +267,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                     })
                     
                 } else {
-                    self.postedToOtherGateAlert = UIAlertController(title: "Posted to another Gate", message: nil, preferredStyle: .Alert)
+                    self.postedToOtherGateAlert = MyAlertController(title: "Posted to another Gate", message: nil, preferredStyle: .Alert)
                     
                     let confirmAction = UIAlertAction(title: "OK", style: .Default, handler: { (alert: UIAlertAction!) in
                         self.alertDisplayed = false

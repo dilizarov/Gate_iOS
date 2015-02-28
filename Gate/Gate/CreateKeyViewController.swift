@@ -9,7 +9,7 @@
 import UIKit
 import SwiftHTTP
 
-class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class CreateKeyViewController: MyViewController, UITableViewDelegate, UITableViewDataSource {
 
     // Any keys made will be stored to display back on the previous viewcontroller upon dismissal.
     var keys = [Key]()
@@ -23,7 +23,7 @@ class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableVie
     
     var loadingIndicator: UIActivityIndicatorView!
     
-    var alertController: UIAlertController?
+    var alertController: MyAlertController?
     
     var delegate : AddKeysDelegate?
     
@@ -263,7 +263,7 @@ class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableVie
 , gateNames: gateNames, timeUpdated: jsonKeyData["updated_at"] as String)
                 self.keys.append(key)
                 
-                self.alertController = UIAlertController(title: key.key, message: "This key unlocks " + key.gatesList() + "\n\n" + "The key expires 3 days after inactivity", preferredStyle: .Alert)
+                self.alertController = MyAlertController(title: key.key, message: "This key unlocks " + key.gatesList() + "\n\n" + "The key expires 3 days after inactivity", preferredStyle: .Alert)
                 
                 let shareAction = UIAlertAction(title: "Share", style: .Default, handler: { (alert: UIAlertAction!) in
 
@@ -272,7 +272,7 @@ class CreateKeyViewController: UIViewController, UITableViewDelegate, UITableVie
                         var sharingItems = [AnyObject]()
                         sharingItems.append(stringToShare)
                     
-                        let activityViewController = UIActivityViewController(activityItems: sharingItems, applicationActivities: nil)
+                        let activityViewController = MyActivityViewController(activityItems: sharingItems, applicationActivities: nil)
                     
                         activityViewController.excludedActivityTypes = [UIActivityTypePrint, UIActivityTypeAssignToContact, UIActivityTypeSaveToCameraRoll, UIActivityTypeAddToReadingList, UIActivityTypePostToFlickr, UIActivityTypePostToVimeo, UIActivityTypeAirDrop]
                     

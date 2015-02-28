@@ -21,6 +21,9 @@
 		9A6E17FA1A7479FA0037F9F2 /* GatesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A6E17F91A7479FA0037F9F2 /* GatesViewController.swift */; };
 		9A6E17FC1A747A080037F9F2 /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A6E17FB1A747A080037F9F2 /* FeedViewController.swift */; };
 		9A7D0A6F1A7F9EFB004C6577 /* CommentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7D0A6E1A7F9EFB004C6577 /* CommentsViewController.swift */; };
+		9A82D4F61AA15AC10079DB21 /* MyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A82D4F51AA15AC10079DB21 /* MyViewController.swift */; };
+		9A82D4F81AA173510079DB21 /* MyAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A82D4F71AA173510079DB21 /* MyAlertController.swift */; };
+		9A82D4FA1AA17E7C0079DB21 /* MyActivityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A82D4F91AA17E7C0079DB21 /* MyActivityViewController.swift */; };
 		9A8D4E731A9E4A55002EA1D2 /* HqViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A8D4E721A9E4A55002EA1D2 /* HqViewController.swift */; };
 		9A8D4E751A9E4C64002EA1D2 /* Key.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A8D4E741A9E4C64002EA1D2 /* Key.swift */; };
 		9A8D4E771A9EA8EB002EA1D2 /* KeyCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A8D4E761A9EA8EB002EA1D2 /* KeyCell.swift */; };
@@ -110,6 +113,9 @@
 		9A6E17F91A7479FA0037F9F2 /* GatesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GatesViewController.swift; sourceTree = "<group>"; };
 		9A6E17FB1A747A080037F9F2 /* FeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
 		9A7D0A6E1A7F9EFB004C6577 /* CommentsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentsViewController.swift; sourceTree = "<group>"; };
+		9A82D4F51AA15AC10079DB21 /* MyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyViewController.swift; sourceTree = "<group>"; };
+		9A82D4F71AA173510079DB21 /* MyAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyAlertController.swift; sourceTree = "<group>"; };
+		9A82D4F91AA17E7C0079DB21 /* MyActivityViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyActivityViewController.swift; sourceTree = "<group>"; };
 		9A8D4E721A9E4A55002EA1D2 /* HqViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HqViewController.swift; sourceTree = "<group>"; };
 		9A8D4E741A9E4C64002EA1D2 /* Key.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Key.swift; sourceTree = "<group>"; };
 		9A8D4E761A9EA8EB002EA1D2 /* KeyCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyCell.swift; sourceTree = "<group>"; };
@@ -218,6 +224,9 @@
 				9A8D4E721A9E4A55002EA1D2 /* HqViewController.swift */,
 				9A8D4E741A9E4C64002EA1D2 /* Key.swift */,
 				9A8D4E761A9EA8EB002EA1D2 /* KeyCell.swift */,
+				9A82D4F51AA15AC10079DB21 /* MyViewController.swift */,
+				9A82D4F71AA173510079DB21 /* MyAlertController.swift */,
+				9A82D4F91AA17E7C0079DB21 /* MyActivityViewController.swift */,
 			);
 			path = Gate;
 			sourceTree = "<group>";
@@ -449,13 +458,16 @@
 				9A6E17FC1A747A080037F9F2 /* FeedViewController.swift in Sources */,
 				9AF29F241A994FCE00067887 /* KeyShareProvider.swift in Sources */,
 				9A94B0571A72476F003117B8 /* AppDelegate.swift in Sources */,
+				9A82D4FA1AA17E7C0079DB21 /* MyActivityViewController.swift in Sources */,
 				9A8D4E751A9E4C64002EA1D2 /* Key.swift in Sources */,
 				9A39C9751A8113EB000167B6 /* Comment.swift in Sources */,
+				9A82D4F81AA173510079DB21 /* MyAlertController.swift in Sources */,
 				9AF99E171A835F680077FBF3 /* CreatePostViewController.swift in Sources */,
 				9A2BE2C31A75276A0012E2BA /* Gate.swift in Sources */,
 				9A6E17FA1A7479FA0037F9F2 /* GatesViewController.swift in Sources */,
 				9A0C47311A7DA7ED001FC24E /* PostCell.swift in Sources */,
 				9A8D4E771A9EA8EB002EA1D2 /* KeyCell.swift in Sources */,
+				9A82D4F61AA15AC10079DB21 /* MyViewController.swift in Sources */,
 				9A39C9701A81129A000167B6 /* CommentCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -586,14 +598,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: David Ilizarov (D4RM9QEJDK)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: David Ilizarov (ULTD2T59T4)";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = Gate/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "ea83f4a1-154c-4bd0-bb79-76dabf72a3ac";
+				PROVISIONING_PROFILE = "4d0be0a8-2b0b-449e-b3e6-8419dda1deb4";
 				SWIFT_OBJC_BRIDGING_HEADER = "Gate/Gate-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -606,13 +618,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: David Ilizarov (D4RM9QEJDK)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: David Ilizarov (ULTD2T59T4)";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = Gate/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "ea83f4a1-154c-4bd0-bb79-76dabf72a3ac";
+				PROVISIONING_PROFILE = "4d0be0a8-2b0b-449e-b3e6-8419dda1deb4";
 				SWIFT_OBJC_BRIDGING_HEADER = "Gate/Gate-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = 1;
 			};

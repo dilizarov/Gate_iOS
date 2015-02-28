@@ -9,7 +9,7 @@
 import UIKit
 import SwiftHTTP
 
-class CreatePostViewController: UIViewController, UITextViewDelegate {
+class CreatePostViewController: MyViewController, UITextViewDelegate {
     
     var currentGate: Gate?
     var gates = [Gate]()
@@ -229,7 +229,7 @@ class CreatePostViewController: UIViewController, UITextViewDelegate {
                 }
                 
                 if self.gates.isEmpty {
-                    let emptyGatesAlert = UIAlertController(title: "No Gates Unlocked", message: "Unlock a Gate so you can post", preferredStyle: .Alert)
+                    let emptyGatesAlert = MyAlertController(title: "No Gates Unlocked", message: "Unlock a Gate so you can post", preferredStyle: .Alert)
                     
                     let confirmAction = UIAlertAction(title: "OK", style: .Default,
                         handler: {(alert) in
