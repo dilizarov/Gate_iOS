@@ -27,7 +27,6 @@ class ClickThroughScrollView: TPKeyboardAvoidingScrollView {
                 var composeBar = subview as PHFComposeBarView
                 
                 if !composeBar.hidden && composeBar.alpha > 0 && composeBar.userInteractionEnabled && composeBar.pointInside(convertPoint(point, toView: composeBar), withEvent: event) {
-                    
                     return true
                 }
             }

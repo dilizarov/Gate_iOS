@@ -16,6 +16,8 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var gates = [Gate]()
     var refresher: UIRefreshControl!
 
+    var loadingGates = false
+    
     var leaveController: MyAlertController!
     var leaveAlertDisplayed = false
     
@@ -30,6 +32,7 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     @IBAction func createGate(sender: AnyObject) {
+
         createGateAlert = MyAlertController(title: "Create Gate", message: nil, preferredStyle: .Alert)
         
         createGateAlert.addAction(UIAlertAction(title: "Cancel", style: .Cancel, handler: { (action: UIAlertAction!) in
@@ -90,6 +93,13 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         requestGatesAndPopulateList(false)
     }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if !loadingGates { gatesTable.reloadData() }
+        
+    }
         
     func refresh() {
         requestGatesAndPopulateList(true)
@@ -145,8 +155,10 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var cell: UITableViewCell = self.gatesTable.dequeueReusableCellWithIdentifier("gateCell") as UITableViewCell
         
+        
         var gateName = cell.viewWithTag(1)! as UILabel
         var gatekeepersCount = cell.viewWithTag(2)! as UILabel
+        var locationGenerated = cell.
         
         if self.gates.count > indexPath.row {
             var gate = self.gates[indexPath.row]
@@ -171,6 +183,8 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     func requestGatesAndPopulateList(refreshing: Bool) {
+        loadingGates = true
+        
         if refreshing == false {
             startLoading()
         }
@@ -202,7 +216,8 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                     var gate = Gate(id: jsonGate["external_id"] as String,
                         name: jsonGate["name"] as String,
                         usersCount: jsonGate["users_count"] as Int,
-                        creator: (jsonGate["creator"] as Dictionary<String, String>)["name"]!)
+                        creator: (jsonGate["creator"] as Dictionary<String, String>)["name"]!,
+                        generated: jsonGate["generated"] as Bool)
                     
                     self.gates.append(gate)
                 }
@@ -218,6 +233,8 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                     } else {
                         self.noGatesText.alpha = 0.0
                     }
+                    
+                    self.loadingGates = false
                 })
                 
             },
@@ -226,6 +243,8 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
 
                 dispatch_async(dispatch_get_main_queue(), {
                     self.loadingIndicator.stopAnimating()
+
+                    var delegate = (self.parentViewController as MainViewController).appDelegate
                     
                     if self.gates.count == 0 {
                         if response == nil {
@@ -235,9 +254,13 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                         }
                         
                         self.noGatesText.alpha = 1.0
+                    } else {
+                        self.gatesTable.reloadData()
                     }
                     
                     iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+                
+                    self.loadingGates = false
                 })
             }
         )
@@ -311,7 +334,8 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 var gate = Gate(id: jsonGate["external_id"] as String,
                     name: jsonGate["name"] as String,
                     usersCount: 1,
-                    creator: (jsonGate["creator"] as Dictionary<String, String>)["name"]!)
+                    creator: (jsonGate["creator"] as Dictionary<String, String>)["name"]!,
+                    generated: jsonGate["generated"] as Bool)
                 
                 dispatch_async(dispatch_get_main_queue(), {
                     let mainViewController = self.parentViewController as MainViewController

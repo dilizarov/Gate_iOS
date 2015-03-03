@@ -223,7 +223,8 @@ class CreatePostViewController: MyViewController, UITextViewDelegate {
                     var gate = Gate(id: jsonGate["external_id"] as String,
                         name: jsonGate["name"] as String,
                         usersCount: jsonGate["users_count"] as Int,
-                        creator: (jsonGate["creator"] as Dictionary<String, String>)["name"]!)
+                        creator: (jsonGate["creator"] as Dictionary<String, String>)["name"]!,
+                        generated: jsonGate["generated"] as Bool)
                     
                     self.gates.append(gate)
                 }

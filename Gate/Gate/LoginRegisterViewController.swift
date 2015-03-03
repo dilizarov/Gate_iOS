@@ -179,20 +179,6 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
         }
     }
 
-    override func viewWillAppear(animated: Bool) {
-        if NSUserDefaults.standardUserDefaults().objectForKey("auth_token") != nil {
-            self.view.hidden = true
-        } else {
-            self.view.hidden = false
-        }
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        if NSUserDefaults.standardUserDefaults().objectForKey("auth_token") != nil {
-            performSegueWithIdentifier("loginUser", sender: self)
-        }
-    }
-
     func processLogin() {
         dispatch_async(dispatch_get_main_queue(), {
             var hud = MBProgressHUD.showHUDAddedTo(self.view, animated: true)

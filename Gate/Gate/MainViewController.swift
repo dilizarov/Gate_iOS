@@ -10,7 +10,7 @@ import UIKit
 import SwiftHTTP
 
 class MainViewController: MyViewController, UIScrollViewDelegate {
-    
+        
     var appDelegate: AppDelegate!
     
     var scrollView:UIScrollView!
@@ -43,9 +43,22 @@ class MainViewController: MyViewController, UIScrollViewDelegate {
     var unlockedGatesAlert: MyAlertController!
     var unlockedGatesAlertDisplayed = false
     
+    var childrenLaid = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupNavBar()
+        
+        appDelegate = UIApplication.sharedApplication().delegate as AppDelegate
+        
+        appDelegate.mainViewController = self
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleNotification"), name: "handleNotification", object: nil)
+        
+    }
+    
+    func setupNavBar() {
         var navBar: UINavigationBar = UINavigationBar(frame: CGRectMake(0, 0, self.view.bounds.width, 64))
         
         navBar.barTintColor = UIColor.blackColor()
@@ -103,9 +116,6 @@ class MainViewController: MyViewController, UIScrollViewDelegate {
         
         view1 = feedViewController.view
         
-        addChildViewController(feedViewController)
-        feedViewController.didMoveToParentViewController(self)
-        
         view1.frame = CGRectMake(0, 0, wBounds, hBounds)
         self.scrollView.addSubview(view1)
         self.scrollView.bringSubviewToFront(view1)
@@ -115,10 +125,7 @@ class MainViewController: MyViewController, UIScrollViewDelegate {
         gatesViewController = storyboard?.instantiateViewControllerWithIdentifier("GatesController") as GatesViewController
         
         view2 = gatesViewController.view
-        
-        addChildViewController(gatesViewController)
-        gatesViewController.didMoveToParentViewController(self)
-        
+
         view2.frame = CGRectMake(wBounds, 0, wBounds, hBounds)
         self.scrollView.addSubview(view2)
         self.scrollView.bringSubviewToFront(view2)
@@ -131,12 +138,12 @@ class MainViewController: MyViewController, UIScrollViewDelegate {
         buttonLeft.tintColor = UIColor.whiteColor()
         
         buttonRight = UIBarButtonItem(image: UIImage(named: "Unlock"), style: .Plain, target: self, action: Selector("enterKey"))
-        
+                
         buttonRight.tintColor = UIColor.whiteColor()
         
         var navigationItem = UINavigationItem()
         navigationItem.leftBarButtonItems = NSArray(array: [buttonLeft, buttonRight])
-
+        
         var settingsButton = UIBarButtonItem(image: UIImage(named: "Settings"), style: .Plain, target: self, action: Selector("bringUpSettings"))
         
         settingsButton.tintColor = UIColor.whiteColor()
@@ -148,13 +155,17 @@ class MainViewController: MyViewController, UIScrollViewDelegate {
         navigationItem.rightBarButtonItem = settingsButton
         
         navBar.pushNavigationItem(navigationItem, animated: false)
-        
-        appDelegate = UIApplication.sharedApplication().delegate as AppDelegate
-        
-        appDelegate.mainViewController = self
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleNotification"), name: "handleNotification", object: nil)
-
+    }
+    
+    override func viewWillLayoutSubviews() {
+        if !childrenLaid {
+            addChildViewController(feedViewController)
+            feedViewController.didMoveToParentViewController(self)
+            
+            addChildViewController(gatesViewController)
+            gatesViewController.didMoveToParentViewController(self)
+            childrenLaid = true
+        }
     }
     
     func bringUpSettings() {
@@ -286,7 +297,8 @@ class MainViewController: MyViewController, UIScrollViewDelegate {
                     var gate = Gate(id: jsonGate["external_id"] as String,
                         name: jsonGate["name"] as String,
                         usersCount: jsonGate["users_count"] as Int,
-                        creator: (jsonGate["creator"] as Dictionary<String, String>)["name"]!)
+                        creator: (jsonGate["creator"] as Dictionary<String, String>)["name"]!,
+                        generated: jsonGate["generated"] as Bool)
                     
                     newGates.append(gate)
                 }
@@ -435,7 +447,11 @@ class MainViewController: MyViewController, UIScrollViewDelegate {
         if segue.identifier == "showKeys" {
             var destination = segue.destinationViewController as HqViewController
             
-            destination.gates = gatesViewController.gates
+            destination.gates = gatesViewController.gates.filter({
+                (element: Gate) in
+                return !element.generated
+            })
+            
             (UIApplication.sharedApplication().delegate as AppDelegate).toggledViewController = destination
         }
     }
