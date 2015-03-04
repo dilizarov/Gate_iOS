@@ -170,7 +170,8 @@ class CreateKeyViewController: MyViewController, UITableViewDelegate, UITableVie
                         name: jsonGate["name"] as String,
                         usersCount: jsonGate["users_count"] as Int,
                         creator: (jsonGate["creator"] as Dictionary<String, String>)["name"]!,
-                        generated: jsonGate["generated"] as Bool)
+                        generated: jsonGate["generated"] as Bool,
+                        attachedToSession: jsonGate["session"] as Bool)
                     
                     self.gates.append(gate)
                 }

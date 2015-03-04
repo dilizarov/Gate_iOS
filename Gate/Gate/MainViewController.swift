@@ -298,7 +298,8 @@ class MainViewController: MyViewController, UIScrollViewDelegate {
                         name: jsonGate["name"] as String,
                         usersCount: jsonGate["users_count"] as Int,
                         creator: (jsonGate["creator"] as Dictionary<String, String>)["name"]!,
-                        generated: jsonGate["generated"] as Bool)
+                        generated: jsonGate["generated"] as Bool,
+                        attachedToSession: jsonGate["session"] as Bool)
                     
                     newGates.append(gate)
                 }
@@ -411,6 +412,9 @@ class MainViewController: MyViewController, UIScrollViewDelegate {
 
         request.POST("https://infinite-river-7560.herokuapp.com/api/v1/sessions/logout.json", parameters: params,
             success: {(response: HTTPResponse) in
+                
+                self.appDelegate.locationManager.stopUpdatingLocation()
+                
                 userInfo.removeObjectForKey("auth_token")
                 userInfo.removeObjectForKey("created_at")
                 userInfo.removeObjectForKey("email")

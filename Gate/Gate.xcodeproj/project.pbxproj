@@ -32,6 +32,7 @@
 		9A94B06D1A72476F003117B8 /* GateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A94B06C1A72476F003117B8 /* GateTests.swift */; };
 		9A94B0771A725A90003117B8 /* LoginRegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A94B0761A725A90003117B8 /* LoginRegisterViewController.swift */; };
 		9A94B0871A72986E003117B8 /* SwiftHTTP.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A94B0801A7297FB003117B8 /* SwiftHTTP.framework */; };
+		9AD62F5A1AA5A56E001FB62B /* GateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AD62F591AA5A56E001FB62B /* GateCell.swift */; };
 		9AF29F241A994FCE00067887 /* KeyShareProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF29F231A994FCE00067887 /* KeyShareProvider.swift */; };
 		9AF860451A76DBF8002951C5 /* CreateKeyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF860441A76DBF8002951C5 /* CreateKeyViewController.swift */; };
 		9AF99E121A819BA70077FBF3 /* ClickThroughScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF99E111A819BA70077FBF3 /* ClickThroughScrollView.swift */; };
@@ -130,6 +131,7 @@
 		9A94B06C1A72476F003117B8 /* GateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GateTests.swift; sourceTree = "<group>"; };
 		9A94B0761A725A90003117B8 /* LoginRegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginRegisterViewController.swift; sourceTree = "<group>"; };
 		9A94B0781A7297FB003117B8 /* SwiftHTTP.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SwiftHTTP.xcodeproj; path = "../../../../Downloads/SwiftHTTP-master/SwiftHTTP.xcodeproj"; sourceTree = "<group>"; };
+		9AD62F591AA5A56E001FB62B /* GateCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GateCell.swift; sourceTree = "<group>"; };
 		9AF29F231A994FCE00067887 /* KeyShareProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyShareProvider.swift; sourceTree = "<group>"; };
 		9AF860441A76DBF8002951C5 /* CreateKeyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateKeyViewController.swift; sourceTree = "<group>"; };
 		9AF99E111A819BA70077FBF3 /* ClickThroughScrollView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClickThroughScrollView.swift; sourceTree = "<group>"; };
@@ -231,6 +233,7 @@
 				9A82D4F51AA15AC10079DB21 /* MyViewController.swift */,
 				9A82D4F71AA173510079DB21 /* MyAlertController.swift */,
 				9A82D4F91AA17E7C0079DB21 /* MyActivityViewController.swift */,
+				9AD62F591AA5A56E001FB62B /* GateCell.swift */,
 			);
 			path = Gate;
 			sourceTree = "<group>";
@@ -461,6 +464,7 @@
 				9A0408E41A78D0E20062CD3D /* Post.swift in Sources */,
 				9A6E17FC1A747A080037F9F2 /* FeedViewController.swift in Sources */,
 				9AF29F241A994FCE00067887 /* KeyShareProvider.swift in Sources */,
+				9AD62F5A1AA5A56E001FB62B /* GateCell.swift in Sources */,
 				9A94B0571A72476F003117B8 /* AppDelegate.swift in Sources */,
 				9A82D4FA1AA17E7C0079DB21 /* MyActivityViewController.swift in Sources */,
 				9A8D4E751A9E4C64002EA1D2 /* Key.swift in Sources */,

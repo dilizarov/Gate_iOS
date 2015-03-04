@@ -15,6 +15,7 @@ class Gate {
     var usersCount: String
     var creator: String
     var generated: Bool
+    var attachedToSession: Bool
     
     //NOTE:
     // This is used when showing appropriate feed based on Gate from notification.
@@ -28,14 +29,16 @@ class Gate {
         self.usersCount = ""
         self.creator = ""
         self.generated = false
+        self.attachedToSession = false
     }
     
-    init(id: String, name: String, usersCount: Int, creator: String, generated: Bool) {
+    init(id: String, name: String, usersCount: Int, creator: String, generated: Bool, attachedToSession: Bool) {
         self.id = id
         self.name = name
         self.usersCount = "\(usersCount)"
         self.creator = creator
         self.generated = generated
+        self.attachedToSession = attachedToSession
     }
     
     

@@ -7,6 +7,7 @@
 
 import UIKit
 import SwiftHTTP
+import CoreLocation
 
 class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate {
 
@@ -153,24 +154,12 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell: UITableViewCell = self.gatesTable.dequeueReusableCellWithIdentifier("gateCell") as UITableViewCell
-        
-        
-        var gateName = cell.viewWithTag(1)! as UILabel
-        var gatekeepersCount = cell.viewWithTag(2)! as UILabel
-        var locationGenerated = cell.
+        var cell = self.gatesTable.dequeueReusableCellWithIdentifier("gateCell") as GateCell
         
         if self.gates.count > indexPath.row {
             var gate = self.gates[indexPath.row]
-            
-            gateName.text = gate.name
-            
-            if gate.usersCount.toInt() == 1 {
-                gatekeepersCount.text = "1 Gatekeeper"
-            } else {
-                gatekeepersCount.text = gate.usersCount + " Gatekeepers"
-            }
 
+            cell.configureViews(gate)
         }
         
         return cell
@@ -204,7 +193,8 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                     self.refresher.endRefreshing()
                 }
                 
-                self.gates = []
+                var generatedGates = [Gate]()
+                var personalGates = [Gate]()
                 
                 var jsonGates = response.responseObject!["gates"]
                 
@@ -217,10 +207,29 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                         name: jsonGate["name"] as String,
                         usersCount: jsonGate["users_count"] as Int,
                         creator: (jsonGate["creator"] as Dictionary<String, String>)["name"]!,
-                        generated: jsonGate["generated"] as Bool)
+                        generated: jsonGate["generated"] as Bool,
+                        attachedToSession: jsonGate["session"] as Bool)
                     
-                    self.gates.append(gate)
+                    if gate.generated {
+                        if CLLocationManager.authorizationStatus() != .Authorized {
+                            // On the assumption that the five attempts to delete generated gates failed, we will continue
+                            // to try to deleteGeneratedGates as long as there are gates attached to the session, which should
+                            // be impossible if deleteGeneratedGates was successful. Further, we filter so if a gate is attached to the session
+                            // we won't show it to the user because it should techincally be deleted
+                            if gate.attachedToSession {
+                                (self.parentViewController as MainViewController).appDelegate.deleteGeneratedGates()
+                            } else {
+                                generatedGates.append(gate)
+                            }
+                        } else {
+                            generatedGates.append(gate)
+                        }
+                    } else {
+                        personalGates.append(gate)
+                    }
                 }
+                
+                self.gates = generatedGates + personalGates
                 
                 dispatch_async(dispatch_get_main_queue(), {
                     self.loadingIndicator.stopAnimating()
@@ -243,8 +252,6 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
 
                 dispatch_async(dispatch_get_main_queue(), {
                     self.loadingIndicator.stopAnimating()
-
-                    var delegate = (self.parentViewController as MainViewController).appDelegate
                     
                     if self.gates.count == 0 {
                         if response == nil {
@@ -286,11 +293,10 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                     // Don't do anything, preprocessed.
             },
             failure: {(error: NSError, response: HTTPResponse?) in
-
-                // Add removed Gate back into list.
-                self.addGatesToArray([gate])
                 
                 dispatch_async(dispatch_get_main_queue(), {
+                    // Add removed Gate back into list.
+                    self.addGatesToArray([gate])
                     self.gatesTable.reloadData()
                     
                     iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
@@ -335,7 +341,8 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                     name: jsonGate["name"] as String,
                     usersCount: 1,
                     creator: (jsonGate["creator"] as Dictionary<String, String>)["name"]!,
-                    generated: jsonGate["generated"] as Bool)
+                    generated: jsonGate["generated"] as Bool,
+                    attachedToSession: jsonGate["session"] as Bool)
                 
                 dispatch_async(dispatch_get_main_queue(), {
                     let mainViewController = self.parentViewController as MainViewController
@@ -344,8 +351,6 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                     self.addGatesToArray([gate])
                     self.gatesTable.reloadData()
                 })
-
-                
             },
             failure: { (error: NSError, response: HTTPResponse?) in
                 dispatch_async(dispatch_get_main_queue(), {
@@ -364,37 +369,57 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func addGatesToArray(newGates: [Gate]) {
         
+        // Array has alphabetized generated gates first, then alphabetized non-generated gates second.
+        
         var len = newGates.count
+        
+        var generatedGates = [Gate]()
+        var personalGates = [Gate]()
+        
+        for var i = 0; i < gates.count; i++ {
+            if gates[i].generated {
+                generatedGates.append(gates[i])
+            } else {
+                personalGates.append(gates[i])
+            }
+        }
         
         if len > 0 {
             noGatesText.alpha = 0.0
         }
         
-        var startingPoint = 0
-        var reachedEnd = false
+        var startingPointGen = 0
+        var startingPointPer = 0
+        var reachedEndGen = false
+        var reachedEndPer = false
+        
         for var i = 0; i < len; i++ {
             var gate = newGates[i]
             
-            var length = gates.count
+            var arrayUsed = gate.generated ? generatedGates : personalGates
+            
+            var length = arrayUsed.count
             
             if length == 0 {
-                gates.append(gate)
+                arrayUsed.append(gate)
                 continue
             }
             
-            for var j = startingPoint; j < length; j++ {
-                var name = gates[j].name
+            for var j = gate.generated ? startingPointGen : startingPointPer; j < length; j++ {
+                var name = arrayUsed[j].name
                 if name.caseInsensitiveCompare(gate.name) == NSComparisonResult.OrderedDescending {
-                    gates.insert(gate, atIndex: j)
-                    startingPoint = j + 1
-                    break;
-                } else if reachedEnd || j == length - 1 {
-                    gates.append(gate)
-                    reachedEnd = true
+                    arrayUsed.insert(gate, atIndex: j)
+                    gate.generated ? (startingPointGen = j + 1) : (startingPointPer = j + 1)
+                    break
+                } else if (gate.generated ? reachedEndGen : reachedEndPer) || j == length - 1 {
+                    arrayUsed.append(gate)
+                    gate.generated ? (reachedEndGen = true) : (reachedEndPer = true)
                     break
                 }
             }
         }
+        
+        gates = generatedGates + personalGates
     }
     
     override func didReceiveMemoryWarning() {
