@@ -87,6 +87,57 @@ extension String {
         return formatter.dateFromString(self)!
     }
     
+    subscript (i: Int) -> Character {
+        return self[advance(self.startIndex, i)]
+    }
+    
+    subscript (i: Int) -> String {
+        return String(self[i] as Character)
+    }
+    
+    subscript (r: Range<Int>) -> String {
+        return substringWithRange(Range(start: advance(startIndex, r.startIndex), end: advance(startIndex, r.endIndex)))
+    }
+    
+    static func shortenForTitle(string: String) -> String {
+        var wordsToSkip = [ "a" : true, "an" : true, "at" : true, "but" : true, "by" : true, "for" : true, "in" : true, "nor" : true, "of" : true, "on" : true, "or" : true, "so" : true, "the" : true, "to" : true, "up" : true, "yet" : true ]
+        
+        if NSString(string: string).length <= 15 {
+            return string
+        } else if NSString(string: string).length <= 18 {
+            return string[0...13] + "..."
+        } else {
+            var stringArray = split(string) { $0 == " " }
+            
+            if stringArray.count >= 4 {
+                
+                var compactedArray = [String]()
+                
+                for var i = 0; i < stringArray.count; i++ {
+                    if wordsToSkip[stringArray[i]] == nil {
+                        compactedArray.append(stringArray[i])
+                    }
+                }
+                
+                var result = ""
+                
+                for var i = 0; i < compactedArray.count; i++ {
+                    if i != 0 { result += "." }
+                    var firstLetter = compactedArray[i][0] as String
+                    result += firstLetter.capitalizedString
+                }
+                
+                if NSString(string: result).length > 15 {
+                    result = result[0...14] + "..."
+                }
+                
+                return result
+            } else {
+                return string[0...13] + "..."
+            }
+        }
+    }
+    
     static func prettyErrorMessage(response: HTTPResponse?) -> String {
         var errorText = ""
         

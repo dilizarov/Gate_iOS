@@ -825,7 +825,7 @@
                                     <action selector="likePost:" destination="7CT-Wj-wXo" eventType="touchUpInside" id="pM6-V8-7he"/>
                                 </connections>
                             </button>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" bounces="NO" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="91" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="fyM-9f-Ve2">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" allowsSelection="NO" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="91" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="fyM-9f-Ve2">
                                 <rect key="frame" x="0.0" y="203" width="320" height="321"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -1168,8 +1168,8 @@
                                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gth-wZ-8AB">
-                                                    <rect key="frame" x="8" y="8" width="211" height="21"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gth-wZ-8AB">
+                                                    <rect key="frame" x="8" y="8" width="268" height="21"/>
                                                     <color key="tintColor" red="0.086274509799999996" green="0.25882352939999997" blue="0.45882352939999999" alpha="1" colorSpace="calibratedRGB"/>
                                                     <attributedString key="attributedText">
                                                         <fragment content="Label">
@@ -1199,6 +1199,7 @@
                                                 </imageView>
                                             </subviews>
                                             <constraints>
+                                                <constraint firstItem="uwO-Qt-Rdk" firstAttribute="leading" secondItem="gth-wZ-8AB" secondAttribute="trailing" constant="14" id="3u3-FB-gO3"/>
                                                 <constraint firstItem="uwO-Qt-Rdk" firstAttribute="trailing" secondItem="gig-Yl-oca" secondAttribute="trailingMargin" id="6bh-tV-bLx"/>
                                                 <constraint firstItem="0JH-PW-raJ" firstAttribute="top" secondItem="gth-wZ-8AB" secondAttribute="bottom" constant="1" id="DCu-0p-huo"/>
                                                 <constraint firstItem="0JH-PW-raJ" firstAttribute="leading" secondItem="gig-Yl-oca" secondAttribute="leadingMargin" id="DbF-fg-QPS"/>

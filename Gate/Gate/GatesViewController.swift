@@ -19,7 +19,7 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
 
     var loadingGates = false
     
-    var leaveController: MyAlertController!
+    var gateOptionsController: MyAlertController!
     var leaveAlertDisplayed = false
     
     var loadingIndicator: UIActivityIndicatorView!
@@ -80,9 +80,12 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         self.gatesTable.addSubview(refresher)
         
         var longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: Selector("handleLongPress:"))
-        longPressGestureRecognizer.minimumPressDuration = 1.5
+        longPressGestureRecognizer.minimumPressDuration = 1.0
         longPressGestureRecognizer.delegate = self
         gatesTable.addGestureRecognizer(longPressGestureRecognizer)
+        
+        gatesTable.rowHeight = UITableViewAutomaticDimension
+        gatesTable.estimatedRowHeight = 64.0
         
         loadingIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
         
@@ -93,11 +96,13 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         self.view.addSubview(loadingIndicator)
         
         requestGatesAndPopulateList(false)
+    
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("becomeActive:"), name: UIApplicationDidBecomeActiveNotification, object: nil)
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
+               
         if !loadingGates { gatesTable.reloadData() }
         
     }
@@ -126,26 +131,58 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 
                 var gate = gates[unwrappedIndexPath.row]
                 
-                leaveController = MyAlertController(title: "Leave \(gate.name)", message: "Are you sure you want to leave?", preferredStyle: .ActionSheet)
+                gateOptionsController = MyAlertController(title: gate.name, message: nil, preferredStyle: .ActionSheet)
+                
+                let unlockPermAction = UIAlertAction(title: "Unlock Permanently", style: .Default, handler: {(alert: UIAlertAction!) in
+                    self.unlockPermanently(gate)
+                })
                 
                 let deleteAction = UIAlertAction(title: "Leave", style: .Destructive, handler: {
                     (alert: UIAlertAction!) -> Void in
                     
-                    self.leaveAlertDisplayed = false
-                    self.leaveGate(gate, index: unwrappedIndexPath.row)
+                    var confirmLeaveAlert = MyAlertController(title: "Leave \(gate.name)", message: "Are you sure you want to leave?", preferredStyle: .Alert)
                     
+                    let confirmAction = UIAlertAction(title: "YES", style: .Default, handler: {(alert: UIAlertAction!) in
+                        self.leaveAlertDisplayed = false
+                        self.leaveGate(gate, index: unwrappedIndexPath.row)
+                    })
+                    
+                    let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+                    
+                    confirmLeaveAlert.addAction(confirmAction)
+                    confirmLeaveAlert.addAction(cancelAction)
+                    
+                    self.presentViewController(confirmLeaveAlert, animated: true, completion: nil)
                 })
                 
                 let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: { (alert: UIAlertAction!) in
                     self.leaveAlertDisplayed = false
                 })
                 
-                leaveController.addAction(deleteAction)
-                leaveController.addAction(cancelAction)
+                if (gate.generated && !gate.unlockedPerm) {
+                    gateOptionsController.addAction(unlockPermAction)
+                }
+
+                gateOptionsController.addAction(deleteAction)
+                gateOptionsController.addAction(cancelAction)
                 
                 leaveAlertDisplayed = true
-                self.presentViewController(leaveController, animated: true, completion: nil)
+                self.presentViewController(gateOptionsController, animated: true, completion: nil)
             }
+        }
+    }
+    
+    func becomeActive(notification: NSNotification) {
+        if CLLocationManager.authorizationStatus() != .Authorized {
+            gates = gates.filter({
+                (element : Gate) in
+
+                return !element.attachedToSession
+            })
+         
+            dispatch_async(dispatch_get_main_queue(), {
+                self.gatesTable.reloadData()
+            })
         }
     }
     
@@ -200,24 +237,31 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 
                 let unwrappedGates = jsonGates as [Dictionary<String, AnyObject>]
                 
+                var calledDeleteGeneratedGates = false
+                
                 for var i = 0; i < unwrappedGates.count; i++ {
                     var jsonGate = unwrappedGates[i]
                     
                     var gate = Gate(id: jsonGate["external_id"] as String,
                         name: jsonGate["name"] as String,
                         usersCount: jsonGate["users_count"] as Int,
-                        creator: (jsonGate["creator"] as Dictionary<String, String>)["name"]!,
+                        creator: (jsonGate["creator"] as? Dictionary<String, String>)?["name"],
                         generated: jsonGate["generated"] as Bool,
-                        attachedToSession: jsonGate["session"] as Bool)
+                        attachedToSession: jsonGate["session"] as Bool,
+                        unlockedPerm: jsonGate["unlocked_perm"] as Bool)
                     
-                    if gate.generated {
-                        if CLLocationManager.authorizationStatus() != .Authorized {
+                    if gate.generated && !gate.unlockedPerm {
+                        let mainViewController = self.parentViewController as MainViewController
+                        
+                        if CLLocationManager.authorizationStatus() != .Authorized && !mainViewController.appDelegate.conserveBatteryFlag {
                             // On the assumption that the five attempts to delete generated gates failed, we will continue
                             // to try to deleteGeneratedGates as long as there are gates attached to the session, which should
                             // be impossible if deleteGeneratedGates was successful. Further, we filter so if a gate is attached to the session
                             // we won't show it to the user because it should techincally be deleted
-                            if gate.attachedToSession {
-                                (self.parentViewController as MainViewController).appDelegate.deleteGeneratedGates()
+                            if gate.attachedToSession && !calledDeleteGeneratedGates {
+                                mainViewController.appDelegate.deleteGeneratedGates()
+                                
+                                calledDeleteGeneratedGates = true
                             } else {
                                 generatedGates.append(gate)
                             }
@@ -279,7 +323,13 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     func leaveGate(gate: Gate, index: Int) {
-        gates.removeAtIndex(index)
+        // This is to handle the scenario where the gatesTable was updated with generated Gates while trying to leave one.
+        if gate.id == gates[index].id {
+            gates.removeAtIndex(index)
+        } else {
+            gates = gates.filter({ return $0.id != gate.id })
+        }
+
         gatesTable.reloadData()
         
         var request = HTTPTask()
@@ -298,6 +348,32 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                     // Add removed Gate back into list.
                     self.addGatesToArray([gate])
                     self.gatesTable.reloadData()
+                    
+                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+                })
+                
+            }
+        )
+        
+    }
+    
+    func unlockPermanently(gate: Gate) {
+        gate.unlockedPerm = true
+        
+        var request = HTTPTask()
+        
+        var userInfo = NSUserDefaults.standardUserDefaults()
+        
+        var params = [ "user_id" : userInfo.objectForKey("user_id") as String, "auth_token" : userInfo.objectForKey("auth_token") as String, "api_key" : "91b75c9e-6a00-4fa9-bf65-610c12024bab" ]
+        
+        request.PUT("https://infinite-river-7560.herokuapp.com/api/v1/generated_gates/" + gate.id + "/unlock.json", parameters: params,
+            success: {(response: HTTPResponse) in
+                // Don't do anything, preprocessed.
+            },
+            failure: {(error: NSError, response: HTTPResponse?) in
+                
+                dispatch_async(dispatch_get_main_queue(), {
+                    gate.unlockedPerm = false
                     
                     iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
                 })
@@ -340,9 +416,10 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 var gate = Gate(id: jsonGate["external_id"] as String,
                     name: jsonGate["name"] as String,
                     usersCount: 1,
-                    creator: (jsonGate["creator"] as Dictionary<String, String>)["name"]!,
+                    creator: (jsonGate["creator"] as? Dictionary<String, String>)?["name"],
                     generated: jsonGate["generated"] as Bool,
-                    attachedToSession: jsonGate["session"] as Bool)
+                    attachedToSession: jsonGate["session"] as Bool,
+                    unlockedPerm: jsonGate["unlocked_perm"] as Bool)
                 
                 dispatch_async(dispatch_get_main_queue(), {
                     let mainViewController = self.parentViewController as MainViewController
@@ -428,6 +505,10 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
 
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
     /*
     // MARK: - Navigation
 

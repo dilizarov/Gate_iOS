@@ -18,6 +18,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     var lastGeneratedGatesUpdate: NSDate!
     var requestingGates = false
     var deleteGeneratedFailures = 0
+    // When booting up location services, we let 3 successful updates go through before setting a 20 meter filter
+    var filterSettingCounter = 0
+    var conserveBatteryFlag = false
     
     var window: UIWindow?
     var mainViewController: MainViewController?
@@ -43,8 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         locationManager = CLLocationManager()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-        locationManager.distanceFilter = CLLocationDistance.abs(20)
-        lastGeneratedGatesUpdate = NSDate()
+        lastGeneratedGatesUpdate = NSDate().minusDays(1) // Used to jump-start location handling.
         
         self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
         var storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -83,7 +85,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
             var viewController =  toggledViewController != nil ? toggledViewController : mainViewController
             
             TSMessage.showNotificationInViewController(viewController,
-                title: alert,
+                title: "Notification",
+                subtitle: alert,
                 type: TSMessageNotificationType.Message,
                 duration: TSMessageNotificationDuration.Automatic,
                 atPosition: TSMessageNotificationPosition.NavBarOverlay,
@@ -129,6 +132,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     func bootUpLocationTracking() {
         switch CLLocationManager.authorizationStatus() {
             case .Authorized:
+                conserveBatteryFlag = false
                 locationManager.startUpdatingLocation()
             case .NotDetermined:
                 locationManager.requestAlwaysAuthorization()
@@ -149,20 +153,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
                 
                 alertController.addAction(openAction)
             
-                if toggledViewController != nil {
-                    toggledViewController?.presentViewController(alertController, animated: true, completion: nil)
-                } else {
-                    mainViewController?.presentViewController(alertController, animated: true, completion: nil)
-                }
+                let delayInSeconds = 0.75
+                let startTime = dispatch_time(DISPATCH_TIME_NOW, Int64(delayInSeconds * Double(NSEC_PER_SEC)))
+                dispatch_after(startTime, dispatch_get_main_queue(), {
+                    if self.toggledViewController != nil {
+                        self.toggledViewController?.presentViewController(alertController, animated: true, completion: nil)
+                    } else {
+                        self.mainViewController?.presentViewController(alertController, animated: true, completion: nil)
+                    }
+                })
         }
     }
     
     func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
-        if status == .Authorized || status == .AuthorizedWhenInUse {
+        if (status == .Authorized || status == .AuthorizedWhenInUse) && self.mainViewController != nil {
+            conserveBatteryFlag = false
             manager.startUpdatingLocation()
-        } else {
+        } else if self.mainViewController != nil {
             manager.stopUpdatingLocation()
-            deleteGeneratedGates()
+            filterSettingCounter = 0
+            if !conserveBatteryFlag {
+                deleteGeneratedGates()
+            }
         }
     }
     
@@ -175,12 +187,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         if location != nil && NSDate().secondsFrom(lastGeneratedGatesUpdate) > 40 && !requestingGates {
             lastGeneratedGatesUpdate = NSDate()
             requestGates(location!)
-        }
-    }
-    
-    func locationManager(manager: CLLocationManager!, didFailWithError error: NSError!) {
-        if !CLLocationManager.locationServicesEnabled() {
-            manager.stopUpdatingLocation()
+            
+            if filterSettingCounter < 3 {
+                filterSettingCounter += 1
+            } else {
+                locationManager.distanceFilter = CLLocationDistance.abs(20)
+            }
         }
     }
     
@@ -211,7 +223,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
 
     func applicationDidBecomeActive(application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-        application.applicationIconBadgeNumber = 0
+        if application.isRegisteredForRemoteNotifications() {
+            application.applicationIconBadgeNumber = 0
+        }
     }
 
     func applicationWillTerminate(application: UIApplication) {
@@ -248,11 +262,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
                     var gate = Gate(id: jsonGate["external_id"] as String,
                         name: jsonGate["name"] as String,
                         usersCount: jsonGate["users_count"] as Int,
-                        creator: (jsonGate["creator"] as Dictionary<String, String>)["name"]!,
+                        creator: (jsonGate["creator"] as? Dictionary<String, String>)?["name"],
                         generated: jsonGate["generated"] as Bool,
-                        attachedToSession: jsonGate["session"] as Bool)
+                        attachedToSession: jsonGate["session"] as Bool,
+                        unlockedPerm: jsonGate["unlocked_perm"] as Bool)
                     
-                    if gate.generated {
+                    if gate.generated && !gate.unlockedPerm {
                         generatedGates.append(gate)
                     } else {
                         personalGates.append(gate)

@@ -87,7 +87,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         feed.rowHeight = UITableViewAutomaticDimension
         
-        requestPostsAndPopulateList(false, page: nil, completionHandler: nil)
+        requestPostsAndPopulateList(false, page: nil, completionHandler: nil, oldGateName: nil)
     }
     
     func handleNotification() {
@@ -97,6 +97,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         var commentCreated = 126
         var postLiked = 168
         var commentLiked = 210
+        var newGates = 252
         
         let delayInSeconds = 0.75
         let startTime = dispatch_time(DISPATCH_TIME_NOW, Int64(delayInSeconds * Double(NSEC_PER_SEC)))
@@ -105,7 +106,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             if notifType == commentCreated || notifType == postLiked || notifType == commentLiked {
                 commentsNotification = true
                 let mainViewController = parentViewController as MainViewController
-                                
+                
                 dispatch_after(startTime, dispatch_get_main_queue(), {
                     mainViewController.scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
                     mainViewController.pageControl.currentPage = 0
@@ -130,6 +131,13 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                 dispatch_after(startTime, dispatch_get_main_queue(), {
                     mainViewController.showFeed(gate)
                 })
+            } else if notifType == newGates {
+                let mainViewController = parentViewController as MainViewController
+                
+                mainViewController.scrollView.setContentOffset(
+                    CGPoint(x: mainViewController.view.bounds.width, y: 0),
+                    animated: true)
+                mainViewController.pageControl.currentPage = 1
             }
         }
         
@@ -210,13 +218,20 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
         
     func showFeed(gate: Gate?) {
+        var previousGate = currentGate
         currentGate = gate
             
         self.posts = []
         self.feed.reloadData()
             
         startLoading()
-        requestPostsAndPopulateList(true, page: nil, completionHandler: nil)
+        
+        var previousGateName = ""
+        if previousGate != nil {
+            previousGateName = previousGate!.name
+        }
+        
+        requestPostsAndPopulateList(true, page: nil, completionHandler: nil, oldGateName: previousGateName)
         feed.setContentOffset(CGPointZero, animated: false)
     }
     
@@ -397,7 +412,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                 isLoading = true
                 reachedEndOfCallback = false
                 lastTimeLoading = NSDate()
-                requestPostsAndPopulateList(false, page: currentPage, completionHandler: nil)
+                requestPostsAndPopulateList(false, page: currentPage, completionHandler: nil, oldGateName: nil)
             }
             
         }
@@ -405,14 +420,14 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func refresh() {
-        requestPostsAndPopulateList(true, page: nil, completionHandler: nil)
+        requestPostsAndPopulateList(true, page: nil, completionHandler: nil, oldGateName: nil)
     }
     
     func backgroundRefresh(completionHandler: (UIBackgroundFetchResult) -> Void) {
-        requestPostsAndPopulateList(true, page: nil, completionHandler: completionHandler)
+        requestPostsAndPopulateList(true, page: nil, completionHandler: completionHandler, oldGateName: nil)
     }
     
-    func requestPostsAndPopulateList(refreshing: Bool, page: Int?, completionHandler: ((UIBackgroundFetchResult) -> Void)?) {
+    func requestPostsAndPopulateList(refreshing: Bool, page: Int?, completionHandler: ((UIBackgroundFetchResult) -> Void)?, oldGateName : String?) {
         // Only care about the very first load of feed
         if !refreshing && page == nil {
             startLoading()
@@ -528,6 +543,11 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                         }
                         
                         self.noPostsText.alpha = 1.0
+                    }
+                    
+                    if oldGateName != nil {
+                        let mainViewController = self.parentViewController as MainViewController
+                        mainViewController.navTitleLabel1.text = oldGateName! == "" ? "Aggregate" : String.shortenForTitle(oldGateName!)
                     }
                     
                     if completionHandler != nil {

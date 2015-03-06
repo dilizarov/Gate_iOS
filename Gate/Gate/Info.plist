@@ -15,17 +15,17 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.2</string>
+	<string>1.3</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>4.2</string>
+	<string>4.29</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2015 Unlock Gate All rights reserved.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>We use your location to unlock Gates while you're on the move.</string>
+	<string>Gate uses your location to unlock Gates for you while you're on the move.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

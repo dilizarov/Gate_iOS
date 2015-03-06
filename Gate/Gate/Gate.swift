@@ -13,9 +13,10 @@ class Gate {
     var id: String
     var name: String
     var usersCount: String
-    var creator: String
+    var creator: String?
     var generated: Bool
     var attachedToSession: Bool
+    var unlockedPerm: Bool
     
     //NOTE:
     // This is used when showing appropriate feed based on Gate from notification.
@@ -30,15 +31,17 @@ class Gate {
         self.creator = ""
         self.generated = false
         self.attachedToSession = false
+        self.unlockedPerm = true
     }
     
-    init(id: String, name: String, usersCount: Int, creator: String, generated: Bool, attachedToSession: Bool) {
+    init(id: String, name: String, usersCount: Int, creator: String?, generated: Bool, attachedToSession: Bool, unlockedPerm: Bool) {
         self.id = id
         self.name = name
         self.usersCount = "\(usersCount)"
         self.creator = creator
         self.generated = generated
         self.attachedToSession = attachedToSession
+        self.unlockedPerm = unlockedPerm
     }
     
     

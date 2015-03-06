@@ -121,6 +121,7 @@ __weak static UIViewController *_defaultViewController;
 
 + (void)showNotificationInViewController:(UIViewController *)viewController
                                    title:(NSString *)title
+                                subtitle:(NSString *)subtitle
                                     type:(TSMessageNotificationType)type
                                 duration:(TSMessageNotificationDuration)duration
                               atPosition:(TSMessageNotificationPosition)messagePosition
@@ -130,7 +131,7 @@ __weak static UIViewController *_defaultViewController;
 
     [self showNotificationInViewController:viewController
                                      title:title
-                                  subtitle:nil
+                                  subtitle:subtitle
                                      image:nil
                                       type:type
                                   duration:duration

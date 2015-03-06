@@ -56,6 +56,7 @@ class MainViewController: MyViewController, UIScrollViewDelegate {
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("handleNotification"), name: "handleNotification", object: nil)
         
+        appDelegate.bootUpLocationTracking()
     }
     
     func setupNavBar() {
@@ -171,6 +172,24 @@ class MainViewController: MyViewController, UIScrollViewDelegate {
     func bringUpSettings() {
         settingsController = MyAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
         
+        let conserveBatteryAction = UIAlertAction(title: "Conserve Battery", style: .Default, handler: {(alert: UIAlertAction!) -> Void in
+            self.settingsAlertDisplayed = false
+            
+            var conserveBatteryAlert = MyAlertController(title: "Disable Location Services", message: "Gates generated for you will be kept available. The next time Location Services are enabled, those Gates are not guaranteed to be available.", preferredStyle: .Alert)
+        
+            let confirmAction = UIAlertAction(title: "OK", style: .Default, handler: {(alert: UIAlertAction!) in
+                self.appDelegate.conserveBatteryFlag = true
+                self.appDelegate.locationManager.stopUpdatingLocation()
+            })
+            
+            let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+            
+            conserveBatteryAlert.addAction(cancelAction)
+            conserveBatteryAlert.addAction(confirmAction)
+            
+            self.presentViewController(conserveBatteryAlert, animated: true, completion: nil)
+        })
+        
         let logoutAction = UIAlertAction(title: "Log out", style: .Destructive, handler: {(alert: UIAlertAction!) -> Void in
             self.settingsAlertDisplayed = false
             
@@ -198,6 +217,7 @@ class MainViewController: MyViewController, UIScrollViewDelegate {
             self.settingsAlertDisplayed = false
         })
         
+        settingsController.addAction(conserveBatteryAction)
         settingsController.addAction(logoutAction)
         settingsController.addAction(cancelAction)
         
@@ -212,7 +232,7 @@ class MainViewController: MyViewController, UIScrollViewDelegate {
         if gate == nil {
             navTitleLabel1.text = "Aggregate"
         } else {
-            navTitleLabel1.text = gate!.name
+            navTitleLabel1.text = String.shortenForTitle(gate!.name)
         }
         
         feedViewController.showFeed(gate)
@@ -297,9 +317,10 @@ class MainViewController: MyViewController, UIScrollViewDelegate {
                     var gate = Gate(id: jsonGate["external_id"] as String,
                         name: jsonGate["name"] as String,
                         usersCount: jsonGate["users_count"] as Int,
-                        creator: (jsonGate["creator"] as Dictionary<String, String>)["name"]!,
+                        creator: (jsonGate["creator"] as? Dictionary<String, String>)?["name"],
                         generated: jsonGate["generated"] as Bool,
-                        attachedToSession: jsonGate["session"] as Bool)
+                        attachedToSession: jsonGate["session"] as Bool,
+                        unlockedPerm: jsonGate["unlocked_perm"] as Bool)
                     
                     newGates.append(gate)
                 }
@@ -414,6 +435,7 @@ class MainViewController: MyViewController, UIScrollViewDelegate {
             success: {(response: HTTPResponse) in
                 
                 self.appDelegate.locationManager.stopUpdatingLocation()
+                self.appDelegate.mainViewController = nil
                 
                 userInfo.removeObjectForKey("auth_token")
                 userInfo.removeObjectForKey("created_at")
@@ -426,7 +448,6 @@ class MainViewController: MyViewController, UIScrollViewDelegate {
                 
                 dispatch_async(dispatch_get_main_queue(), {
                     MBProgressHUD.hideHUDForView(self.view, animated: true)
-                    self.appDelegate.mainViewController = nil
                     self.performSegueWithIdentifier("logoutUser", sender: self)
                 })
             },
