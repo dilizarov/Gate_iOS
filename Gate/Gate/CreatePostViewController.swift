@@ -52,9 +52,15 @@ class CreatePostViewController: MyViewController, UITextViewDelegate {
             gatePicker = ActionSheetStringPicker(title: "Select a Gate", rows: names, initialSelection: index,
                 doneBlock: {(picker, index, value) in
                     
+                    var title: String = value as String
+                    
+                    if NSString(string: title).length > 80 {
+                        title = title[0...77] + "..."
+                    }
+                    
                     if !self.gates.isEmpty {
                         self.selectedGate = self.gates[index]
-                        self.selectGateButton.setTitle(value as NSString, forState: .Normal)
+                        self.selectGateButton.setTitle(title as NSString, forState: .Normal)
                         if self.selectGateButton.alpha == 0.7 {
                             UIView.animateWithDuration(1.0, {
                                 self.selectGateButton.alpha = 1.0

@@ -370,13 +370,15 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         
-        var post = posts[indexPath.row]
-        
-        if cachedHeights[post.id] != nil {
-            return cachedHeights[post.id]!
-        } else {
-            return 165
+        if indexPath.row >= 0 && indexPath.row < posts.count {
+            var post = posts[indexPath.row]
+            
+            if cachedHeights[post.id] != nil {
+                return cachedHeights[post.id]!
+            }
         }
+        
+        return 165
     }
     
     func scrollViewDidScroll(scrollView: UIScrollView) {
