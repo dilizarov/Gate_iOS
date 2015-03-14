@@ -33,7 +33,7 @@ class CreateKeyViewController: MyViewController, UITableViewDelegate, UITableVie
     @IBAction func tapForKey(sender: AnyObject) {
         var gateIds = [String](selectedGates.keys)
         if (gateIds.isEmpty) {
-            iToast.makeText(" You must unlock at least one Gate").setDuration(3000).setGravity(iToastGravityCenter).show()
+            iToast.makeText("You must unlock at least one Gate").setDuration(3000).setGravity(iToastGravityCenter).show()
         } else {
             var hud = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
             hud.labelText = "Robots processing..."
@@ -211,7 +211,7 @@ class CreateKeyViewController: MyViewController, UITableViewDelegate, UITableVie
                         self.noGatesText.alpha = 1.0
                     }
                     
-                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+                    iToast.makeText(String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
                     
                     self.refreshButton.enabled = true
                 })
@@ -305,7 +305,7 @@ class CreateKeyViewController: MyViewController, UITableViewDelegate, UITableVie
                     
                     self.buttonTapped = false
                     
-                    iToast.makeText(" " + String.prettyErrorMessage(response)).setDuration(3000).setGravity(iToastGravityCenter).show()
+                    iToast.makeText(String.prettyErrorMessage(response)).setDuration(3000).setGravity(iToastGravityCenter).show()
                 })
             }
         )

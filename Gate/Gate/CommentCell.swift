@@ -38,7 +38,7 @@ class CommentCell: UITableViewCell {
                 dispatch_async(dispatch_get_main_queue(), {
                     self.toggleLikeComment()
                     
-                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+                    iToast.makeText(String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
                 })
             }
         )

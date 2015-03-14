@@ -221,7 +221,7 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
             failure: {(error: NSError, response: HTTPResponse?) in
                 dispatch_async(dispatch_get_main_queue(), {                    MBProgressHUD.hideHUDForView(self.view, animated: true)
                     
-                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+                    iToast.makeText(String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
                 })
         })
     }
@@ -271,7 +271,7 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
                 dispatch_async(dispatch_get_main_queue(), {
                     MBProgressHUD.hideHUDForView(self.view, animated: true)
                     
-                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+                    iToast.makeText(String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
                 })
         })
         
@@ -327,7 +327,7 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
                 dispatch_async(dispatch_get_main_queue(), {
                     MBProgressHUD.hideHUDForView(self.view, animated: true)
     
-                    iToast.makeText(" " + message).setGravity(iToastGravityCenter).setDuration(3000).show()
+                    iToast.makeText(message).setGravity(iToastGravityCenter).setDuration(3000).show()
                 })
                 
             })

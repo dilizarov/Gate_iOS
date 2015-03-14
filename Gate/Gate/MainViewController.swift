@@ -8,6 +8,7 @@
 
 import UIKit
 import SwiftHTTP
+import CoreLocation
 
 class MainViewController: MyViewController, UIScrollViewDelegate {
         
@@ -91,6 +92,7 @@ class MainViewController: MyViewController, UIScrollViewDelegate {
         pageControl.currentPageIndicatorTintColor = UIColor.whiteColor()
         pageControl.numberOfPages = 2
         pageControl.currentPage = 0
+        
         self.navbarView.addSubview(pageControl)
         
         //Titles for the nav controller (also added to a subview in the uinavigationcontroller)
@@ -109,6 +111,10 @@ class MainViewController: MyViewController, UIScrollViewDelegate {
         navTitleLabel2.textAlignment = NSTextAlignment.Center
         navTitleLabel2.text = "Gates"
         self.navbarView.addSubview(navTitleLabel2)
+        
+        var singleFingerTap = UITapGestureRecognizer(target: self, action: Selector("handlePageControllerTap:"))
+
+        self.navbarView.addGestureRecognizer(singleFingerTap)
         
         //Views for the scrolling view
         //This is where the content of your views goes (or you can subclass these and add them to ScrollView)
@@ -172,22 +178,39 @@ class MainViewController: MyViewController, UIScrollViewDelegate {
     func bringUpSettings() {
         settingsController = MyAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
         
-        let conserveBatteryAction = UIAlertAction(title: "Conserve Battery", style: .Default, handler: {(alert: UIAlertAction!) -> Void in
+        var alertTitle : String!
+        var alertMessage : String!
+        
+        if appDelegate.locationUpdating {
+            alertTitle = "Disable Location Services"
+            alertMessage = "Gates generated for you will be kept available. The next time Location Services are enabled, those Gates are not guaranteed to stay available."
+        } else {
+            alertTitle = "Enable Location Services"
+            alertMessage = "Gate uses your location to unlock Gates for you while you're on the move."
+        }
+        
+        let locationUpdateAction = UIAlertAction(title: alertTitle, style: .Default, handler: {(alert: UIAlertAction!) -> Void in
             self.settingsAlertDisplayed = false
             
-            var conserveBatteryAlert = MyAlertController(title: "Disable Location Services", message: "Gates generated for you will be kept available. The next time Location Services are enabled, those Gates are not guaranteed to be available.", preferredStyle: .Alert)
+            var locationUpdateAlert = MyAlertController(title: alertTitle, message: alertMessage, preferredStyle: .Alert)
         
             let confirmAction = UIAlertAction(title: "OK", style: .Default, handler: {(alert: UIAlertAction!) in
-                self.appDelegate.conserveBatteryFlag = true
-                self.appDelegate.locationManager.stopUpdatingLocation()
+                
+                if self.appDelegate.locationUpdating {
+                    self.appDelegate.conserveBatteryFlag = true
+                    self.appDelegate.locationUpdating = false
+                    self.appDelegate.locationManager.stopUpdatingLocation()
+                } else {
+                    self.appDelegate.bootUpLocationTracking()
+                }
             })
             
             let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
             
-            conserveBatteryAlert.addAction(cancelAction)
-            conserveBatteryAlert.addAction(confirmAction)
+            locationUpdateAlert.addAction(cancelAction)
+            locationUpdateAlert.addAction(confirmAction)
             
-            self.presentViewController(conserveBatteryAlert, animated: true, completion: nil)
+            self.presentViewController(locationUpdateAlert, animated: true, completion: nil)
         })
         
         let logoutAction = UIAlertAction(title: "Log out", style: .Destructive, handler: {(alert: UIAlertAction!) -> Void in
@@ -217,7 +240,7 @@ class MainViewController: MyViewController, UIScrollViewDelegate {
             self.settingsAlertDisplayed = false
         })
         
-        settingsController.addAction(conserveBatteryAction)
+        settingsController.addAction(locationUpdateAction)
         settingsController.addAction(logoutAction)
         settingsController.addAction(cancelAction)
         
@@ -236,6 +259,25 @@ class MainViewController: MyViewController, UIScrollViewDelegate {
         }
         
         feedViewController.showFeed(gate)
+    }
+    
+    func handlePageControllerTap(recognizer: UITapGestureRecognizer) {
+        
+        var xPos = recognizer.locationInView(nil).x
+        var yPos = recognizer.locationInView(nil).y
+        var viewWidth = self.view.bounds.width
+        
+        var xInBounds = xPos > (viewWidth/2)-viewWidth*0.2 && xPos < (viewWidth/2)+viewWidth*0.2
+        var yInBounds = yPos > 20 && yPos < 64
+        
+        if !(xInBounds && yInBounds) { return }
+        
+        var gate = feedViewController.currentGate
+        
+        var name = gate == nil ? "Aggregate" : gate!.name
+        
+        iToast.makeText(name).setGravity(iToastGravityCenter).setDuration(3000).show()
+        
     }
     
     func showKeys() {
@@ -404,7 +446,7 @@ class MainViewController: MyViewController, UIScrollViewDelegate {
                 dispatch_async(dispatch_get_main_queue(), {
                     MBProgressHUD.hideHUDForView(self.view, animated: true)
                     
-                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+                    iToast.makeText(String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
 
                     self.presentViewController(self.enterKeyAlert, animated: true, completion: nil)
                 })
@@ -455,7 +497,7 @@ class MainViewController: MyViewController, UIScrollViewDelegate {
                 dispatch_async(dispatch_get_main_queue(), {
                     MBProgressHUD.hideHUDForView(self.view, animated: true)
                     
-                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+                    iToast.makeText(String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
                 })
                 
                 

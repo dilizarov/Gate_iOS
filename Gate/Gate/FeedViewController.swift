@@ -553,7 +553,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                     if completionHandler != nil {
                         completionHandler!(UIBackgroundFetchResult.Failed)
                     } else {
-                        iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+                        iToast.makeText(String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
                     }
                 })
                 

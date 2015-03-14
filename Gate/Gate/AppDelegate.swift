@@ -12,7 +12,7 @@ import SwiftHTTP
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate {
-
+    
     var locationManager: CLLocationManager!
     var location: CLLocation?
     var lastGeneratedGatesUpdate: NSDate!
@@ -21,6 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     // When booting up location services, we let 3 successful updates go through before setting a 20 meter filter
     var filterSettingCounter = 0
     var conserveBatteryFlag = false
+    var locationUpdating = false
     
     var window: UIWindow?
     var mainViewController: MainViewController?
@@ -133,10 +134,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         switch CLLocationManager.authorizationStatus() {
             case .Authorized:
                 conserveBatteryFlag = false
+                locationUpdating = true
                 locationManager.startUpdatingLocation()
             case .NotDetermined:
+                locationUpdating = false
                 locationManager.requestAlwaysAuthorization()
             case .AuthorizedWhenInUse, .Restricted, .Denied:
+                locationUpdating = false
                 let alertController = MyAlertController(
                     title: "Background Location Access Disabled",
                     message: "In order to unlock Gates while you're on the move, please open Gate's settings and set location access to 'Always'.",
@@ -168,10 +172,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         if (status == .Authorized || status == .AuthorizedWhenInUse) && self.mainViewController != nil {
             conserveBatteryFlag = false
+            locationUpdating = true
             manager.startUpdatingLocation()
         } else if self.mainViewController != nil {
+            locationUpdating = false
             manager.stopUpdatingLocation()
             filterSettingCounter = 0
+            locationManager.distanceFilter = CLLocationDistance.abs(0)
             if !conserveBatteryFlag {
                 deleteGeneratedGates()
             }

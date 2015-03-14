@@ -170,7 +170,7 @@ class HqViewController: MyViewController, UITableViewDelegate, UITableViewDataSo
                         self.noKeysText.alpha = 1.0
                     }
                     
-                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+                    iToast.makeText(String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
                     
                     
                     self.refreshButton.enabled = true
@@ -298,7 +298,7 @@ class HqViewController: MyViewController, UITableViewDelegate, UITableViewDataSo
                 dispatch_async(dispatch_get_main_queue(), {
                     self.keysList.reloadData()
                     
-                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+                    iToast.makeText(String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
                 })
             }
         )

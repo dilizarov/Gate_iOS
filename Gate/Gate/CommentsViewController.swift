@@ -55,7 +55,7 @@ class CommentsViewController: MyViewController, PHFComposeBarViewDelegate, UIGes
                 dispatch_async(dispatch_get_main_queue(), {
                     self.toggleLikePost()
                     
-                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+                    iToast.makeText(String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
                 })
             }
         )
@@ -265,7 +265,7 @@ class CommentsViewController: MyViewController, PHFComposeBarViewDelegate, UIGes
                     self.composeBarView.text = comment
                     self.composeBarView.becomeFirstResponder()
                     
-                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+                    iToast.makeText(String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
 
                 })
             }
@@ -417,7 +417,7 @@ class CommentsViewController: MyViewController, PHFComposeBarViewDelegate, UIGes
                         self.noCommentsText.alpha = 1.0
                     }
                     
-                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+                    iToast.makeText(String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
                     
                     
                     self.refreshButton.enabled = true

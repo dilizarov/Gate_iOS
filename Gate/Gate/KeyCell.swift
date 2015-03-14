@@ -27,7 +27,7 @@ class KeyCell: UITableViewCell {
             toastText = "This key expires in \(expireTime)"
         }
         
-        iToast.makeText(" \(toastText)").setGravity(iToastGravityCenter).setDuration(3000).show()
+        iToast.makeText("\(toastText)").setGravity(iToastGravityCenter).setDuration(3000).show()
     }
 
     

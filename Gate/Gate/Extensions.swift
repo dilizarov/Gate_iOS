@@ -100,6 +100,7 @@ extension String {
     }
     
     static func shortenForTitle(string: String) -> String {
+        
         var wordsToSkip = [ "a" : true, "an" : true, "at" : true, "but" : true, "by" : true, "for" : true, "in" : true, "nor" : true, "of" : true, "on" : true, "or" : true, "so" : true, "the" : true, "to" : true, "up" : true, "yet" : true ]
         
         if NSString(string: string).length <= 15 {
@@ -122,13 +123,12 @@ extension String {
                 var result = ""
                 
                 for var i = 0; i < compactedArray.count; i++ {
-                    if i != 0 { result += "." }
                     var firstLetter = compactedArray[i][0] as String
                     result += firstLetter.capitalizedString
                 }
                 
-                if NSString(string: result).length > 15 {
-                    result = result[0...14] + "..."
+                if NSString(string: result).length > 10 {
+                    result = result[0...9] + "..."
                 }
                 
                 return result

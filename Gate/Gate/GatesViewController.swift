@@ -85,7 +85,6 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         gatesTable.addGestureRecognizer(longPressGestureRecognizer)
         
         gatesTable.rowHeight = UITableViewAutomaticDimension
-        gatesTable.estimatedRowHeight = 64.0
         
         loadingIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
         
@@ -103,7 +102,7 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
                
-        if !loadingGates { gatesTable.reloadData() }
+        if !loadingGates || gates.count == 0 { gatesTable.reloadData() }
         
     }
         
@@ -208,6 +207,11 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         mainViewController.showFeed(gates[indexPath.row])
     }
     
+    func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+     
+        return 64
+    }
+    
     func requestGatesAndPopulateList(refreshing: Bool) {
         loadingGates = true
         
@@ -309,7 +313,7 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                         self.gatesTable.reloadData()
                     }
                     
-                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+                    iToast.makeText(String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
                 
                     self.loadingGates = false
                 })
@@ -349,7 +353,7 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                     self.addGatesToArray([gate])
                     self.gatesTable.reloadData()
                     
-                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+                    iToast.makeText(String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
                 })
                 
             }
@@ -375,7 +379,7 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 dispatch_async(dispatch_get_main_queue(), {
                     gate.unlockedPerm = false
                     
-                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+                    iToast.makeText(String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
                 })
                 
             }
@@ -384,8 +388,6 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     func createGate(name: String) {
-        // There is a bug here that shifts the ViewController bounds when I use
-        // self.view. Anywhere else, it doesn't happen, but it does here, so to mitigate it, I instead opt to use the parent of this view controller. 
         
         dispatch_async(dispatch_get_main_queue(), {
             let mainViewController = self.parentViewController as MainViewController
@@ -434,7 +436,7 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                     let mainViewController = self.parentViewController as MainViewController
                     MBProgressHUD.hideHUDForView(mainViewController.view, animated: true)
                     
-                    iToast.makeText(" " + String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
+                    iToast.makeText(String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
                     
                     self.presentViewController(self.createGateAlert, animated: true, completion: nil)
                 })
@@ -473,7 +475,7 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         for var i = 0; i < len; i++ {
             var gate = newGates[i]
             
-            var arrayUsed = gate.generated ? generatedGates : personalGates
+            var arrayUsed = (gate.generated && !gate.unlockedPerm) ? generatedGates : personalGates
             
             var length = arrayUsed.count
             
@@ -482,15 +484,15 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 continue
             }
             
-            for var j = gate.generated ? startingPointGen : startingPointPer; j < length; j++ {
+            for var j = (gate.generated && !gate.unlockedPerm) ? startingPointGen : startingPointPer; j < length; j++ {
                 var name = arrayUsed[j].name
                 if name.caseInsensitiveCompare(gate.name) == NSComparisonResult.OrderedDescending {
                     arrayUsed.insert(gate, atIndex: j)
-                    gate.generated ? (startingPointGen = j + 1) : (startingPointPer = j + 1)
+                    (gate.generated && !gate.unlockedPerm) ? (startingPointGen = j + 1) : (startingPointPer = j + 1)
                     break
-                } else if (gate.generated ? reachedEndGen : reachedEndPer) || j == length - 1 {
+                } else if ((gate.generated && !gate.unlockedPerm) ? reachedEndGen : reachedEndPer) || j == length - 1 {
                     arrayUsed.append(gate)
-                    gate.generated ? (reachedEndGen = true) : (reachedEndPer = true)
+                    (gate.generated && !gate.unlockedPerm) ? (reachedEndGen = true) : (reachedEndPer = true)
                     break
                 }
             }

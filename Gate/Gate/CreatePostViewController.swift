@@ -93,7 +93,7 @@ class CreatePostViewController: MyViewController, UITextViewDelegate {
         setupNavBar()
         
         if createPostErrorMessage != nil {
-            iToast.makeText(" " + createPostErrorMessage!).setGravity(iToastGravityCenter).setDuration(3000).show()
+            iToast.makeText(createPostErrorMessage!).setGravity(iToastGravityCenter).setDuration(3000).show()
         }
         
         if self.gates.isEmpty {
@@ -263,7 +263,7 @@ class CreatePostViewController: MyViewController, UITextViewDelegate {
             },
             failure: {(error: NSError, response: HTTPResponse?) in
                 dispatch_async(dispatch_get_main_queue(), {
-                    iToast.makeText(" We couldn't load your Gates").setGravity(iToastGravityCenter).setDuration(3000).show()
+                    iToast.makeText("We couldn't load your Gates").setGravity(iToastGravityCenter).setDuration(3000).show()
                     
                     
                     self.selectGateButton.setTitle("Reload Gates", forState: .Normal)
