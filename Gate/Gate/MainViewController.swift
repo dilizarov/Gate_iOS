@@ -183,14 +183,15 @@ class MainViewController: MyViewController, UIScrollViewDelegate {
         
         if appDelegate.locationUpdating {
             alertTitle = "Disable Location Services"
-            alertMessage = "Gates generated for you will be kept available. The next time Location Services are enabled, those Gates are not guaranteed to stay available."
+            alertMessage = "Gate will keep your location locked so you can still interact with those who were around you."
         } else {
             alertTitle = "Enable Location Services"
-            alertMessage = "Gate uses your location to unlock Gates for you while you're on the move."
+            alertMessage = "Gate uses your location to keep you connected to those around you."
         }
         
         let locationUpdateAction = UIAlertAction(title: alertTitle, style: .Default, handler: {(alert: UIAlertAction!) -> Void in
             self.settingsAlertDisplayed = false
+            
             
             var locationUpdateAlert = MyAlertController(title: alertTitle, message: alertMessage, preferredStyle: .Alert)
         
@@ -200,6 +201,8 @@ class MainViewController: MyViewController, UIScrollViewDelegate {
                     self.appDelegate.conserveBatteryFlag = true
                     self.appDelegate.locationUpdating = false
                     self.appDelegate.locationManager.stopUpdatingLocation()
+                    self.gatesViewController.aroundYou.usersCount = ""
+                    self.gatesViewController.gatesTable.reloadData()
                 } else {
                     self.appDelegate.bootUpLocationTracking()
                 }

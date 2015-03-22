@@ -21,6 +21,7 @@ class CreatePostViewController: MyViewController, UITextViewDelegate {
     var attemptedGate: Gate?
     var attemptedPostBody: String?
     var createPostErrorMessage: String?
+    var locationError: Bool?
     
     var postButton: UIBarButtonItem!
     
@@ -98,10 +99,6 @@ class CreatePostViewController: MyViewController, UITextViewDelegate {
 
         setupNavBar()
         
-        if createPostErrorMessage != nil {
-            iToast.makeText(createPostErrorMessage!).setGravity(iToastGravityCenter).setDuration(3000).show()
-        }
-        
         if self.gates.isEmpty {
             selectGateButton.setTitle("Loading Gates...", forState: .Normal)
             selectGateButton.enabled = false
@@ -126,11 +123,19 @@ class CreatePostViewController: MyViewController, UITextViewDelegate {
         
         postBody.delegate = self
         
+        //createPostInputAccessoryView()
+        
         checkPostRequirements()
-        // Do any additional setup after loading the view.
+
+        if createPostErrorMessage != nil && locationError != true {
+            iToast.makeText(createPostErrorMessage!).setGravity(iToastGravityCenter).setDuration(3000).show()
+        } else if locationError == true {
+            showLocationAlert()
+        }
     }
     
     override func viewDidAppear(animated: Bool) {
+        (UIApplication.sharedApplication().delegate as AppDelegate).toggledViewController = self
         postBody.becomeFirstResponder()
     }
     
@@ -141,6 +146,40 @@ class CreatePostViewController: MyViewController, UITextViewDelegate {
             postButton.enabled = false
         }
         
+    }
+    
+    func showLocationAlert() {
+        var delegate = UIApplication.sharedApplication().delegate as AppDelegate
+        
+        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(1 * Double(NSEC_PER_SEC)))
+        
+        if delegate.locationUpdating {
+            var waitABitAlert = MyAlertController(title: "Location Services Booting Up",
+                message: "Gate has not yet retrieved your location via Location Services. Try to post again in a bit.", preferredStyle: .Alert)
+            
+            let confirmAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+            
+            waitABitAlert.addAction(confirmAction)
+            
+            dispatch_after(delayTime, dispatch_get_main_queue(), {
+                self.presentViewController(waitABitAlert, animated: true, completion: nil)
+            })
+        } else {
+            var locationUpdateAlert = MyAlertController(title: "Enable Location Services", message: "Gate needs your location to post in Around You.", preferredStyle: .Alert)
+            
+            let confirmAction = UIAlertAction(title: "OK", style: .Default, handler: {(alert: UIAlertAction!) in
+                delegate.bootUpLocationTracking()
+            })
+            
+            let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+            
+            locationUpdateAlert.addAction(cancelAction)
+            locationUpdateAlert.addAction(confirmAction)
+            
+            dispatch_after(delayTime, dispatch_get_main_queue(), {
+                self.presentViewController(locationUpdateAlert, animated: true, completion: nil)
+            })
+        }
     }
     
     func textViewDidChange(textView: UITextView) {
@@ -296,8 +335,37 @@ class CreatePostViewController: MyViewController, UITextViewDelegate {
         super.dismissViewControllerAnimated(flag, completion: completion)
     }
     
+    func createPostInputAccessoryView() {
+        var toolbar = UIToolbar(frame: CGRectMake(0, 0, self.view.bounds.width, 50))
+        
+        toolbar.barStyle = UIBarStyle.Default
+        
+        var imageButton = UIBarButtonItem(image: UIImage(named: "CreateKey"), style: .Plain, target: self, action: Selector("postImage"))
+        
+        imageButton.tintColor = UIColor.gateBlueColor()
+        
+        toolbar.items = NSArray(array: [imageButton])
+        
+        toolbar.sizeToFit()
+        
+        postBody.inputAccessoryView = toolbar
+    }
+    
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
         return UIStatusBarStyle.LightContent
+    }
+    
+    func postImage() {
+        performSegueWithIdentifier("selectImage", sender: self)
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "createPost" {
+            var destination = segue.destinationViewController as CameraViewController
+            
+            (UIApplication.sharedApplication().delegate as AppDelegate).toggledViewController = destination
+        }
+
     }
     
     override func didReceiveMemoryWarning() {

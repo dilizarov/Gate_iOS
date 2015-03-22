@@ -15,6 +15,7 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var createGateAlert: MyAlertController!
     var createGateAlertDisplayed = false
     var gates = [Gate]()
+    var aroundYou: Gate!
     var refresher: UIRefreshControl!
 
     var loadingGates = false
@@ -94,6 +95,9 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         self.view.addSubview(loadingIndicator)
         
+        aroundYou = Gate(id: "aroundyou", name: "Around You")
+        aroundYou.generated = true
+        
         requestGatesAndPopulateList(false)
     
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("becomeActive:"), name: UIApplicationDidBecomeActiveNotification, object: nil)
@@ -130,7 +134,15 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 
                 var gate = gates[unwrappedIndexPath.row]
                 
-                gateOptionsController = MyAlertController(title: gate.name, message: nil, preferredStyle: .ActionSheet)
+                var title: String!
+                
+                if gate.id == "aroundyou" {
+                    title = gate.name + " - 200 meter radius"
+                } else {
+                    title = gate.name
+                }
+                
+                gateOptionsController = MyAlertController(title: title, message: nil, preferredStyle: .ActionSheet)
                 
                 let unlockPermAction = UIAlertAction(title: "Unlock Permanently", style: .Default, handler: {(alert: UIAlertAction!) in
                     self.unlockPermanently(gate)
@@ -158,11 +170,16 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                     self.leaveAlertDisplayed = false
                 })
                 
-                if (gate.generated && !gate.unlockedPerm) {
-                    gateOptionsController.addAction(unlockPermAction)
-                }
+                if gate.id == "aroundyou" {
+                    gateOptionsController.message = "No Settings"
+                } else {
+                    if (gate.generated && !gate.unlockedPerm) {
+                        gateOptionsController.addAction(unlockPermAction)
+                    }
 
-                gateOptionsController.addAction(deleteAction)
+                    gateOptionsController.addAction(deleteAction)
+                }
+                
                 gateOptionsController.addAction(cancelAction)
                 
                 leaveAlertDisplayed = true
@@ -204,7 +221,30 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let mainViewController = parentViewController as MainViewController
         
-        mainViewController.showFeed(gates[indexPath.row])
+        if indexPath.row == 0 {
+            var userInfo = NSUserDefaults.standardUserDefaults()
+            
+            if (userInfo.objectForKey("opened_around_you") as? Bool) == true {
+                mainViewController.showFeed(gates[indexPath.row])
+            } else {
+                var firstTimeAlert = MyAlertController(title: "Around You", message: "Use this Gate to see posts around you. Gate uses your last known location, which might not be accurate if Location Services are disabled.", preferredStyle: .Alert)
+                
+                let confirmAction = UIAlertAction(title: "OK", style: .Default, handler: {
+                    (alert) in
+                    
+                    userInfo.setBool(true, forKey: "opened_around_you")
+                    userInfo.synchronize()
+                    
+                    mainViewController.showFeed(self.gates[indexPath.row])
+                })
+                
+                firstTimeAlert.addAction(confirmAction)
+                
+                self.presentViewController(firstTimeAlert, animated: true, completion: nil)
+            }
+        } else {
+            mainViewController.showFeed(gates[indexPath.row])
+        }
     }
     
     func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -229,10 +269,6 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
         request.GET("https://infinite-river-7560.herokuapp.com/api/v1/gates.json", parameters: params,
             success: {(response: HTTPResponse) in
-
-                if refreshing {
-                    self.refresher.endRefreshing()
-                }
                 
                 var generatedGates = [Gate]()
                 var personalGates = [Gate]()
@@ -263,7 +299,7 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                             // be impossible if deleteGeneratedGates was successful. Further, we filter so if a gate is attached to the session
                             // we won't show it to the user because it should techincally be deleted
                             if gate.attachedToSession && !calledDeleteGeneratedGates {
-                                mainViewController.appDelegate.deleteGeneratedGates()
+//                                mainViewController.appDelegate.deleteGeneratedGates()
                                 
                                 calledDeleteGeneratedGates = true
                             } else {
@@ -277,10 +313,14 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                     }
                 }
                 
-                self.gates = generatedGates + personalGates
+                self.gates = [self.aroundYou] + generatedGates + personalGates
                 
                 dispatch_async(dispatch_get_main_queue(), {
                     self.loadingIndicator.stopAnimating()
+                    
+                    if refreshing {
+                        self.refresher.endRefreshing()
+                    }
                     
                     self.gatesTable.reloadData()
                     
@@ -296,10 +336,9 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 
             },
             failure: {(error: NSError, response: HTTPResponse?) in
-                self.refresher.endRefreshing()
-
                 dispatch_async(dispatch_get_main_queue(), {
                     self.loadingIndicator.stopAnimating()
+                    self.refresher.endRefreshing()
                     
                     if self.gates.count == 0 {
                         if response == nil {
@@ -448,57 +487,40 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     func addGatesToArray(newGates: [Gate]) {
         
-        // Array has alphabetized generated gates first, then alphabetized non-generated gates second.
+        // Array has alphabetized gates.
         
         var len = newGates.count
-        
-        var generatedGates = [Gate]()
-        var personalGates = [Gate]()
-        
-        for var i = 0; i < gates.count; i++ {
-            if gates[i].generated {
-                generatedGates.append(gates[i])
-            } else {
-                personalGates.append(gates[i])
-            }
-        }
         
         if len > 0 {
             noGatesText.alpha = 0.0
         }
         
-        var startingPointGen = 0
-        var startingPointPer = 0
-        var reachedEndGen = false
-        var reachedEndPer = false
+        // Accounts for Around You
+        var startingPoint = 1
+        var reachedEnd = false
         
         for var i = 0; i < len; i++ {
             var gate = newGates[i]
             
-            var arrayUsed = (gate.generated && !gate.unlockedPerm) ? generatedGates : personalGates
-            
-            var length = arrayUsed.count
-            
-            if length == 0 {
-                arrayUsed.append(gate)
+            // Accounts for Around You
+            if gates.count == 1 {
+                gates.append(gate)
                 continue
             }
             
-            for var j = (gate.generated && !gate.unlockedPerm) ? startingPointGen : startingPointPer; j < length; j++ {
-                var name = arrayUsed[j].name
+            for var j = startingPoint; j < gates.count; j++ {
+                var name = gates[j].name
                 if name.caseInsensitiveCompare(gate.name) == NSComparisonResult.OrderedDescending {
-                    arrayUsed.insert(gate, atIndex: j)
-                    (gate.generated && !gate.unlockedPerm) ? (startingPointGen = j + 1) : (startingPointPer = j + 1)
+                    gates.insert(gate, atIndex: j)
+                    startingPoint = j + 1
                     break
-                } else if ((gate.generated && !gate.unlockedPerm) ? reachedEndGen : reachedEndPer) || j == length - 1 {
-                    arrayUsed.append(gate)
-                    (gate.generated && !gate.unlockedPerm) ? (reachedEndGen = true) : (reachedEndPer = true)
+                } else if (reachedEnd || j == gates.count - 1) {
+                    gates.append(gate)
+                    reachedEnd = true
                     break
                 }
             }
         }
-        
-        gates = generatedGates + personalGates
     }
     
     override func didReceiveMemoryWarning() {

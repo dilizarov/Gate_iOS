@@ -46,7 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         
         locationManager = CLLocationManager()
         locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
         lastGeneratedGatesUpdate = NSDate().minusDays(1) // Used to jump-start location handling.
         
         self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
@@ -96,8 +96,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
                     self.processNotification(userInfo)
                 }
             )
-
-            
         } else if state == UIApplicationState.Inactive {
             processNotification(userInfo)
         }
@@ -143,7 +141,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
                 locationUpdating = false
                 let alertController = MyAlertController(
                     title: "Background Location Access Disabled",
-                    message: "In order to unlock Gates while you're on the move, please open Gate's settings and set location access to 'Always'.",
+                    message: "Gate uses your location to keep you connected to those around you. Please open Gate's settings and set location access to 'Always'.",
                     preferredStyle: .Alert)
             
                 let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
@@ -170,6 +168,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     }
     
     func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+        
         if (status == .Authorized || status == .AuthorizedWhenInUse) && self.mainViewController != nil {
             conserveBatteryFlag = false
             locationUpdating = true
@@ -179,9 +178,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
             manager.stopUpdatingLocation()
             filterSettingCounter = 0
             locationManager.distanceFilter = CLLocationDistance.abs(0)
-            if !conserveBatteryFlag {
-                deleteGeneratedGates()
+            
+            var gatesViewController = self.mainViewController!.gatesViewController
+            
+            gatesViewController.aroundYou.usersCount = ""
+            
+            if self.toggledViewController == nil && !gatesViewController.loadingGates {
+                self.mainViewController?.gatesViewController.gatesTable.reloadData()
             }
+
         }
     }
     
@@ -193,12 +198,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         // 40 second interval between requests.
         if location != nil && NSDate().secondsFrom(lastGeneratedGatesUpdate) > 40 && !requestingGates {
             lastGeneratedGatesUpdate = NSDate()
-            requestGates(location!)
+            sendLocationToBackend(location!)
+            //requestGates(location!)
             
             if filterSettingCounter < 3 {
                 filterSettingCounter += 1
             } else {
-                locationManager.distanceFilter = CLLocationDistance.abs(20)
+                locationManager.distanceFilter = CLLocationDistance.abs(50)
             }
         }
     }
@@ -207,7 +213,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     }
     
     func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-        
         if mainViewController != nil {
             mainViewController?.feedViewController.backgroundRefresh(completionHandler)
         } else {
@@ -239,8 +244,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
     
-    func requestGates(location: CLLocation!) {
-        requestingGates = true
+    
+    func sendLocationToBackend(location: CLLocation!) {
         
         var request = HTTPTask()
         
@@ -253,80 +258,113 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         
         request.responseSerializer = JSONResponseSerializer()
         
-        request.POST("https://infinite-river-7560.herokuapp.com/api/v1/generated_gates/process.json", parameters: params,
+        request.PUT("https://infinite-river-7560.herokuapp.com/api/v1/sessions/update_location.json", parameters: params,
             success: {(response: HTTPResponse) in
-                
-                var generatedGates = [Gate]()
-                var personalGates = [Gate]()
-                
-                var jsonGates = response.responseObject!["gates"]
-                
-                let unwrappedGates = jsonGates as [Dictionary<String, AnyObject>]
-                
-                for var i = 0; i < unwrappedGates.count; i++ {
-                    var jsonGate = unwrappedGates[i]
+                if self.mainViewController != nil {
+                    var usersCount = (response.responseObject!["meta"] as Dictionary<String, AnyObject>)["nearby_users_count"] as Int
                     
-                    var gate = Gate(id: jsonGate["external_id"] as String,
-                        name: jsonGate["name"] as String,
-                        usersCount: jsonGate["users_count"] as Int,
-                        creator: (jsonGate["creator"] as? Dictionary<String, String>)?["name"],
-                        generated: jsonGate["generated"] as Bool,
-                        attachedToSession: jsonGate["session"] as Bool,
-                        unlockedPerm: jsonGate["unlocked_perm"] as Bool)
+                    self.mainViewController!.gatesViewController.aroundYou.usersCount = "\(usersCount)"
                     
-                    if gate.generated && !gate.unlockedPerm {
-                        generatedGates.append(gate)
-                    } else {
-                        personalGates.append(gate)
+                    if self.toggledViewController == nil && !self.mainViewController!.gatesViewController.loadingGates {
+                        self.mainViewController?.gatesViewController.gatesTable.reloadData()
                     }
                 }
-                
-                var updatedGates = generatedGates + personalGates
-                
-                self.requestingGates = false
-                
-                dispatch_async(dispatch_get_main_queue(), {
-                    
-                    if updatedGates.isEmpty { return }
-                    
-                    if self.mainViewController != nil {
-                        self.mainViewController!.gatesViewController.gates = updatedGates
-                        
-                        if self.toggledViewController == nil && !self.mainViewController!.gatesViewController.loadingGates {
-                            self.mainViewController?.gatesViewController.gatesTable.reloadData()
-                        }
-                    }
-                })
+
             },
             failure: {(error: NSError, response: HTTPResponse?) in
-                self.requestingGates = false
+            
             }
         )
+
     }
+//    func requestGates(location: CLLocation!) {
+//        requestingGates = true
+//        
+//        var request = HTTPTask()
+//        
+//        var userInfo = NSUserDefaults.standardUserDefaults()
+//        
+//        var params = [ "user_id" : userInfo.objectForKey("user_id") as String, "auth_token" : userInfo.objectForKey("auth_token") as String, "api_key" : "91b75c9e-6a00-4fa9-bf65-610c12024bab" ]
+//        
+//        params["lat"] = "\(location.coordinate.latitude)"
+//        params["long"] = "\(location.coordinate.longitude)"
+//        
+//        request.responseSerializer = JSONResponseSerializer()
+//
+//        request.POST("https://infinite-river-7560.herokuapp.com/api/v1/generated_gates/process.json", parameters: params,
+//            success: {(response: HTTPResponse) in
+//                
+//                var generatedGates = [Gate]()
+//                var personalGates = [Gate]()
+//                
+//                var jsonGates = response.responseObject!["gates"]
+//                
+//                let unwrappedGates = jsonGates as [Dictionary<String, AnyObject>]
+//                
+//                for var i = 0; i < unwrappedGates.count; i++ {
+//                    var jsonGate = unwrappedGates[i]
+//                    
+//                    var gate = Gate(id: jsonGate["external_id"] as String,
+//                        name: jsonGate["name"] as String,
+//                        usersCount: jsonGate["users_count"] as Int,
+//                        creator: (jsonGate["creator"] as? Dictionary<String, String>)?["name"],
+//                        generated: jsonGate["generated"] as Bool,
+//                        attachedToSession: jsonGate["session"] as Bool,
+//                        unlockedPerm: jsonGate["unlocked_perm"] as Bool)
+//                    
+//                    if gate.generated && !gate.unlockedPerm {
+//                        generatedGates.append(gate)
+//                    } else {
+//                        personalGates.append(gate)
+//                    }
+//                }
+//                
+//                var updatedGates = generatedGates + personalGates
+//                
+//                self.requestingGates = false
+//                
+//                dispatch_async(dispatch_get_main_queue(), {
+//                    
+//                    if updatedGates.isEmpty { return }
+//                    
+//                    if self.mainViewController != nil {
+//                        self.mainViewController!.gatesViewController.gates = updatedGates
+//                        
+//                        if self.toggledViewController == nil && !self.mainViewController!.gatesViewController.loadingGates {
+//                            self.mainViewController?.gatesViewController.gatesTable.reloadData()
+//                        }
+//                    }
+//                })
+//            },
+//            failure: {(error: NSError, response: HTTPResponse?) in
+//                self.requestingGates = false
+//            }
+//        )
+//    }
     
-    func deleteGeneratedGates() {
-        
-        var request = HTTPTask()
-        
-        var userInfo = NSUserDefaults.standardUserDefaults()
-        
-        var params = [ "user_id" : userInfo.objectForKey("user_id") as String, "auth_token" : userInfo.objectForKey("auth_token") as String, "api_key" : "91b75c9e-6a00-4fa9-bf65-610c12024bab" ]
-        
-        request.DELETE("https://infinite-river-7560.herokuapp.com/api/v1/generated_gates/leave.json", parameters: params,
-            success: {(response: HTTPResponse) in
-                // The rest of the app lifecycle will dictate filtering, fetching, etc.
-                self.deleteGeneratedFailures = 0
-            },
-            failure: {(error: NSError, response: HTTPResponse?) in
-                // Try 5 times. If it doesn't work, the filter will handle it for us during fetches.
-                self.deleteGeneratedFailures += 1
-                if self.deleteGeneratedFailures < 5 {
-                    self.deleteGeneratedGates()
-                }
-                
-            }
-        )
-    }
+//    func deleteGeneratedGates() {
+//        
+//        var request = HTTPTask()
+//        
+//        var userInfo = NSUserDefaults.standardUserDefaults()
+//        
+//        var params = [ "user_id" : userInfo.objectForKey("user_id") as String, "auth_token" : userInfo.objectForKey("auth_token") as String, "api_key" : "91b75c9e-6a00-4fa9-bf65-610c12024bab" ]
+//        
+//        request.DELETE("https://infinite-river-7560.herokuapp.com/api/v1/generated_gates/leave.json", parameters: params,
+//            success: {(response: HTTPResponse) in
+//                // The rest of the app lifecycle will dictate filtering, fetching, etc.
+//                self.deleteGeneratedFailures = 0
+//            },
+//            failure: {(error: NSError, response: HTTPResponse?) in
+//                // Try 5 times. If it doesn't work, the filter will handle it for us during fetches.
+//                self.deleteGeneratedFailures += 1
+//                if self.deleteGeneratedFailures < 5 {
+//                    self.deleteGeneratedGates()
+//                }
+//                
+//            }
+//        )
+//    }
 
 }
 

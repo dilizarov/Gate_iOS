@@ -151,6 +151,8 @@ class PostCell: UITableViewCell {
         // Initialization code
         
         constraints["gateNameGone"] = NSLayoutConstraint(item: gateName, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: 0)
+        
+        self.layoutIfNeeded()
     }
 
     override func setSelected(selected: Bool, animated: Bool) {

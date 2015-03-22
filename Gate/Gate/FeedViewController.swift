@@ -19,6 +19,8 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     var currentGate: Gate?
     var refresher: UIRefreshControl!
     
+    var previousGate: Gate?
+    
     var notifAttributes = [NSObject : AnyObject]()
     
     var loadingIndicator: UIActivityIndicatorView!
@@ -51,9 +53,13 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     var attemptedPostBody: String?
     var attemptedGates: [Gate]?
     var createPostErrorMessage: String?
+    var locationError: Bool?
     
     var postedToOtherGateAlert: MyAlertController!
     var alertDisplayed = false
+        
+    // Used to mitigate background fetching first time around.
+    var fetchedOnce = false
     
     @IBAction func createPost(sender: AnyObject) {
     }
@@ -87,7 +93,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         feed.rowHeight = UITableViewAutomaticDimension
         
-        requestPostsAndPopulateList(false, page: nil, completionHandler: nil, oldGateName: nil)
+        requestPostsAndPopulateList(false, page: nil, completionHandler: nil, changingGates: false)
     }
     
     func handleNotification() {
@@ -208,6 +214,16 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                 destination.createPostErrorMessage = createPostErrorMessage
             }
             
+            if locationError != nil {
+                destination.locationError = locationError
+            }
+            
+            attemptedGate = nil
+            attemptedPostBody = nil
+            attemptedGates = nil
+            createPostErrorMessage = nil
+            locationError = nil
+            
             (UIApplication.sharedApplication().delegate as AppDelegate).toggledViewController = destination
         }
     }
@@ -218,7 +234,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
         
     func showFeed(gate: Gate?) {
-        var previousGate = currentGate
+        previousGate = currentGate
         currentGate = gate
             
         self.posts = []
@@ -226,12 +242,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
             
         startLoading()
         
-        var previousGateName = ""
-        if previousGate != nil {
-            previousGateName = previousGate!.name
-        }
-        
-        requestPostsAndPopulateList(true, page: nil, completionHandler: nil, oldGateName: previousGateName)
+        requestPostsAndPopulateList(true, page: nil, completionHandler: nil, changingGates: true)
         feed.setContentOffset(CGPointZero, animated: false)
     }
     
@@ -307,6 +318,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                     self.attemptedPostBody = postBody
                     self.attemptedGates = gates
                     self.createPostErrorMessage = String.prettyErrorMessage(response)
+                    self.locationError = response!.responseObject!["location_error"] as? Bool
                     
                     // If someone has no internet connection, everything fires off too fast and the Segue doesn't get performed, so we delay it by a second.
                     let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(1 * Double(NSEC_PER_SEC)))
@@ -414,7 +426,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                 isLoading = true
                 reachedEndOfCallback = false
                 lastTimeLoading = NSDate()
-                requestPostsAndPopulateList(false, page: currentPage, completionHandler: nil, oldGateName: nil)
+                requestPostsAndPopulateList(false, page: currentPage, completionHandler: nil, changingGates: false)
             }
             
         }
@@ -422,14 +434,19 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func refresh() {
-        requestPostsAndPopulateList(true, page: nil, completionHandler: nil, oldGateName: nil)
+        requestPostsAndPopulateList(true, page: nil, completionHandler: nil, changingGates: false)
     }
     
     func backgroundRefresh(completionHandler: (UIBackgroundFetchResult) -> Void) {
-        requestPostsAndPopulateList(true, page: nil, completionHandler: completionHandler, oldGateName: nil)
+        
+        if fetchedOnce {
+            requestPostsAndPopulateList(true, page: nil, completionHandler: completionHandler, changingGates: false)
+        } else {
+            completionHandler(UIBackgroundFetchResult.NewData)
+        }
     }
     
-    func requestPostsAndPopulateList(refreshing: Bool, page: Int?, completionHandler: ((UIBackgroundFetchResult) -> Void)?, oldGateName : String?) {
+    func requestPostsAndPopulateList(refreshing: Bool, page: Int?, completionHandler: ((UIBackgroundFetchResult) -> Void)?, changingGates : Bool) {
         // Only care about the very first load of feed
         if !refreshing && page == nil {
             startLoading()
@@ -466,7 +483,6 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         request.GET(requestUrl, parameters: params,
             success: {(response: HTTPResponse) in
                 if (refreshing) {
-                    self.refresher.endRefreshing()
                     self.posts = []
                     self.cachedHeights.removeAll(keepCapacity: false)
                     self.reachedEndOfList = false
@@ -509,22 +525,28 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                     
                     if completionHandler != nil {
                         self.feed.setContentOffset(CGPointZero, animated: false)
+                    } else {
+                        self.feed.reloadData()
                     }
                     
-                    self.feed.reloadData()
-                    
                     if self.posts.count == 0 {
-                        self.noPostsText.text = "No posts yet"
+                        if self.currentGate?.id == "aroundyou" {
+                            self.noPostsText.text = "No posts in this area yet"
+                        } else {
+                            self.noPostsText.text = "No posts yet"
+                        }
                         self.noPostsText.alpha = 1.0
                     } else {
                         self.noPostsText.alpha = 0.0
                     }
                     
                     if refreshing {
+                        self.refresher.endRefreshing()
                         self.currentPage = 2
                     }
                     
                     self.reachedEndOfCallback = true
+                    self.fetchedOnce = true
                     
                     if completionHandler != nil {
                         completionHandler!(UIBackgroundFetchResult.NewData)
@@ -532,29 +554,66 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
                 })
             },
             failure: {(error: NSError, response: HTTPResponse?) in
-                self.refresher.endRefreshing()
-                
                 dispatch_async(dispatch_get_main_queue(), {
+                    self.refresher.endRefreshing()
                     self.loadingIndicator.stopAnimating()
+                    
+                    var locationError = response?.responseObject?["location_error"] as? Bool
                     
                     if self.posts.count == 0 {
                         if response == nil {
                             self.noPostsText.text = "We couldn't connect to the internet"
                         } else {
-                            self.noPostsText.text = "Something went wrong"
+                            
+                            if locationError == true {
+                                self.noPostsText.text = "A location is needed to fetch posts"
+                                
+                                var delegate = UIApplication.sharedApplication().delegate as AppDelegate
+                                
+                                if delegate.locationUpdating {
+                                    var waitABitAlert = MyAlertController(title: "Location Services Booting Up",
+                                        message: "Gate has not yet retrieved your location via Location Services. Refresh the feed in a bit.", preferredStyle: .Alert)
+                                    
+                                    let confirmAction = UIAlertAction(title: "OK", style: .Default, handler: nil)
+                                    
+                                    waitABitAlert.addAction(confirmAction)
+                                    
+                                    self.presentViewController(waitABitAlert, animated: true, completion: nil)
+                                } else {
+                                    var locationUpdateAlert = MyAlertController(title: "Enable Location Services", message: "Gate needs your location to find posts around you.", preferredStyle: .Alert)
+                                    
+                                    let confirmAction = UIAlertAction(title: "OK", style: .Default, handler: {(alert: UIAlertAction!) in
+                                            delegate.bootUpLocationTracking()
+                                    })
+                                    
+                                    let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+                                    
+                                    locationUpdateAlert.addAction(cancelAction)
+                                    locationUpdateAlert.addAction(confirmAction)
+                                    
+                                    self.presentViewController(locationUpdateAlert, animated: true, completion: nil)
+                                }
+                            } else {
+                                self.noPostsText.text = "Something went wrong"
+                            }
                         }
                         
                         self.noPostsText.alpha = 1.0
                     }
                     
-                    if oldGateName != nil {
+                    if changingGates && locationError != true {
                         let mainViewController = self.parentViewController as MainViewController
-                        mainViewController.navTitleLabel1.text = oldGateName! == "" ? "Aggregate" : String.shortenForTitle(oldGateName!)
+                        
+                        mainViewController.navTitleLabel1.text = self.previousGate == nil ? "Aggregate" : String.shortenForTitle(self.previousGate!.name)
+                        
+                        self.currentGate = self.previousGate
                     }
+                    
+                    self.fetchedOnce = true
                     
                     if completionHandler != nil {
                         completionHandler!(UIBackgroundFetchResult.Failed)
-                    } else {
+                    } else if locationError != true {
                         iToast.makeText(String.prettyErrorMessage(response)).setGravity(iToastGravityCenter).setDuration(3000).show()
                     }
                 })

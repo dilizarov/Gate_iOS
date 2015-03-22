@@ -19,13 +19,13 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>4.30</string>
+	<string>4.31</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2015 Unlock Gate All rights reserved.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Gate uses your location to unlock Gates for you while you're on the move.</string>
+	<string>Gate uses your location to keep you connected to those around you.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

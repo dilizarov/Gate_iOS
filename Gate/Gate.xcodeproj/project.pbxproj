@@ -20,6 +20,7 @@
 		9A6E17F81A73534B0037F9F2 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A6E17F71A73534B0037F9F2 /* MainViewController.swift */; };
 		9A6E17FA1A7479FA0037F9F2 /* GatesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A6E17F91A7479FA0037F9F2 /* GatesViewController.swift */; };
 		9A6E17FC1A747A080037F9F2 /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A6E17FB1A747A080037F9F2 /* FeedViewController.swift */; };
+		9A790D701AB441290080ACAF /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A790D6F1AB441290080ACAF /* CameraViewController.swift */; };
 		9A7D0A6F1A7F9EFB004C6577 /* CommentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A7D0A6E1A7F9EFB004C6577 /* CommentsViewController.swift */; };
 		9A82D4F61AA15AC10079DB21 /* MyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A82D4F51AA15AC10079DB21 /* MyViewController.swift */; };
 		9A82D4F81AA173510079DB21 /* MyAlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A82D4F71AA173510079DB21 /* MyAlertController.swift */; };
@@ -114,6 +115,7 @@
 		9A6E17F71A73534B0037F9F2 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		9A6E17F91A7479FA0037F9F2 /* GatesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GatesViewController.swift; sourceTree = "<group>"; };
 		9A6E17FB1A747A080037F9F2 /* FeedViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
+		9A790D6F1AB441290080ACAF /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		9A7D0A6E1A7F9EFB004C6577 /* CommentsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentsViewController.swift; sourceTree = "<group>"; };
 		9A82D4F51AA15AC10079DB21 /* MyViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyViewController.swift; sourceTree = "<group>"; };
 		9A82D4F71AA173510079DB21 /* MyAlertController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyAlertController.swift; sourceTree = "<group>"; };
@@ -234,6 +236,7 @@
 				9A82D4F71AA173510079DB21 /* MyAlertController.swift */,
 				9A82D4F91AA17E7C0079DB21 /* MyActivityViewController.swift */,
 				9AD62F591AA5A56E001FB62B /* GateCell.swift */,
+				9A790D6F1AB441290080ACAF /* CameraViewController.swift */,
 			);
 			path = Gate;
 			sourceTree = "<group>";
@@ -459,6 +462,7 @@
 				9A7D0A6F1A7F9EFB004C6577 /* CommentsViewController.swift in Sources */,
 				9A94B0771A725A90003117B8 /* LoginRegisterViewController.swift in Sources */,
 				9AF99E121A819BA70077FBF3 /* ClickThroughScrollView.swift in Sources */,
+				9A790D701AB441290080ACAF /* CameraViewController.swift in Sources */,
 				9A8D4E731A9E4A55002EA1D2 /* HqViewController.swift in Sources */,
 				9AF860451A76DBF8002951C5 /* CreateKeyViewController.swift in Sources */,
 				9A0408E41A78D0E20062CD3D /* Post.swift in Sources */,
