@@ -10,13 +10,13 @@ import SwiftHTTP
 import CoreLocation
 
 class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIGestureRecognizerDelegate {
-
+    
     var gateName: UITextField!
     var createGateAlert: MyAlertController!
     var createGateAlertDisplayed = false
     var gates = [Gate]()
     var aroundYou: Gate!
-    var refresher: UIRefreshControl!
+    var refresher: ODRefreshControl!
 
     var loadingGates = false
     
@@ -75,11 +75,6 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        refresher = UIRefreshControl()
-        refresher.attributedTitle = NSAttributedString(string: "Pull to refresh")
-        refresher.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
-        self.gatesTable.addSubview(refresher)
-        
         var longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: Selector("handleLongPress:"))
         longPressGestureRecognizer.minimumPressDuration = 1.0
         longPressGestureRecognizer.delegate = self
@@ -94,6 +89,10 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
         loadingIndicator.layer.zPosition = 5000
         
         self.view.addSubview(loadingIndicator)
+        
+        refresher = ODRefreshControl(inScrollView: self.gatesTable)
+        refresher.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
+        refresher.tintColor = UIColor.gateBlueColor()
         
         aroundYou = Gate(id: "aroundyou", name: "Around You")
         aroundYou.generated = true
@@ -318,11 +317,11 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                 dispatch_async(dispatch_get_main_queue(), {
                     self.loadingIndicator.stopAnimating()
                     
+                    self.gatesTable.reloadData()
+                    
                     if refreshing {
                         self.refresher.endRefreshing()
                     }
-                    
-                    self.gatesTable.reloadData()
                     
                     if self.gates.count == 0 {
                         self.noGatesText.text = "No gates yet"

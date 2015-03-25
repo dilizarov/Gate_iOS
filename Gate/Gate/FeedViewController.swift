@@ -17,7 +17,7 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
 
     var posts = [Post]()
     var currentGate: Gate?
-    var refresher: UIRefreshControl!
+    var refresher: ODRefreshControl!
     
     var previousGate: Gate?
     
@@ -77,11 +77,9 @@ class FeedViewController: UIViewController, UITableViewDelegate, UITableViewData
         currentPage = 2
         infiniteScrollTimeBuffer = ""
 
-        refresher = UIRefreshControl()
-        refresher.attributedTitle = NSAttributedString(string: "Pull to refresh")
-        refresher.addTarget(self, action: "refresh", forControlEvents: UIControlEvents.ValueChanged)
-        
-        self.feed.addSubview(refresher)
+        refresher = ODRefreshControl(inScrollView: self.feed)
+        refresher.addTarget(self, action: "refresh", forControlEvents: .ValueChanged)
+        refresher.tintColor = UIColor.blackColor()
         
         loadingIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
         

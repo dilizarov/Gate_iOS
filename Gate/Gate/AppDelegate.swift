@@ -199,7 +199,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         if location != nil && NSDate().secondsFrom(lastGeneratedGatesUpdate) > 40 && !requestingGates {
             lastGeneratedGatesUpdate = NSDate()
             sendLocationToBackend(location!)
-            //requestGates(location!)
             
             if filterSettingCounter < 3 {
                 filterSettingCounter += 1
@@ -272,7 +271,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
 
             },
             failure: {(error: NSError, response: HTTPResponse?) in
-            
             }
         )
 
