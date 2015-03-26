@@ -188,7 +188,7 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     func becomeActive(notification: NSNotification) {
-        if CLLocationManager.authorizationStatus() != .Authorized {
+        if CLLocationManager.authorizationStatus() != .AuthorizedAlways {
             gates = gates.filter({
                 (element : Gate) in
 
@@ -292,7 +292,7 @@ class GatesViewController: UIViewController, UITableViewDelegate, UITableViewDat
                     if gate.generated && !gate.unlockedPerm {
                         let mainViewController = self.parentViewController as MainViewController
                         
-                        if CLLocationManager.authorizationStatus() != .Authorized && !mainViewController.appDelegate.conserveBatteryFlag {
+                        if CLLocationManager.authorizationStatus() != .AuthorizedAlways && !mainViewController.appDelegate.conserveBatteryFlag {
                             // On the assumption that the five attempts to delete generated gates failed, we will continue
                             // to try to deleteGeneratedGates as long as there are gates attached to the session, which should
                             // be impossible if deleteGeneratedGates was successful. Further, we filter so if a gate is attached to the session

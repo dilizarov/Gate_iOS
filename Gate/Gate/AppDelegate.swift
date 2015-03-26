@@ -130,7 +130,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     
     func bootUpLocationTracking() {
         switch CLLocationManager.authorizationStatus() {
-            case .Authorized:
+            case .AuthorizedAlways:
                 conserveBatteryFlag = false
                 locationUpdating = true
                 locationManager.startUpdatingLocation()
@@ -169,7 +169,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     
     func locationManager(manager: CLLocationManager!, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         
-        if (status == .Authorized || status == .AuthorizedWhenInUse) && self.mainViewController != nil {
+        if (status == .AuthorizedAlways || status == .AuthorizedWhenInUse) && self.mainViewController != nil {
             conserveBatteryFlag = false
             locationUpdating = true
             manager.startUpdatingLocation()

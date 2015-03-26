@@ -213,9 +213,19 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
                 self.storeSessionData(response.responseObject! as Dictionary<String, Dictionary<String, AnyObject>>)
                 
                 dispatch_async(dispatch_get_main_queue(), {
-                    MBProgressHUD.hideHUDForView(self.view, animated: true)
+                    var hud = MBProgressHUD(forView: self.view)
+                    hud.customView = UIImageView(image: UIImage(named: "37x-Checkmark"))
+                    hud.mode = MBProgressHUDModeCustomView
+                    hud.labelText = "Authenticated"
                     
-                    self.performSegueWithIdentifier("loginUser", sender: self)
+                    let delayInSeconds = 0.5
+                    let startTime = dispatch_time(DISPATCH_TIME_NOW, Int64(delayInSeconds * Double(NSEC_PER_SEC)))
+                    
+                    dispatch_after(startTime, dispatch_get_main_queue(), {
+                        MBProgressHUD.hideHUDForView(self.view, animated: true)
+                        
+                        self.performSegueWithIdentifier("loginUser", sender: self)
+                    })
                 })
             },
             failure: {(error: NSError, response: HTTPResponse?) in
@@ -261,9 +271,19 @@ class LoginRegisterViewController: UIViewController, UITextFieldDelegate {
                 self.storeSessionData(response.responseObject! as Dictionary<String, Dictionary<String, AnyObject>>)
                 
                 dispatch_async(dispatch_get_main_queue(), {
-                    MBProgressHUD.hideHUDForView(self.view, animated: true)
+                    var hud = MBProgressHUD(forView: self.view)
+                    hud.customView = UIImageView(image: UIImage(named: "37x-Checkmark"))
+                    hud.mode = MBProgressHUDModeCustomView
+                    hud.labelText = "Registered"
                     
-                    self.performSegueWithIdentifier("loginUser", sender: self)
+                    let delayInSeconds = 0.5
+                    let startTime = dispatch_time(DISPATCH_TIME_NOW, Int64(delayInSeconds * Double(NSEC_PER_SEC)))
+                    
+                    dispatch_after(startTime, dispatch_get_main_queue(), {
+                        MBProgressHUD.hideHUDForView(self.view, animated: true)
+                        
+                        self.performSegueWithIdentifier("loginUser", sender: self)
+                    })
                 })
                 
             },
